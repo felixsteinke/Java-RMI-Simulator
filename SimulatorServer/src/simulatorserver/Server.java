@@ -17,7 +17,6 @@ import simulator.interfaces.Connection;
  * @author Peter Heusch
  */
 public class Server {
-
     /**
      * @param args the command line arguments
      * @throws java.rmi.RemoteException
@@ -30,6 +29,7 @@ public class Server {
         registry.bind(Connection.class.getName(), connection);              // zuordnung in der registry 
         Engine.getInstanceEngine();
         System.out.println("Server is running.");
+        //test comment
         
     }
     

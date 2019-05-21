@@ -86,7 +86,6 @@ public class Engine {
             if (games.get(gameName).getCode() == code) {
                 for (int i = 0; i < games.get(gameName).playerData.playerlist.size(); i++) {
                     if (games.get(gameName).playerData.playerlist.get(i).getUsername() == null) {
-                        player.setConnectedServer(source);
                         games.get(gameName).playerData.playerlist.set(i, player);
                         //test the game users start
                         System.out.println("Users in Game " + gameName);

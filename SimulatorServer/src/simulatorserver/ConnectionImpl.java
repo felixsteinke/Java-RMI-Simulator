@@ -34,11 +34,10 @@ public class ConnectionImpl implements Connection {
                     RemoteServer.getClientHost(), player.username, gameName, code);
             System.out.println(mesg);
             
-            Server ServerFromClient = new ServerImpl(client);
-            Server serverExport = (Server) UnicastRemoteObject.exportObject(ServerFromClient, 0);
-            
-            Engine.joinGame(ServerFromClient, client, player, gameName, code);
-            //player server object zuweisen
+            Server serverFromClient = new ServerImpl(client);
+            Server serverExport = (Server) UnicastRemoteObject.exportObject(serverFromClient, 0);
+            player.setConnectedServer(serverFromClient);
+            Engine.joinGame(serverFromClient, client, player, gameName, code);
             //Engine.add(ServerFromClient, client);
             return serverExport;
             
