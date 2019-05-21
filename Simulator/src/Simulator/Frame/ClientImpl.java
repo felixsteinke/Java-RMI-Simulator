@@ -28,7 +28,7 @@ public class ClientImpl implements Client { //old BarImpl
     public void receiveString(String data) {
         EventQueue.invokeLater(()->{
             try {
-                Thread.sleep(250);
+                Thread.sleep(50);
                 SimulatorFrame.getInstance().chatModel.addElement(data);
             } catch (InterruptedException ex) {
                 Logger.getLogger(ClientImpl.class.getName()).log(Level.SEVERE, null, ex);
@@ -36,35 +36,38 @@ public class ClientImpl implements Client { //old BarImpl
         });
     }
 
+    //Prototyp
     @Override
     public void receivePlayerDatabase(PlayerDatabase data) throws RemoteException {
         EventQueue.invokeLater(()->{
             try {
-                Thread.sleep(250);
-                SimulatorFrame.getInstance().playerDatabase = data;
+                Thread.sleep(50);
+                
             } catch (InterruptedException ex) {
                 Logger.getLogger(ClientImpl.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
+        SimulatorFrame.getInstance().playerDatabase = data;
     }
 
     @Override
     public void receiveRacetrack(RaceTrack data) throws RemoteException {
         EventQueue.invokeLater(()->{
             try {
-                Thread.sleep(250);
-                SimulatorFrame.getInstance().setTrackData(data);
+                Thread.sleep(50);
+                
             } catch (InterruptedException ex) {
                 Logger.getLogger(ClientImpl.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
+        SimulatorFrame.getInstance().setTrackData(data);
     }
 
     @Override
     public void receiveRacetracksList(String data) throws RemoteException {
         EventQueue.invokeLater(()->{
             try {
-                Thread.sleep(250);
+                Thread.sleep(50);
             } catch (InterruptedException ex) {
                 Logger.getLogger(ClientImpl.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -76,7 +79,7 @@ public class ClientImpl implements Client { //old BarImpl
     public void receiveError(String data) throws RemoteException {
         EventQueue.invokeLater(()->{
             try {
-                Thread.sleep(250);
+                Thread.sleep(50);
             } catch (InterruptedException ex) {
                 Logger.getLogger(ClientImpl.class.getName()).log(Level.SEVERE, null, ex);
             }

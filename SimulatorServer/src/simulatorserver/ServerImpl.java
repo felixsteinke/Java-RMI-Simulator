@@ -26,21 +26,25 @@ import simulator.interfaces.Client;
  */
 public class ServerImpl implements Server { 
     
+    //Für jedes ServerObject wird hier ein Client geadded, der dieses überwacht, ich weiß nicht ob das noch unbedingt wichtig ist
     Client client;
-
     public ServerImpl(Client client) {
         this.client = client;
     }
-
+    
+    //Alle Interface Methoden wurden nur überschrieben und Daten an die Administation weitergegeben
     @Override
     public void sendString(String data) throws RemoteException {
         try {
-            String mesg = String.format("Method sendServer called from %s, data: %s",
+            //=====================================================================
+            //Request erhalten
+            String mesg = String.format("Method sendString called from %s, data: %s",
                     RemoteServer.getClientHost(), data);
             System.out.println(mesg);
             
-           Engine.sendString(this, data);
-           
+            //Request wird weitergegeben
+           Administation.sendString(this, data);
+           //=====================================================================
         } catch (ServerNotActiveException ex) {
             Logger.getLogger(ServerImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -48,27 +52,33 @@ public class ServerImpl implements Server {
 
     @Override
     public void sendTurn(Turn data) throws RemoteException {
-         try {
+        try {
+            //=====================================================================
+            //Request erhalten
             String mesg = String.format("Method sendTurn called from %s, data: %s",
                      RemoteServer.getClientHost(), data);
             System.out.println(mesg);
             
-            Engine.sendTurn(this, data);
-            
-         } catch (ServerNotActiveException ex) {
-             Logger.getLogger(ServerImpl.class.getName()).log(Level.SEVERE, null, ex);
-         }
+            //Request wird weitergegeben
+            Administation.sendTurn(this, data);
+            //=====================================================================
+        } catch (ServerNotActiveException ex) {
+            Logger.getLogger(ServerImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     @Override
     public void sendRaceTrack(RaceTrack data) throws RemoteException {
         try {
+            //=====================================================================
+            //Request erhalten
             String mesg = String.format("Method sendRaceTrack called from %s, data: %s",
-                     RemoteServer.getClientHost(), data);
+                     RemoteServer.getClientHost(), data.getTrackName());
             System.out.println(mesg);
             
-            Engine.sendRaceTrack(this, data);
-            
+            //Request wird weitergegeben
+            Administation.sendRaceTrack(this, data);
+            //=====================================================================
          } catch (ServerNotActiveException ex) {
              Logger.getLogger(ServerImpl.class.getName()).log(Level.SEVERE, null, ex);
          }
@@ -77,12 +87,15 @@ public class ServerImpl implements Server {
     @Override
     public void sendRaceTrackDecision(String data) throws RemoteException {
         try {
+            //=====================================================================
+            //Request erhalten
             String mesg = String.format("Method sendRaceTrackDecision called from %s, data: %s",
                      RemoteServer.getClientHost(), data);
             System.out.println(mesg);
             
-            Engine.sendRaceTrackDecision(this, data);
-            
+            //Request wird weitergegeben
+            Administation.sendRaceTrackDecision(this, data);
+            //=====================================================================
          } catch (ServerNotActiveException ex) {
              Logger.getLogger(ServerImpl.class.getName()).log(Level.SEVERE, null, ex);
          }

@@ -10,6 +10,8 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.Timer;
+import java.util.TimerTask;
 import simulator.interfaces.Connection;
 
 /**
@@ -23,14 +25,22 @@ public class Server {
      */
     public static void main(String[] args) throws RemoteException, 
             AlreadyBoundException {
-        Registry registry = LocateRegistry.createRegistry(29871); //port verbindung
-        Connection connection = new ConnectionImpl();                           // connection erstellung
-        UnicastRemoteObject.exportObject(connection, 0);                // senden der connection über egal welchen port
-        registry.bind(Connection.class.getName(), connection);              // zuordnung in der registry 
-        Engine.getInstanceEngine();
+        Registry registry = LocateRegistry.createRegistry(29871);    // port verbindung
+        Connection connection = new ConnectionImpl();                // connection erstellung
+        UnicastRemoteObject.exportObject(connection, 0);             // senden der connection über egal welchen port
+        registry.bind(Connection.class.getName(), connection);       // zuordnung in der registry 
+        Administation.getInstanceEngine();                           // sollte nicht nötig sein
         System.out.println("Server is running.");
-        //test comment
         
-    }
+        //Falls der Server vergessen wird, dass er nicht ewig läuft (1h)
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                System.exit(0);
+            }
+        }, 3_600_000);
+    }    
+    
     
 }

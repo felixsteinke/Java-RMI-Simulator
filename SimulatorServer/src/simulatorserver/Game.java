@@ -17,28 +17,43 @@ import simulator.data.container.RaceTrack;
  */
 public class Game {
     
-    private String name;
-    private RaceTrack raceTrack;
-    public PlayerDatabase playerData;
-    private String code;
-    ExecutorService executorService;
+    private String name;                //beliebig
+    private int gameSize;               //theoretisch beliebig, soll aber <=5 sein
+    private String code;                //passwort
+    private RaceTrack raceTrack;        //soll im nachhinen festgelegt werden
+    public PlayerDatabase playerData;   //spieler müssen vom nutzer hinzugefügt werden
+    public ExecutorService executorService;
 
-    public Game(String name, int count, String code) {
+    //Dieser Konsturktor wird verwendet
+    public Game(String name, int gameSize, String code) {
         this.name = name;
-        this.playerData = new PlayerDatabase(count);
+        this.gameSize = gameSize;
         this.code = code;
+        this.raceTrack = null;
+        this.playerData = new PlayerDatabase();
+        this.executorService = Executors.newFixedThreadPool(gameSize);
     }
     
+    //Rest von altem Ansatz
+    /*
     public Game(String name, int count, String code, RaceTrack raceTrack) {
         this.name = name;
         this.playerData = new PlayerDatabase(count);
         this.code = code;
         this.raceTrack = raceTrack;
-        executorService = Executors.newSingleThreadExecutor();
+        executorService = Executors.newFixedThreadPool(count);
     }
-
+    */
     public void refreshPlayerDatabase (){
+        /*
+        !!!!MISSING!!!!
+        Hier muss die ganze Spiel Logik rein
+
         
+        muss player.canDoMove weiter schieben
+        muss player.isActiv prüfen, mit neuer Position compare mit ValidPoints von Racetrack
+        muss antiCheat prüfen player mit Turn muss OldTurns mit ClientOldTurns prüfen
+        */
     }
     
     public RaceTrack getRaceTrack() {
@@ -71,6 +86,14 @@ public class Game {
 
     public void setCode(String code) {
         this.code = code;
+    }
+
+    public int getGameSize() {
+        return gameSize;
+    }
+
+    public void setGameSize(int gameSize) {
+        this.gameSize = gameSize;
     }
     
     

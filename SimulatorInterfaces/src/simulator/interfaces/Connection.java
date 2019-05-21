@@ -17,5 +17,5 @@ import simulator.data.container.RaceTrack;
 public interface Connection extends Remote {
     public Server joinGame(Client client, Player player, String gameName, String code) throws RemoteException;
     public void leaveGame(Server server, Player player, String gameName) throws RemoteException;
-    public void createGame (String name, int count, String code, RaceTrack raceTrack) throws RemoteException;
+    public void createGame (String name, int count, String code) throws RemoteException;
 }

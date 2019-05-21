@@ -26,51 +26,71 @@ import simulator.data.container.RaceTrack;
  */
 public class ConnectionImpl implements Connection {
 
+    public ConnectionImpl() {
+    }
+    
+    
     @Override
     public Server joinGame(Client client, Player player, String gameName, String code) throws RemoteException {
         try {
-            //Code adden
+            //====================================================================================================
+            //Request erhalten
             String mesg = String.format("Method joinGame called from %s, user: %s, game %s, code: %s",
                     RemoteServer.getClientHost(), player.username, gameName, code);
             System.out.println(mesg);
             
+            //ServerObject erstellen und dem Player (Client) zuordnen
             Server serverFromClient = new ServerImpl(client);
-            Server serverExport = (Server) UnicastRemoteObject.exportObject(serverFromClient, 0);
             player.setConnectedServer(serverFromClient);
-            Engine.joinGame(serverFromClient, client, player, gameName, code);
-            //Engine.add(ServerFromClient, client);
-            return serverExport;
             
+            //ServerObject exporten und "online" stellen
+            Server serverExport = (Server) UnicastRemoteObject.exportObject(serverFromClient, 0);
+            
+            //Request weitergeben an die Administation
+            Administation.joinGame(serverFromClient, client, player, gameName, code);
+            
+            //Dem Player(Client) das verbundene ServerObject geben um zu connecten
+            return serverExport;
+            //====================================================================================================
         } catch (ServerNotActiveException ex) {
             Logger.getLogger(ConnectionImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
     }
-
+    
     @Override
     public void leaveGame(Server server, Player player, String gameName) throws RemoteException {
         try {
+            //====================================================================================================
+            //Request erhalten
             String mesg = String.format("Method leaveGame called from %s, user: %s, game: %s",
                     RemoteServer.getClientHost(), player.username, gameName);
             System.out.println(mesg);
             
-            Engine.leaveGame(server, player, gameName);
-            //Engine.remove(server);
+            //Request der Administation weitergeben
+            Administation.leaveGame(server, player, gameName);
             
+            //MISSING: Theoretisch muss das ServerObject wieder unexportet werden, hat in der Vergangenheit aber zu fehlern geführt
+            //====================================================================================================
         } catch (ServerNotActiveException ex) {
             Logger.getLogger(ConnectionImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
     @Override
-    public void createGame(String gameName, int count, String code, RaceTrack raceTrack) throws RemoteException {
+    public void createGame(String gameName, int count, String code) throws RemoteException {
         try {
-            String mesg = String.format("Method createGAme called from %s, Gamename: %s, Playercount: %s, Code: %s, RaceTrack: %s",
-                    RemoteServer.getClientHost(), gameName, count, code, raceTrack.getTrackName());
+            //====================================================================================================
+            //Request erhalten
+            String mesg = String.format("Method createGAme called from %s, Gamename: %s, Playercount: %s, Code: %s",
+                    RemoteServer.getClientHost(), gameName, count, code);
             System.out.println(mesg);
-            //create "new Game()"
-            Engine.createGame(gameName, count, code, raceTrack);
             
+            //Request der Administaton weitergeben
+            Administation.createGame(gameName, count, code);
+            
+            //Administation sortiert mit diesem Request auch die verbrauchten Spiele aus
+            //====================================================================================================
         } catch (ServerNotActiveException ex) {
             Logger.getLogger(ConnectionImpl.class.getName()).log(Level.SEVERE, null, ex);
         }

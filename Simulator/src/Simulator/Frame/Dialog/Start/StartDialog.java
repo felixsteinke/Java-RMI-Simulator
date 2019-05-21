@@ -194,7 +194,7 @@ public class StartDialog extends javax.swing.JDialog {
                 frame.registry = LocateRegistry.getRegistry(29871);
                 frame.connection = (Connection) frame.registry.lookup(Connection.class.getName());
                 
-                frame.connection.createGame(frame.gameName, frame.playerCount, frame.gameCode, frame.getTrackData());
+                frame.connection.createGame(frame.gameName, frame.playerCount, frame.gameCode);
                 
                 frame.clientExported = (Client) UnicastRemoteObject.exportObject(frame.ClientImpl, 0);
                 frame.player.setConnectedClient(frame.ClientImpl);
