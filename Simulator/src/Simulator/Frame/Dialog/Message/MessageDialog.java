@@ -40,8 +40,6 @@ public class MessageDialog extends javax.swing.JDialog {
         jList_Chat = new javax.swing.JList<>();
         jTextField_InputMesg = new javax.swing.JTextField();
         jButton_Send = new javax.swing.JButton();
-        jButton_Exit = new javax.swing.JButton();
-        jLabel_Title = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -49,20 +47,11 @@ public class MessageDialog extends javax.swing.JDialog {
         jList_Chat.setModel(chatModel);
         jScrollPane_Chat.setViewportView(jList_Chat);
 
+        jTextField_InputMesg.setAction(new ActionSendButton());
         jTextField_InputMesg.setBorder(javax.swing.BorderFactory.createTitledBorder("Message"));
 
         jButton_Send.setAction(new ActionSendButton());
         jButton_Send.setText("Send");
-
-        jButton_Exit.setText("Close");
-        jButton_Exit.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton_ExitActionPerformed(evt);
-            }
-        });
-
-        jLabel_Title.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
-        jLabel_Title.setText("Messenger");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -70,49 +59,31 @@ public class MessageDialog extends javax.swing.JDialog {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jScrollPane_Chat, javax.swing.GroupLayout.DEFAULT_SIZE, 550, Short.MAX_VALUE)
-                    .addComponent(jTextField_InputMesg))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton_Send, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel_Title)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(6, 6, 6)
-                        .addComponent(jButton_Exit)))
-                .addGap(13, 13, 13))
+                        .addComponent(jTextField_InputMesg, javax.swing.GroupLayout.DEFAULT_SIZE, 550, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jButton_Send, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane_Chat))
+                .addGap(14, 14, 14))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(15, 15, 15)
-                        .addComponent(jLabel_Title)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton_Exit)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jScrollPane_Chat, javax.swing.GroupLayout.DEFAULT_SIZE, 414, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)))
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jTextField_InputMesg, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton_Send, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap()
+                .addComponent(jScrollPane_Chat, javax.swing.GroupLayout.DEFAULT_SIZE, 414, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jTextField_InputMesg, javax.swing.GroupLayout.DEFAULT_SIZE, 58, Short.MAX_VALUE)
+                    .addComponent(jButton_Send, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton_ExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_ExitActionPerformed
-        this.dispose();
-    }//GEN-LAST:event_jButton_ExitActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton_Exit;
     private javax.swing.JButton jButton_Send;
-    private javax.swing.JLabel jLabel_Title;
     private javax.swing.JList<String> jList_Chat;
     private javax.swing.JScrollPane jScrollPane_Chat;
     private javax.swing.JTextField jTextField_InputMesg;

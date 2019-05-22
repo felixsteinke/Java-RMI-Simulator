@@ -40,10 +40,30 @@
             <Property name="text" type="java.lang.String" value="Connection"/>
           </Properties>
           <SubComponents>
+            <MenuItem class="javax.swing.JMenuItem" name="jMenuItem_Player">
+              <Properties>
+                <Property name="action" type="javax.swing.Action" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                  <Connection code="new ActionDialogPlayer()" type="code"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="Create Player"/>
+              </Properties>
+            </MenuItem>
+            <MenuItem class="javax.swing.JPopupMenu$Separator" name="jSeparator1">
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="jMenuItem_Game">
+              <Properties>
+                <Property name="action" type="javax.swing.Action" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                  <Connection code="new ActionDialogGame()" type="code"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="Create Game"/>
+              </Properties>
+            </MenuItem>
+            <MenuItem class="javax.swing.JPopupMenu$Separator" name="jSeparator2">
+            </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItem_Connect">
               <Properties>
                 <Property name="action" type="javax.swing.Action" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                  <Connection code="new ActionConnect()" type="code"/>
+                  <Connection code="new ActionDialogConnect()" type="code"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Connect"/>
               </Properties>
@@ -66,7 +86,7 @@
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItem_ShowMess">
               <Properties>
                 <Property name="action" type="javax.swing.Action" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                  <Connection code="new ActionShowMessage()" type="code"/>
+                  <Connection code="new Simulator.Frame.ActionDialogMessenger()" type="code"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Show Messenger"/>
               </Properties>
@@ -81,9 +101,37 @@
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItem_CreateFrame">
               <Properties>
                 <Property name="action" type="javax.swing.Action" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                  <Connection code="new ActionCreateMap()" type="code"/>
+                  <Connection code="new Simulator.Frame.ActionDialogCreateMap()" type="code"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="Show Creation Frame"/>
+                <Property name="text" type="java.lang.String" value="Open CreationTool"/>
+              </Properties>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="jMenuItem_Upload">
+              <Properties>
+                <Property name="action" type="javax.swing.Action" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                  <Connection code="new ActionUploadGame()" type="code"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="Upload RaceTrack"/>
+              </Properties>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="jMenuItem_Delete">
+              <Properties>
+                <Property name="action" type="javax.swing.Action" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                  <Connection code="new ActionDeleteUploadedGame()" type="code"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="Delete RaceTrack"/>
+              </Properties>
+            </MenuItem>
+          </SubComponents>
+        </Menu>
+        <Menu class="javax.swing.JMenu" name="jMenu_Help">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Help"/>
+          </Properties>
+          <SubComponents>
+            <MenuItem class="javax.swing.JMenuItem" name="jMenuItem_Guide">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Guide"/>
               </Properties>
             </MenuItem>
           </SubComponents>
@@ -167,7 +215,7 @@
         <Component class="javax.swing.JList" name="jList_Console">
           <Properties>
             <Property name="model" type="javax.swing.ListModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-              <Connection code="consoleList" type="code"/>
+              <Connection code="consoleModel" type="code"/>
             </Property>
           </Properties>
           <AuxValues>

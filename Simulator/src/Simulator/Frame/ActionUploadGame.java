@@ -23,6 +23,10 @@ public class ActionUploadGame extends AbstractAction {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        if(frame.connected == false){
+            JOptionPane.showMessageDialog(frame, "Not Connected");
+            return;
+        }
         RaceTrack raceTrack = frame.getRaceTrackToUpload();
         
         if (validateRaceTrack(raceTrack) == true){

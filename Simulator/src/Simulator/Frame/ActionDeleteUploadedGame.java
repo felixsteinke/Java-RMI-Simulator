@@ -6,6 +6,9 @@
 package Simulator.Frame;
 
 import java.awt.event.ActionEvent;
+import java.rmi.RemoteException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
 
@@ -15,9 +18,21 @@ import javax.swing.JOptionPane;
  */
 public class ActionDeleteUploadedGame extends AbstractAction {
 
+    private SimulatorFrame frame = SimulatorFrame.getInstance();
+    
     @Override
     public void actionPerformed(ActionEvent e) {
-        JOptionPane.showMessageDialog(null, "InterfaceMethod needs to be added and implmented");
+        if(frame.connected == true){
+            String name = JOptionPane.showInputDialog("Which RaceTrack should be deleted on the Server?");
+            try {
+                frame.server.sendRaceTrackDelete(name);
+            } catch (RemoteException ex) {
+                Logger.getLogger(ActionDeleteUploadedGame.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else {
+            JOptionPane.showMessageDialog(frame, "Not connected!");
+        }
+        
     }
     
 }

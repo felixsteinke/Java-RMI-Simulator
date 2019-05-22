@@ -16,7 +16,7 @@ public class ActionExit extends AbstractAction {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        //Ausloggen...
+        new ActionDisconnectFromGame().actionPerformed(e);
         System.exit(0);
     }
     

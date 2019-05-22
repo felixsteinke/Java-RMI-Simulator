@@ -6,6 +6,7 @@
 package Simulator.Frame.Dialog.Connect;
 
 import Simulator.Frame.SimulatorFrame;
+import Simulator.Frame.SimulatorFrame;
 import java.awt.event.ActionEvent;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -32,26 +33,27 @@ public class ActionConnectToGame extends AbstractAction {
             JOptionPane.showMessageDialog(null, "Already Connected");
             return;
         }
+        
+        String gameName = frame.connectDialog.getjTextField_GameName().getText();
+        String gameCode = frame.connectDialog.getjTextField_GameCode().getText();
+        
+        if(gameName.equalsIgnoreCase("") || gameName == null){
+            JOptionPane.showMessageDialog(frame.connectDialog, "False Input");
+            return;
+        }
+        
+        frame.gameName = gameName;
+        frame.gameCode = gameCode;
+        
+        
         try {
-            frame.player.username = frame.connectDialog.getjTextField_Username().getText();
-            frame.gameName = frame.connectDialog.getjTextField_GameName().getText();
-            frame.gameCode = frame.connectDialog.getjTextField_GameCode().getText();
-            
-            frame.clientExported = (Client) UnicastRemoteObject.exportObject(frame.ClientImpl, 0);
-            frame.player.setConnectedClient(frame.ClientImpl);
-            
             frame.registry = LocateRegistry.getRegistry(29871);
             frame.connection = (Connection) frame.registry.lookup(Connection.class.getName());
             
-            frame.server = frame.connection.joinGame(frame.ClientImpl, frame.player, frame.gameName, frame.gameCode);
-            frame.player.setConnectedServer(frame.server);
+            frame.connect(gameName, gameCode);
             
-            frame.connected = true;
+            frame.playerDialog.dispose();
             
-            String mesg = frame.player.username + " made it in " + frame.gameName;
-            frame.server.sendString(mesg);
-            
-            frame.connectDialog.dispose();
         } catch (RemoteException ex) {
             Logger.getLogger(Simulator.Frame.SimulatorFrame.class.getName()).log(Level.SEVERE, null, ex);
         } catch (NotBoundException ex) {

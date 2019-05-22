@@ -38,10 +38,11 @@ import simulator.data.container.Turn;
 public class Administation {
 
     private static HashMap<String, Game> games = new HashMap<>();
-    private static ArrayList<RaceTrack> raceTracks = new ArrayList();
+    private static ArrayList<RaceTrack> raceTracks;
 
-    private static ExecutorService executorService;
+    private static ExecutorService executorService= Executors.newSingleThreadExecutor();
     private static Administation instanceEngine;
+    
 
     //weil alles static ist, ist das eigetnlich nicht nötig (glaube ich)
     public synchronized static Administation getInstance() {                           //Object kann einmal erzeugt werden
@@ -52,8 +53,6 @@ public class Administation {
     }
 
     private Administation() {
-        executorService = Executors.newSingleThreadExecutor();
-        initRaceTracks();
     }
 
     //prototyp, needs to get implemented last
@@ -152,6 +151,8 @@ public class Administation {
 
     //should be done !!!Cleaner nerver tested!!!
     public static void createGame(String gameName, int count, String code) {
+        //ich weis nicht wo ich das sonst aufrufen soll
+        initRaceTracks();
         executorService.submit(() -> {
             //Clean old Games
             HashMap<String, Game> gamesCopy = new HashMap<>(games);
@@ -291,6 +292,7 @@ public class Administation {
 
     //should be done
     private static void initRaceTracks() {
+        raceTracks = new ArrayList <RaceTrack>();
         try {
             RaceTrack tempTrack;
             ObjectInputStream raceTracksInput = new ObjectInputStream(new FileInputStream("RaceTracks.ser"));

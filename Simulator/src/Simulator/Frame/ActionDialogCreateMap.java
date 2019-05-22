@@ -12,12 +12,16 @@ import javax.swing.AbstractAction;
 /**
  *
  * @author Felix
+ * 
+ * TODO: !!!!!!!!!!!!!!!!
+ * customize close options and check if it starts how its suposed to be
  */
-public class ActionCreateMap extends AbstractAction {
+public class ActionDialogCreateMap extends AbstractAction {
 
     @Override
     public void actionPerformed(ActionEvent e) {
         Thread t = new Thread(() -> {
+            //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
             try {
                 for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                     if ("Nimbus".equals(info.getName())) {

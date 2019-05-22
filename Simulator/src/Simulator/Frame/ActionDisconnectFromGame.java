@@ -25,7 +25,7 @@ public class ActionDisconnectFromGame extends AbstractAction {
     @Override
     public void actionPerformed(ActionEvent e) {
         if (frame.connected == false) {
-            JOptionPane.showMessageDialog(null, "Not Connected");
+            JOptionPane.showMessageDialog(frame, "Not Connected");
             return;
         }
 
@@ -35,7 +35,10 @@ public class ActionDisconnectFromGame extends AbstractAction {
                 frame.server.sendString(mesg);
                 frame.connection.leaveGame(frame.server,frame.player,frame.gameName);
                 UnicastRemoteObject.unexportObject(frame.clientExported, false);
+                frame.setRaceTrackToPlay(null);
+                frame.playerDatabase = null;
                 frame.connected = false;
+                frame.consoleModel.addElement("You are now disconnected!");
             } catch (RemoteException ex) {
                 Logger.getLogger(Simulator.Frame.SimulatorFrame.class.getName()).log(Level.SEVERE, null, ex);
             }

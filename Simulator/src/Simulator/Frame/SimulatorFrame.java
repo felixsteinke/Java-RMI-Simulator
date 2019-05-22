@@ -5,16 +5,17 @@
  */
 package Simulator.Frame;
 
-import Simulator.Frame.Dialog.Connect.ActionConnectToGamePort;
-import Simulator.Frame.Dialog.Connect.ActionConnectToGameIP;
-import Simulator.Frame.Dialog.Connect.ActionConnectToGame;
-import Simulator.Frame.Dialog.Connect.ConnectSettings;
+import Simulator.Frame.Dialog.Connect.ConnectToGame;
+import Simulator.Frame.Dialog.Player.CreatePlayerSettings;
 import Simulator.Frame.Dialog.Message.MessageDialog;
+import Simulator.Frame.Dialog.Game.CreateGameLobby;
 import simulator.data.container.RaceTrack;
 import java.awt.EventQueue;
 import java.awt.Point;
 import java.io.File;
+import java.rmi.RemoteException;
 import java.rmi.registry.Registry;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
@@ -33,28 +34,29 @@ public class SimulatorFrame extends javax.swing.JFrame {
 
     private static SimulatorFrame instanceSimulatorFrame;
     public DefaultListModel chatModel = new DefaultListModel();
-    public DefaultListModel consoleList = new DefaultListModel();
+    public DefaultListModel consoleModel = new DefaultListModel();
     private SimulatorPanel simulatorPanel = new SimulatorPanel();
-    public MessageDialog chatMessenger;
-    public ConnectSettings connectDialog;
+    public MessageDialog chatDialog;
+    public CreatePlayerSettings playerDialog;
+    public CreateGameLobby gameDialog;
+    public ConnectToGame connectDialog;
     private File inputFile;
     private RaceTrack raceTrackToPlay = null;
     private RaceTrack raceTrackToUpload = null;
     public PlayerDatabase playerDatabase = new PlayerDatabase();
     public boolean connected = false;
     public boolean gameIsRunning = false;
-    
+
     public Player player = new Player();
     public Client ClientImpl = new ClientImpl();
     public Client clientExported;
     public Server server;
     public Registry registry;
     public Connection connection;
-    
+
     public int playerCount;
     public String gameName;
     public String gameCode;
-    
 
     public synchronized static SimulatorFrame getInstance() {                           //Object kann einmal erzeugt werden
         if (instanceSimulatorFrame == null) {
@@ -89,12 +91,20 @@ public class SimulatorFrame extends javax.swing.JFrame {
         jMenuItem_StartGame = new javax.swing.JMenuItem();
         jMenuItem_CloseGame = new javax.swing.JMenuItem();
         jMenu_Connection = new javax.swing.JMenu();
+        jMenuItem_Player = new javax.swing.JMenuItem();
+        jSeparator1 = new javax.swing.JPopupMenu.Separator();
+        jMenuItem_Game = new javax.swing.JMenuItem();
+        jSeparator2 = new javax.swing.JPopupMenu.Separator();
         jMenuItem_Connect = new javax.swing.JMenuItem();
         jMenuItem_Disconnect = new javax.swing.JMenuItem();
         jMenu_Messenger = new javax.swing.JMenu();
         jMenuItem_ShowMess = new javax.swing.JMenuItem();
         jMenu_CreateMap = new javax.swing.JMenu();
         jMenuItem_CreateFrame = new javax.swing.JMenuItem();
+        jMenuItem_Upload = new javax.swing.JMenuItem();
+        jMenuItem_Delete = new javax.swing.JMenuItem();
+        jMenu_Help = new javax.swing.JMenu();
+        jMenuItem_Guide = new javax.swing.JMenuItem();
         jMenu_Exit = new javax.swing.JMenu();
         jMenuItem_ExitNow = new javax.swing.JMenuItem();
 
@@ -103,7 +113,7 @@ public class SimulatorFrame extends javax.swing.JFrame {
 
         jScrollPane_Console.setBorder(javax.swing.BorderFactory.createTitledBorder("Console"));
 
-        jList_Console.setModel(consoleList);
+        jList_Console.setModel(consoleModel);
         jScrollPane_Console.setViewportView(jList_Console);
 
         javax.swing.GroupLayout jPanel_MapLayout = new javax.swing.GroupLayout(jPanel_Map);
@@ -135,7 +145,17 @@ public class SimulatorFrame extends javax.swing.JFrame {
 
         jMenu_Connection.setText("Connection");
 
-        jMenuItem_Connect.setAction(new ActionConnect());
+        jMenuItem_Player.setAction(new ActionDialogPlayer());
+        jMenuItem_Player.setText("Create Player");
+        jMenu_Connection.add(jMenuItem_Player);
+        jMenu_Connection.add(jSeparator1);
+
+        jMenuItem_Game.setAction(new ActionDialogGame());
+        jMenuItem_Game.setText("Create Game");
+        jMenu_Connection.add(jMenuItem_Game);
+        jMenu_Connection.add(jSeparator2);
+
+        jMenuItem_Connect.setAction(new ActionDialogConnect());
         jMenuItem_Connect.setText("Connect");
         jMenu_Connection.add(jMenuItem_Connect);
 
@@ -147,7 +167,7 @@ public class SimulatorFrame extends javax.swing.JFrame {
 
         jMenu_Messenger.setText("Messenger");
 
-        jMenuItem_ShowMess.setAction(new ActionShowMessage());
+        jMenuItem_ShowMess.setAction(new Simulator.Frame.ActionDialogMessenger());
         jMenuItem_ShowMess.setText("Show Messenger");
         jMenu_Messenger.add(jMenuItem_ShowMess);
 
@@ -155,11 +175,26 @@ public class SimulatorFrame extends javax.swing.JFrame {
 
         jMenu_CreateMap.setText("Create Map");
 
-        jMenuItem_CreateFrame.setAction(new ActionCreateMap());
-        jMenuItem_CreateFrame.setText("Show Creation Frame");
+        jMenuItem_CreateFrame.setAction(new Simulator.Frame.ActionDialogCreateMap());
+        jMenuItem_CreateFrame.setText("Open CreationTool");
         jMenu_CreateMap.add(jMenuItem_CreateFrame);
 
+        jMenuItem_Upload.setAction(new ActionUploadGame());
+        jMenuItem_Upload.setText("Upload RaceTrack");
+        jMenu_CreateMap.add(jMenuItem_Upload);
+
+        jMenuItem_Delete.setAction(new ActionDeleteUploadedGame());
+        jMenuItem_Delete.setText("Delete RaceTrack");
+        jMenu_CreateMap.add(jMenuItem_Delete);
+
         jMenuBar1.add(jMenu_CreateMap);
+
+        jMenu_Help.setText("Help");
+
+        jMenuItem_Guide.setText("Guide");
+        jMenu_Help.add(jMenuItem_Guide);
+
+        jMenuBar1.add(jMenu_Help);
 
         jMenu_Exit.setText("Exit");
 
@@ -195,25 +230,36 @@ public class SimulatorFrame extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    public void connect(String gameName, String gameCode) throws RemoteException {
+        clientExported = (Client) UnicastRemoteObject.exportObject(ClientImpl, 0);
+        player.setConnectedClient(ClientImpl);
+            
+        server = connection.joinGame(ClientImpl, player, gameName, gameCode);
+        player.setConnectedServer(server);
+            
+            connected = true;
+            
+            String mesg = player.username + " made it in " + gameName;
+            server.sendString(mesg);
+    }
     
-    public File getInputFile() {
-        return inputFile;
+    public int calcPort() {
+        String input;
+        do {
+            input = JOptionPane.showInputDialog(null, "Gewünschten Port eingeben:");
+            System.out.println("Input not valid!");
+        } while (!input.matches("[0-9]{2,6}"));
+        return Integer.valueOf(input);
     }
 
-    public void setInputFile(File newInput) {
-        File oldValue = this.inputFile;
-        this.inputFile = newInput;
-        firePropertyChange("Input", oldValue, this.inputFile);
+    public String calcIP() {
+        String input;
+        do {
+            input = JOptionPane.showInputDialog(null, "Gewünschten IP eingeben:");
+            System.out.println("Input not valid!");
+        } while (!input.matches("[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}"));
+        return input;
     }
-
-    public void setCsvData(File input) {
-        this.raceTrackToPlay = new RaceTrack(input);
-        repaint();
-    }
-
-    
-
-    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JList<String> jList_Console;
@@ -221,20 +267,28 @@ public class SimulatorFrame extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem_CloseGame;
     private javax.swing.JMenuItem jMenuItem_Connect;
     private javax.swing.JMenuItem jMenuItem_CreateFrame;
+    private javax.swing.JMenuItem jMenuItem_Delete;
     private javax.swing.JMenuItem jMenuItem_Disconnect;
     private javax.swing.JMenuItem jMenuItem_ExitNow;
+    private javax.swing.JMenuItem jMenuItem_Game;
+    private javax.swing.JMenuItem jMenuItem_Guide;
     private javax.swing.JMenuItem jMenuItem_LoadGame;
+    private javax.swing.JMenuItem jMenuItem_Player;
     private javax.swing.JMenuItem jMenuItem_ShowMess;
     private javax.swing.JMenuItem jMenuItem_StartGame;
+    private javax.swing.JMenuItem jMenuItem_Upload;
     private javax.swing.JMenu jMenu_Connection;
     private javax.swing.JMenu jMenu_CreateMap;
     private javax.swing.JMenu jMenu_Exit;
     private javax.swing.JMenu jMenu_Game;
+    private javax.swing.JMenu jMenu_Help;
     private javax.swing.JMenu jMenu_Messenger;
     private javax.swing.JPanel jPanel_Map;
     private javax.swing.JScrollPane jScrollPane_Console;
+    private javax.swing.JPopupMenu.Separator jSeparator1;
+    private javax.swing.JPopupMenu.Separator jSeparator2;
     // End of variables declaration//GEN-END:variables
-    
+
     public RaceTrack getRaceTrackToPlay() {
         return this.raceTrackToPlay;
     }
@@ -250,6 +304,19 @@ public class SimulatorFrame extends javax.swing.JFrame {
     public void setRaceTrackToUpload(RaceTrack raceTrackToUpload) {
         this.raceTrackToUpload = raceTrackToUpload;
     }
-    
-    
+
+    public File getInputFile() {
+        return inputFile;
+    }
+
+    public void setInputFile(File newInput) {
+        File oldValue = this.inputFile;
+        this.inputFile = newInput;
+        firePropertyChange("Input", oldValue, this.inputFile);
+    }
+
+    public void setCsvData(File input) {
+        this.raceTrackToPlay = new RaceTrack(input);
+        repaint();
+    }
 }

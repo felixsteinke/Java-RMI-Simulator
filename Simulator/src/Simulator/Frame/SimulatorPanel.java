@@ -8,27 +8,25 @@ package Simulator.Frame;
 import simulator.data.container.RaceTrack;
 import java.awt.BasicStroke;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
-import java.awt.Stroke;
-import java.awt.geom.AffineTransform;
 import java.awt.geom.GeneralPath;
-import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import javafx.scene.shape.Line;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
 /**
  *
  * @author 82stfe1bif
+ * 
+ * TODO: !!!!!!!!!!!!!!!
+ * playerDatabase needs to get painted
  */
 public class SimulatorPanel extends JPanel {
     
@@ -47,7 +45,7 @@ public class SimulatorPanel extends JPanel {
         Rectangle screenRect = this.getBounds();
 
         if ((data = SimulatorFrame.getInstance().getRaceTrackToPlay()) == null) {
-            SimulatorFrame.getInstance().consoleList.addElement("Simulator Panel has no data.");
+            SimulatorFrame.getInstance().consoleModel.addElement("Simulator Panel has no data.");
             try {
                 image = ImageIO.read(new File("./Titelbild.PNG"));
                 gc.drawImage(image, 0, 0, screenRect.width, screenRect.height, this);
@@ -113,7 +111,7 @@ public class SimulatorPanel extends JPanel {
         g2d.setStroke(new BasicStroke(5.0f));
         g2d.drawLine(gameRect.x + pointsStart.get(0).x, gameRect.y + pointsStart.get(0).y,
                 gameRect.x + pointsStart.get(1).x, gameRect.y + pointsStart.get(1).y);
-        SimulatorFrame.getInstance().consoleList.addElement("Simulator Panel inizalized.");
+        SimulatorFrame.getInstance().consoleModel.addElement("Simulator Panel inizalized.");
         //
         if (repaintCount == 1) {
             //save the valid points the first time the map gets loaded
@@ -155,7 +153,7 @@ public class SimulatorPanel extends JPanel {
             */
             //save the start points the first time the map gets loaded
             SimulatorFrame.getInstance().getRaceTrackToPlay().setStartPoints(localStartPoints);
-            SimulatorFrame.getInstance().consoleList.addElement("RaceTrack Config completed.");
+            SimulatorFrame.getInstance().consoleModel.addElement("RaceTrack Config completed.");
         }
         
         /*

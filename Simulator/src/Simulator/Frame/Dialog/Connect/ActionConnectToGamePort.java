@@ -6,6 +6,7 @@
 package Simulator.Frame.Dialog.Connect;
 
 import Simulator.Frame.SimulatorFrame;
+import Simulator.Frame.SimulatorFrame;
 import java.awt.event.ActionEvent;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -25,40 +26,36 @@ import simulator.interfaces.Connection;
 public class ActionConnectToGamePort extends AbstractAction {
     
     private SimulatorFrame frame = SimulatorFrame.getInstance();
-    private Integer port;
-    private int code;
     
     @Override
     public void actionPerformed(ActionEvent e) {
-        JOptionPane.showMessageDialog(frame, "Not Implemented");
-        if(true){
-            return;
-        }
-        //not implemented and customized now!!!
+
         if (frame.connected == true) {
             JOptionPane.showMessageDialog(null, "Already Connected");
             return;
         }
-        //28765
-        String input = JOptionPane.showInputDialog(null, "Gewünschten Port eingeben:");
-        if (!input.matches("[0-9]{2,6}")){
-            System.out.println("Input not valid!");
+        
+        String gameName = frame.connectDialog.getjTextField_GameName().getText();
+        String gameCode = frame.connectDialog.getjTextField_GameCode().getText();
+        
+        if(gameName.equalsIgnoreCase("") || gameName == null){
+            JOptionPane.showMessageDialog(frame.connectDialog, "False Input");
             return;
         }
-        port = Integer.valueOf(input);
+        
+        frame.gameName = gameName;
+        frame.gameCode = gameCode;
+        int port = frame.calcPort();
         System.out.println("Searching Port: " + port);
         
         try {
 
-            frame.clientExported = (Client) UnicastRemoteObject.exportObject(frame.ClientImpl, 0);
-            frame.player.setConnectedClient(frame.ClientImpl);
             frame.registry = LocateRegistry.getRegistry(port);
             frame.connection = (Connection) frame.registry.lookup(Connection.class.getName());
-            frame.server = frame.connection.joinGame(frame.ClientImpl,frame.player, "testGame","123456");
-            frame.player.setConnectedServer(frame.server);
-            frame.connected = true;
-            String mesg = "ConnectToTestPort";
-            frame.server.sendString(mesg);
+            
+            frame.connect(gameName, gameCode);
+            
+            frame.connectDialog.dispose();
 
         } catch (RemoteException ex) {
             Logger.getLogger(Simulator.Frame.SimulatorFrame.class.getName()).log(Level.SEVERE, null, ex);

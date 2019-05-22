@@ -19,9 +19,6 @@ import javax.swing.filechooser.FileNameExtensionFilter;
  */
 public class ActionLoadGame extends AbstractAction{
     
-    public ActionLoadGame(){
-        
-    }
 
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -31,7 +28,7 @@ public class ActionLoadGame extends AbstractAction{
         
         if ( showOpenDialog == JFileChooser.APPROVE_OPTION){
             File input = fileChooser.getSelectedFile();
-            SimulatorFrame.getInstance().consoleList.addElement("Loaded File: " + input.getName());
+            SimulatorFrame.getInstance().consoleModel.addElement("Loaded File: " + input.getName());
             SimulatorFrame.getInstance().setInputFile(input);
             SimulatorFrame.getInstance().setCsvData(input);
         } else {

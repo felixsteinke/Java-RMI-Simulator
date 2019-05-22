@@ -31,7 +31,7 @@ public class ActionSendButton extends AbstractAction {
         }
         EventQueue.invokeLater(() -> {
             try {
-                String mesg = convMessage(frame.chatMessenger.getjTextField_InputMesg().getText(), "testUser");
+                String mesg = convMessage(frame.chatDialog.getjTextField_InputMesg().getText(), frame.player.username);
                 frame.server.sendString(mesg);
                 frame.chatModel.addElement(mesg);
             } catch (RemoteException ex) {

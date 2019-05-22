@@ -5,7 +5,7 @@
  */
 package Simulator.Frame;
 
-import Simulator.Frame.Dialog.Start.StartDialog;
+import Simulator.Frame.Dialog.Game.CreateGameLobby;
 import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -37,6 +37,7 @@ public class ActionStartGame extends AbstractAction implements PropertyChangeLis
     public void actionPerformed(ActionEvent e) {
         //get settings
         Thread t = new Thread(() -> {
+            //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
             try {
                 for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                     if ("Nimbus".equals(info.getName())) {
@@ -45,19 +46,20 @@ public class ActionStartGame extends AbstractAction implements PropertyChangeLis
                     }
                 }
             } catch (ClassNotFoundException ex) {
-                java.util.logging.Logger.getLogger(StartDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+                java.util.logging.Logger.getLogger(CreateGameLobby.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
             } catch (InstantiationException ex) {
-                java.util.logging.Logger.getLogger(StartDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+                java.util.logging.Logger.getLogger(CreateGameLobby.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
             } catch (IllegalAccessException ex) {
-                java.util.logging.Logger.getLogger(StartDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+                java.util.logging.Logger.getLogger(CreateGameLobby.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
             } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-                java.util.logging.Logger.getLogger(StartDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+                java.util.logging.Logger.getLogger(CreateGameLobby.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
             }
             //</editor-fold>
 
+
             java.awt.EventQueue.invokeLater(new Runnable() {
                 public void run() {
-                    StartDialog dialog = new StartDialog(new javax.swing.JFrame(), true);
+                    CreateGameLobby dialog = new CreateGameLobby(new javax.swing.JFrame(), true);
                     dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                         @Override
                         public void windowClosing(java.awt.event.WindowEvent e) {
@@ -69,9 +71,6 @@ public class ActionStartGame extends AbstractAction implements PropertyChangeLis
             });
         });
         t.start();
-        //</editor-fold>
-
-        //</editor-fold>
     }
 
     public boolean isEnabled() {

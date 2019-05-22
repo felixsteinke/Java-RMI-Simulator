@@ -57,6 +57,10 @@ public class Game {
         muss player.canDoMove weiter schieben
         muss player.isActiv prüfen, mit neuer Position compare mit ValidPoints von Racetrack
         muss antiCheat prüfen player mit Turn muss OldTurns mit ClientOldTurns prüfen
+        bei allen spielern auf send Turn warten, wenn alle ihren Turn gesendet haben, verarbeiten
+        bei positionskonflikt, wer mehr speed in seinem turn hatte, gewinnt die position -> der andere muss
+        seinen Turn wiederholen
+        wer nach zeit x keinen move gemacht hat wird inactiv und hat verloren
         */
     }
     
