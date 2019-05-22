@@ -14,11 +14,16 @@ import javax.swing.JOptionPane;
  * @author Felix
  */
 public class ActionCloseGame extends AbstractAction{
-
+    
+    private SimulatorFrame frame = SimulatorFrame.getInstance();
+    
     @Override
     public void actionPerformed(ActionEvent e) {
-        new ActionDisconnectFromGame();
-        SimulatorFrame.getInstance().setTrackData(null);
+        if(frame.connected == false){
+            frame.setRaceTrackToPlay(null);
+        } else {
+            new ActionDisconnectFromGame().actionPerformed(e);
+        }
         JOptionPane.showMessageDialog(SimulatorFrame.getInstance(), "Game closed.");
     }
     

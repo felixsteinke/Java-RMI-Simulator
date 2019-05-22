@@ -10,19 +10,18 @@ import java.rmi.RemoteException;
 import java.rmi.server.RemoteServer;
 import java.rmi.server.ServerNotActiveException;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import simulator.interfaces.Server;
 import simulator.interfaces.Client;
 import simulator.interfaces.Connection;
-import java.util.ArrayList;
-import simulator.data.container.RaceTrack;
 
 /**
  *
- * @author Peter Heusch
+ * @author Felix
+ * 
+ * TODO: !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+ * class should be done!
  */
 public class ConnectionImpl implements Connection {
 

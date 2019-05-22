@@ -14,6 +14,10 @@ import simulator.data.container.RaceTrack;
 /**
  *
  * @author Felix
+ * 
+ * TODO: !!!!!!!!!!!!!!!!!!!!!!!
+ * the refresh game Method needs to get implemented
+ * the start of the game needs to get implemented
  */
 public class Game {
     

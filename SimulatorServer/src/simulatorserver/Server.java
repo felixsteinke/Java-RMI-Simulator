@@ -16,7 +16,10 @@ import simulator.interfaces.Connection;
 
 /**
  *
- * @author Peter Heusch
+ * @author felix
+ * 
+ * TODO: !!!!!!!!!!!!!!!!!!!!!!!!!!
+ * class should be done
  */
 public class Server {
     /**
@@ -37,6 +40,7 @@ public class Server {
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
+                //Connection müsste theoretisch unexportet werden?
                 System.exit(0);
             }
         }, 3_600_000);

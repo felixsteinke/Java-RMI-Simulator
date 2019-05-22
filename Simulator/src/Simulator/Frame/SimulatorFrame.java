@@ -38,7 +38,8 @@ public class SimulatorFrame extends javax.swing.JFrame {
     public MessageDialog chatMessenger;
     public ConnectSettings connectDialog;
     private File inputFile;
-    private RaceTrack trackData = null;
+    private RaceTrack raceTrackToPlay = null;
+    private RaceTrack raceTrackToUpload = null;
     public PlayerDatabase playerDatabase = new PlayerDatabase();
     public boolean connected = false;
     public boolean gameIsRunning = false;
@@ -206,17 +207,11 @@ public class SimulatorFrame extends javax.swing.JFrame {
     }
 
     public void setCsvData(File input) {
-        this.trackData = new RaceTrack(input);
+        this.raceTrackToPlay = new RaceTrack(input);
         repaint();
     }
 
-    public RaceTrack getTrackData() {
-        return this.trackData;
-    }
-
-    public void setTrackData(RaceTrack trackData) {
-        this.trackData = trackData;
-    }
+    
 
     
 
@@ -239,4 +234,22 @@ public class SimulatorFrame extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel_Map;
     private javax.swing.JScrollPane jScrollPane_Console;
     // End of variables declaration//GEN-END:variables
+    
+    public RaceTrack getRaceTrackToPlay() {
+        return this.raceTrackToPlay;
+    }
+
+    public void setRaceTrackToPlay(RaceTrack raceTrackToPlay) {
+        this.raceTrackToPlay = raceTrackToPlay;
+    }
+
+    public RaceTrack getRaceTrackToUpload() {
+        return raceTrackToUpload;
+    }
+
+    public void setRaceTrackToUpload(RaceTrack raceTrackToUpload) {
+        this.raceTrackToUpload = raceTrackToUpload;
+    }
+    
+    
 }

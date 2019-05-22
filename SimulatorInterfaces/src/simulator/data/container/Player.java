@@ -33,7 +33,7 @@ public class Player implements Serializable {
     public Player() {
         this.username = null;
         this.turns = new ArrayList <Turn>();
-        this.position = null;
+        this.color = Color.PINK;
     }
 
     public Player(String username, Client connectedClient, Server connectedServer) {

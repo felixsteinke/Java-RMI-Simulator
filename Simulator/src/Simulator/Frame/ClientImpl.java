@@ -60,7 +60,8 @@ public class ClientImpl implements Client { //old BarImpl
                 Logger.getLogger(ClientImpl.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
-        SimulatorFrame.getInstance().setTrackData(data);
+        SimulatorFrame.getInstance().setRaceTrackToPlay(data);
+        SimulatorFrame.getInstance().repaint();
     }
 
     @Override
@@ -72,7 +73,11 @@ public class ClientImpl implements Client { //old BarImpl
                 Logger.getLogger(ClientImpl.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
-        SimulatorFrame.getInstance().consoleList.addElement(data);
+        //Dialog mit jList machen, und dann auswählen welches genommen werden soll
+        String decision = JOptionPane.showInputDialog(data);
+        SimulatorFrame.getInstance().consoleList.addElement("RaceTrackList received");
+        SimulatorFrame.getInstance().server.sendRaceTrackDecision(decision);
+        SimulatorFrame.getInstance().consoleList.addElement("RaceTrackDecision sended");
     }
 
     @Override

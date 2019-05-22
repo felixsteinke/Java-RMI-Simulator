@@ -46,7 +46,7 @@ public class SimulatorPanel extends JPanel {
         //Size Screen
         Rectangle screenRect = this.getBounds();
 
-        if ((data = SimulatorFrame.getInstance().getTrackData()) == null) {
+        if ((data = SimulatorFrame.getInstance().getRaceTrackToPlay()) == null) {
             SimulatorFrame.getInstance().consoleList.addElement("Simulator Panel has no data.");
             try {
                 image = ImageIO.read(new File("./Titelbild.PNG"));
@@ -117,7 +117,7 @@ public class SimulatorPanel extends JPanel {
         //
         if (repaintCount == 1) {
             //save the valid points the first time the map gets loaded
-            SimulatorFrame.getInstance().getTrackData().setValidPoints(localValidPoints);
+            SimulatorFrame.getInstance().getRaceTrackToPlay().setValidPoints(localValidPoints);
             //calculate the Start points the first time the map gets loaded
             int distance = data.getDistance() + (data.getDistance() / 2);
             Point midStart = new Point(pointsStart.get(0).x + (pointsStart.get(1).x - pointsStart.get(0).x),
@@ -154,7 +154,7 @@ public class SimulatorPanel extends JPanel {
             }
             */
             //save the start points the first time the map gets loaded
-            SimulatorFrame.getInstance().getTrackData().setStartPoints(localStartPoints);
+            SimulatorFrame.getInstance().getRaceTrackToPlay().setStartPoints(localStartPoints);
             SimulatorFrame.getInstance().consoleList.addElement("RaceTrack Config completed.");
         }
         
@@ -169,8 +169,8 @@ public class SimulatorPanel extends JPanel {
         }
         */
         g2d.setColor(Color.pink);
-        if(SimulatorFrame.getInstance().getTrackData().getStartPoints()!= null){
-            for (Point startPoint : SimulatorFrame.getInstance().getTrackData().getStartPoints()) {
+        if(SimulatorFrame.getInstance().getRaceTrackToPlay().getStartPoints()!= null){
+            for (Point startPoint : SimulatorFrame.getInstance().getRaceTrackToPlay().getStartPoints()) {
                 g2d.fillOval(startPoint.x, startPoint.y, 5, 5);
             }
         }

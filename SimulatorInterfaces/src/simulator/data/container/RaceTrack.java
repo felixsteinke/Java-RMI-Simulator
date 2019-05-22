@@ -14,19 +14,19 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JOptionPane;
 
 /**
  *
  * @author 82stfe1bif
+ * 
+ * !!!!!!!!!!!!!!!!new start line can produce some issues!!!!!!!!!!!!!!!!
  */
 public class RaceTrack implements Serializable{
     
     transient private File input;
-    private String trackName;
+    private String name;
     private int widthField;
     private int heightField;
     private int pointsOutter;
@@ -35,7 +35,7 @@ public class RaceTrack implements Serializable{
     private ArrayList <Point> coordInner;
     private int distance;
     private ArrayList <Point> coordStart;
-    //private ArrayList <Point> coordControl; not needed in my opinion
+    private ArrayList <Point> coordControl;
     private int gridSize;
     private int gapSize;
     private ArrayList <Point> validPoints;
@@ -43,17 +43,55 @@ public class RaceTrack implements Serializable{
     
     public RaceTrack(File input) {
         this.input = input;
-        this.trackName = input.getName();
+        this.name = input.getName();
         decode();
         this.validPoints = new ArrayList <Point> ();
-        addConsole(this.toString());
+        this.startPoints = new ArrayList <Point> ();
     }
     
     public RaceTrack() {
         this.coordInner = new ArrayList <Point> ();
         this.coordOuter = new ArrayList <Point> ();
         this.coordStart = new ArrayList <Point> ();
+        this.coordControl = new ArrayList <Point> ();
         this.validPoints = new ArrayList <Point> ();
+        this.startPoints = new ArrayList <Point> ();
+    }
+    
+    public void exportFile(){
+        try{
+            PrintWriter writer = new PrintWriter(new File(name + ".csv"));
+            writer.write(dataToString());
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(RaceTrack.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    private String dataToString() {
+        this.pointsOutter = coordOuter.size();
+        this.pointsInner = coordInner.size();
+        //Build Format String
+        StringBuilder csvString = new StringBuilder();
+        csvString.append(widthField + "," + heightField + "\n");
+        csvString.append(pointsOutter + "\n");
+        csvString.append(pointsArraytoString(coordOuter) + "\n");
+        csvString.append(pointsInner + "\n");
+        csvString.append(pointsArraytoString(coordInner) + "\n");
+        csvString.append(distance + "\n");
+        csvString.append(pointsArraytoString(coordStart) + "\n");
+        csvString.append(pointsArraytoString(coordControl));
+        return csvString.toString();
+    }
+    
+    private String pointsArraytoString(ArrayList<Point> list) {
+        StringBuilder arrayString = new StringBuilder();
+        for (int i = 0; i < list.size(); i++) {
+            arrayString.append(list.get(i).x + "," + list.get(i).y);
+            if (i < list.size() - 1) {
+                arrayString.append(",");
+            }
+        }
+        return arrayString.toString();
     }
     
     private void decode (){  
@@ -75,48 +113,13 @@ public class RaceTrack implements Serializable{
             gridSize = (distance/3)*2;
             gapSize = (distance/3);
             coordStart = createPointArray(lines.get(6),2);
+            coordControl = createPointArray(lines.get(7),2);
             
         } catch (FileNotFoundException ex) {
             Logger.getLogger(RaceTrack.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
             Logger.getLogger(RaceTrack.class.getName()).log(Level.SEVERE, null, ex);
-        }
-            
-        
-    }
-    
-    public void exportFile(){
-        try{
-            
-            PrintWriter writer = new PrintWriter(new File(trackName + ".csv"));
-            writer.write(dataToString());
-            
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(RaceTrack.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-    
-    private String dataToString() {
-        StringBuilder csvString = new StringBuilder();
-        csvString.append(widthField + "," + heightField + "\n");
-        csvString.append(pointsOutter + "\n");
-        csvString.append(pointsArraytoString(coordOuter) + "\n");
-        csvString.append(pointsInner + "\n");
-        csvString.append(pointsArraytoString(coordInner) + "\n");
-        csvString.append(distance + "\n");
-        csvString.append(pointsArraytoString(coordStart) + "\n");
-        return csvString.toString();
-    }
-    
-    private String pointsArraytoString(ArrayList<Point> list) {
-        StringBuilder arrayString = new StringBuilder();
-        for (int i = 0; i < list.size(); i++) {
-            arrayString.append(list.get(i).x + "," + list.get(i).y);
-            if (i < list.size() - 1) {
-                arrayString.append(",");
-            }
-        }
-        return arrayString.toString();
+        } 
     }
     
     private ArrayList <Point> createPointArray (String line, int length){
@@ -133,18 +136,6 @@ public class RaceTrack implements Serializable{
         point.x = Integer.valueOf(x);
         point.y = Integer.valueOf(y);
         return point;
-    }
-    
-    @Override
-    public String toString() {
-        return "CsvDecoder{" + ",/ widthField=" + widthField + ", heightField=" + heightField + ",/ pointsOutter=" + pointsOutter + ",/ coordOuter=" + coordOuter.toString() + ",/ pointsInner=" + pointsInner + ",/ coordInner=" + coordInner.toString() + ",/ gridSize=" + gridSize + ",/ coordStart=" + coordStart.toString() + '}';
-    }
-    
-    public void addConsole (String string){
-        String [] stringSplit = string.split("/");
-        for (String element : stringSplit) {
-            //SimulatorFrame.getInstance().consoleList.addElement(element);
-        }
     }
     
     
@@ -192,12 +183,12 @@ public class RaceTrack implements Serializable{
         this.input = input;
     }
 
-    public String getTrackName() {
-        return trackName;
+    public String getName() {
+        return name;
     }
 
-    public void setTrackName(String trackName) {
-        this.trackName = trackName;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public void setWidthField(int widthField) {
@@ -259,7 +250,14 @@ public class RaceTrack implements Serializable{
     public void setDistance(int distance) {
         this.distance = distance;
     }
-    
+
+    public ArrayList<Point> getCoordControl() {
+        return coordControl;
+    }
+
+    public void setCoordControl(ArrayList<Point> coordControl) {
+        this.coordControl = coordControl;
+    }
     
     
 }

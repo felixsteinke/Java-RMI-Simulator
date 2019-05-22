@@ -86,7 +86,7 @@ public class CreationFrame extends javax.swing.JFrame {
 
     //Phase 0
     private void toDoMapName() {
-        data.setTrackName(JOptionPane.showInputDialog(rootPane, "File Name:"));
+        data.setName(JOptionPane.showInputDialog(rootPane, "File Name:"));
         phase = 1;
     }
 

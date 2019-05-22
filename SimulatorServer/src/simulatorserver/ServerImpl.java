@@ -8,13 +8,8 @@ package simulatorserver;
 import java.rmi.RemoteException;
 import java.rmi.server.RemoteServer;
 import java.rmi.server.ServerNotActiveException;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import simulator.data.container.Player;
 import simulator.data.container.RaceTrack;
 import simulator.data.container.Turn;
 import simulator.interfaces.Server;
@@ -22,7 +17,9 @@ import simulator.interfaces.Client;
 
 /**
  *
- * @author Peter Heusch
+ * @author felix
+ * TODO: !!!!!!!!!!!!!!!!!!!!!!!!!!
+ * class should be done
  */
 public class ServerImpl implements Server { 
     
@@ -73,7 +70,7 @@ public class ServerImpl implements Server {
             //=====================================================================
             //Request erhalten
             String mesg = String.format("Method sendRaceTrack called from %s, data: %s",
-                     RemoteServer.getClientHost(), data.getTrackName());
+                     RemoteServer.getClientHost(), data.getName());
             System.out.println(mesg);
             
             //Request wird weitergegeben
@@ -95,6 +92,23 @@ public class ServerImpl implements Server {
             
             //Request wird weitergegeben
             Administation.sendRaceTrackDecision(this, data);
+            //=====================================================================
+         } catch (ServerNotActiveException ex) {
+             Logger.getLogger(ServerImpl.class.getName()).log(Level.SEVERE, null, ex);
+         }
+    }
+
+    @Override
+    public void sendRaceTrackDelete(String data) throws RemoteException {
+        try {
+            //=====================================================================
+            //Request erhalten
+            String mesg = String.format("Method sendRaceTrackDelete called from %s, data: %s",
+                     RemoteServer.getClientHost(), data);
+            System.out.println(mesg);
+            
+            //Request wird weitergegeben
+            Administation.sendRaceTrackDelete(this, data);
             //=====================================================================
          } catch (ServerNotActiveException ex) {
              Logger.getLogger(ServerImpl.class.getName()).log(Level.SEVERE, null, ex);
