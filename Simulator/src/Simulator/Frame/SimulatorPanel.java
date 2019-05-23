@@ -91,7 +91,6 @@ public class SimulatorPanel extends JPanel {
         g2d.draw(pathFormInner);
 
         //Map rectangles
-        ArrayList<Point> localValidPoints = new ArrayList<Point>();
         g2d.setColor(Color.RED);
         for (int x = gameRect.x + data.getGapSize(); x <= gameRect.x + gameRect.width - data.getGridSize(); x += data.getGridSize() + data.getGapSize()) {
             for (int y = gameRect.y + data.getGapSize(); y <= gameRect.y + gameRect.height - data.getGridSize(); y += data.getGridSize() + data.getGapSize()) {
@@ -100,7 +99,6 @@ public class SimulatorPanel extends JPanel {
                     g2d.fillRect(x, y, data.getGridSize(), data.getGridSize());
                     continue;
                 }
-                localValidPoints.add(new Point(x, y));
                 g2d.setColor(Color.RED);
                 g2d.fillRect(x, y, data.getGridSize(), data.getGridSize());
             }
@@ -113,26 +111,6 @@ public class SimulatorPanel extends JPanel {
                 gameRect.x + pointsStart.get(1).x, gameRect.y + pointsStart.get(1).y);
         SimulatorFrame.getInstance().consoleModel.addElement("Simulator Panel inizalized.");
         //
-        if (repaintCount == 1) {
-            //save the valid points the first time the map gets loaded
-            SimulatorFrame.getInstance().getRaceTrackToPlay().setValidPoints(localValidPoints);
-            //calculate the Start points the first time the map gets loaded
-            int distance = data.getDistance() + (data.getDistance() / 2);
-            Point midStart = new Point(pointsStart.get(0).x + (pointsStart.get(1).x - pointsStart.get(0).x),
-                    pointsStart.get(0).y + (pointsStart.get(1).y - pointsStart.get(0).y));
-            ArrayList<Point> localStartPoints = new ArrayList<Point>();
-            loop:
-            for (int i = 0; i < 5; i++) {
-                for (Point point : localValidPoints) {
-                    if (Math.abs(point.x - midStart.x) <= distance || Math.abs(midStart.x - point.x) <= distance || Math.abs(point.y - midStart.y) <= distance ) {
-                        if (point.y >= midStart.y || point.x <= pointsStart.get(1).x) {
-                            localValidPoints.remove(point);
-                            localStartPoints.add(point);
-                            continue loop;
-                        }
-                    }
-                }
-            }
             /*
             while (localStartPoints.size() < 5) {
                 distance = distance + data.getDistance() + (data.getDistance() / 2);
@@ -152,8 +130,6 @@ public class SimulatorPanel extends JPanel {
             }
             */
             //save the start points the first time the map gets loaded
-            SimulatorFrame.getInstance().getRaceTrackToPlay().setStartPoints(localStartPoints);
-            SimulatorFrame.getInstance().consoleModel.addElement("RaceTrack Config completed.");
         }
         
         /*
@@ -166,13 +142,7 @@ public class SimulatorPanel extends JPanel {
 
         }
         */
-        g2d.setColor(Color.pink);
-        if(SimulatorFrame.getInstance().getRaceTrackToPlay().getStartPoints()!= null){
-            for (Point startPoint : SimulatorFrame.getInstance().getRaceTrackToPlay().getStartPoints()) {
-                g2d.fillOval(startPoint.x, startPoint.y, 5, 5);
-            }
-        }
 
-    }
+    
 
 }

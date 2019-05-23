@@ -25,6 +25,7 @@ public class Game {
     private int gameSize;               //theoretisch beliebig, soll aber <=5 sein
     private String code;                //passwort
     private RaceTrack raceTrack;        //soll im nachhinen festgelegt werden
+    private int gameState = 1;
     public PlayerDatabase playerData;   //spieler müssen vom nutzer hinzugefügt werden
     public ExecutorService executorService;
 
@@ -51,7 +52,8 @@ public class Game {
     public void refreshPlayerDatabase (){
         /*
         !!!!MISSING!!!!
-        Hier muss die ganze Spiel Logik rein
+        Durch alle Spieler Spieler gehen und schauen, ob die ArrayList turns.size == gameState ist.
+        Wenn das so ist, wird diese methode ausgeführt.
 
         
         muss player.canDoMove weiter schieben

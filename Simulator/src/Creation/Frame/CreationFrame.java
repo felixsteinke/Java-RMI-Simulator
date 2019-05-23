@@ -5,6 +5,7 @@
  */
 package Creation.Frame;
 
+import Simulator.Frame.SimulatorFrame;
 import simulator.data.container.RaceTrack;
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -16,6 +17,7 @@ import java.awt.RenderingHints;
 import java.awt.event.MouseEvent;
 import java.awt.geom.GeneralPath;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.Level;
@@ -26,18 +28,30 @@ import javax.swing.JPanel;
 /**
  *
  * @author Felix
+ * 
+ * TODO:!!!!!!!!!!!!!!!!!!!!!!!!
+ * Start Points berechenen!!!!!!!
+ * Valid Points überprüfen!!!!!!
+ * Controll Line fixen!!!!!!!!!
+ * drawLine fixen!!!!!!!!!!!!
+ * !!!!!!!!!!!!!!!!!!!!!!!!!!!!
  */
 public class CreationFrame extends javax.swing.JFrame {
 
     public RaceTrack data = new RaceTrack();
-    private PhasesThread manager;
-    private int phase = 0;
-    private boolean readyToFinish = false;
-    private boolean lastPoint = false;
-    private boolean saveMap = false;
+    private int state = 1;
+    //start
+    private boolean state1finished = false;
+    //controll
+    private boolean state2finished = false;
+    //outer
+    private boolean state3finished = false;
+    //inner
+    private boolean state4finished = false;
+    private boolean setLastPoint = false;
+
     private Rectangle gameRect;
     private Rectangle screenRect;
-    private ArrayList<Point> tempPoints = new ArrayList<Point>();
 
     /**
      * Creates new form CreationFrame
@@ -45,169 +59,251 @@ public class CreationFrame extends javax.swing.JFrame {
     public CreationFrame() {
         setExtendedState(MAXIMIZED_BOTH);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-        toDoMapName();
-        toDoBorders();
         initComponents();
-        this.manager = new PhasesThread();
-        this.manager.start();
+        setValues();
+        setVisible(true);
 
     }
 
-    //Method important for UnDo implementation
-    private void toDoPhases() {
-        switch (phase) {
-            case 1:
-                break;
-            case 2:
-                toDoGetStartPoint();
-                break;
-            case 3:
-                toDoGetPointPairOuter();
-                break;
-            case 4:
-                toDoGetLastHelperPointOuter();
-                break;
-            case 5:
-                toDoGetPointPairInner();
-                break;
-            case 6:
-                toDoGetLastHelperPointInner();
-                break;
-            case 7:
-                toDoSaveFile();
-                break;
-            case 8:
-                toDoCloseFrame();
-                break;
+    private void setValues() {
+        data.setName(jTextField_Name.getText());
+        data.setWidthField(Integer.valueOf(jTextField_Width.getText()));
+        data.setHeightField(Integer.valueOf(jTextField_Height.getText()));
+        data.setDistance(Integer.valueOf(jTextField_Dicstance.getText()));
+        data.calcOnDistance();
+    }
 
+    private void checkState1() {
+        if (data.getCoordStart().size() == 2) {
+            state1finished = true;
         }
     }
 
-    //Phase 0
-    private void toDoMapName() {
-        data.setName(JOptionPane.showInputDialog(rootPane, "File Name:"));
-        phase = 1;
-    }
-
-    //Phase 1
-    private void toDoBorders() {
-        String inputString;
-        inputString = JOptionPane.showInputDialog(rootPane, "Breite des Feldes:");
-        data.setWidthField(Integer.valueOf(inputString));
-        inputString = JOptionPane.showInputDialog(rootPane, "Höhe des Feldes:");
-        data.setHeightField(Integer.valueOf(inputString));
-        inputString = JOptionPane.showInputDialog(rootPane, "Rastermaß:");
-        data.setGridSize(Integer.valueOf(inputString));
-        phase = 2;
-    }
-
-    //Phase 2
-    private void toDoGetStartPoint() {
-        label_ToDo.setText("ToDo: 2 Startpunkte festlegen. (links/außen, dann rechts/innen)");
-        if (tempPoints.size() == 2) {
-            data.getCoordStart().add(tempPoints.get(0));
-            data.getCoordStart().add(tempPoints.get(1));
-            data.getCoordOuter().add(tempPoints.get(0));
-            data.getCoordInner().add(tempPoints.get(1));
-            tempPoints.clear();
-            JOptionPane.showMessageDialog(rootPane, phase + " done");
-            phase = 3;
-            repaint();
+    private void checkState2() {
+        if (data.getCoordControl().size() == 2) {
+            state2finished = true;
         }
     }
 
-    //Phase 3
-    private void toDoGetPointPairOuter() {
-        label_ToDo.setText("ToDo: Äußerer Kreis - 2 Roadpoints festlegen. (Fixpunkt, dann Hilfspunkt)");
-        if (tempPoints.size() == 2) {
-            data.getCoordOuter().add(tempPoints.get(1));
-            data.getCoordOuter().add(tempPoints.get(0));
-            tempPoints.clear();
-            JOptionPane.showMessageDialog(rootPane, phase + " done");
-            if (lastPoint == true) {
-                phase = 4;
-                lastPoint = false;
-                repaint();
+    private void checkState3() {
+        if (setLastPoint) {
+            if (data.getCoordOuter().size() % 2 == 0) {
+                state3finished = true;
+                setLastPoint = false;
             }
         }
     }
 
-    //Phase 4
-    private void toDoGetLastHelperPointOuter() {
-        label_ToDo.setText("ToDo: Letzer Hilfspunkt für äußeren Kreis.");
-        if (tempPoints.size() == 1) {
-            data.getCoordOuter().add(tempPoints.get(0));
-            tempPoints.clear();
-            JOptionPane.showMessageDialog(rootPane, phase + " done");
-            phase = 5;
-            repaint();
-        }
-    }
-
-    //Phase 5
-    private void toDoGetPointPairInner() {
-        label_ToDo.setText("ToDo: Innerer Kreis - 2 Roadpoints festlegen. (Fixpunkt, dann Hilfspunkt)");
-        if (tempPoints.size() == 2) {
-            data.getCoordInner().add(tempPoints.get(1));
-            data.getCoordInner().add(tempPoints.get(0));
-            tempPoints.clear();
-            JOptionPane.showMessageDialog(rootPane, phase + " done");
-            if (lastPoint == true) {
-                phase = 6;
-                lastPoint = false;
-                repaint();
+    private void checkState4() {
+        if (setLastPoint) {
+            if (data.getCoordInner().size() % 2 == 0) {
+                state4finished = true;
+                setLastPoint = false;
             }
         }
     }
 
-    //Phase 6
-    private void toDoGetLastHelperPointInner() {
-        label_ToDo.setText("ToDo: Letzer Hilfspunkt für inneren Kreis.");
-        if (tempPoints.size() == 1) {
-            data.getCoordInner().add(tempPoints.get(0));
-            tempPoints.clear();
-            JOptionPane.showMessageDialog(rootPane, phase + " done");
-            phase = 7;
-            repaint();
-        }
-    }
-
-    //Phase 7
-    private void toDoSaveFile() {
-        label_ToDo.setText("ToDo: Map speichern?");
-        if (saveMap == true) {
-            data.exportFile();
-            phase = 8;
-        }
-    }
-
-    //Phase 8
-    private void toDoCloseFrame() {
-        readyToFinish = true;
-        //manager.stop();
-        this.dispose();
-    }
-
-    private void useUnDo() {
-        JOptionPane.showMessageDialog(rootPane, "Not implemented!");
-        switch (phase) {
+    private void setToDoText() {
+        switch (state) {
             case 1:
+                if (state1finished) {
+                    label_ToDo.setText("TODO: UNDO or CHANGE workspace.");
+                } else {
+                    label_ToDo.setText("TODO: Set 2 points for startline (1. left | 2. right)");
+                }
                 break;
             case 2:
+                if (state2finished) {
+                    label_ToDo.setText("TODO: UNDO or CHANGE workspace.");
+                } else {
+                    label_ToDo.setText("TODO: Set 2 POINTS for sontrolline (1. left | 2. right)");
+                }
                 break;
             case 3:
+                if (state3finished) {
+                    label_ToDo.setText("TODO: UNDO or CHANGE workspace.");
+                } else if (setLastPoint) {
+                    label_ToDo.setText("TODO: Set last HELPERPOINT for outline.");
+                } else {
+                    label_ToDo.setText("TODO: Set 2 POINTS for outline (1. helper | 2. fix)");
+                }
                 break;
             case 4:
+                if (state4finished) {
+                    label_ToDo.setText("TODO: UNDO or CHANGE workspace.");
+                } else if (setLastPoint) {
+                    label_ToDo.setText("TODO: Set last HELPERPOINT for innerline.");
+                } else {
+                    label_ToDo.setText("TODO: Set 2 POINTS for innerline (1. helper | 2. fix)");
+                }
                 break;
-            case 5:
-                break;
-            case 6:
-                break;
-            case 7:
-                break;
-            case 8:
-                break;
+            default:
+                label_ToDo.setText("Something went wrong.");
         }
+        if (state1finished && state2finished && state3finished && state4finished) {
+            label_ToDo.setText("TODO: UNDO or SAVE the RaceTrack.");
+        }
+    }
+
+    private void useUNDO() {
+        setLastPoint = false;
+        switch (state) {
+            case 1:
+                data.getCoordStart().clear();
+                state1finished = false;
+                break;
+            case 2:
+                data.getCoordControl().clear();
+                state2finished = false;
+                break;
+            case 3:
+                if (data.getCoordOuter().size() < 2) {
+                    JOptionPane.showMessageDialog(this, "No Points to delete.");
+                    return;
+                }
+                data.getCoordOuter().remove(data.getCoordOuter().size() - 1);
+                state3finished = false;
+                break;
+            case 4:
+                if (data.getCoordInner().size() < 2) {
+                    JOptionPane.showMessageDialog(this, "No Points to delete.");
+                    return;
+                }
+                data.getCoordInner().remove(data.getCoordInner().size() - 1);
+                state4finished = false;
+                break;
+            default:
+                JOptionPane.showMessageDialog(this, "Something went wrong!");
+        }
+    }
+
+    private void addPoint(Point point) {
+        switch (state) {
+            case 1:
+                checkState1();
+                if (state1finished) {
+                    JOptionPane.showMessageDialog(this, "State already done.");
+                    return;
+                }
+                data.getCoordStart().add(point);
+                if (data.getCoordStart().size() == 1) {
+                    data.getCoordOuter().add(0, point);
+                } else {
+                    data.getCoordInner().add(0, point);
+                }
+                break;
+            case 2:
+                if (!state3finished || !state4finished) {
+                    JOptionPane.showMessageDialog(this, "Finish In- and Outline first.");
+                    return;
+                }
+                checkState2();
+                if (state2finished) {
+                    JOptionPane.showMessageDialog(this, "State already done.");
+                    return;
+                }
+                Point tempPoint = new Point();
+                if (data.getCoordControl().size() == 1) {
+                    tempPoint = calcClosePoint(data.getCoordOuter(), point);
+                } else {
+                    tempPoint = calcClosePoint(data.getCoordInner(), point);
+                }
+                data.getCoordControl().add(tempPoint);
+                break;
+            case 3:
+                if (!state1finished) {
+                    JOptionPane.showMessageDialog(this, "Finish START LINE first.");
+                }
+                checkState3();
+                if (state3finished) {
+                    JOptionPane.showMessageDialog(this, "State already done.");
+                    return;
+                }
+                data.getCoordOuter().add(point);
+                checkState3();
+                break;
+            case 4:
+                if (!state1finished) {
+                    JOptionPane.showMessageDialog(this, "Finish START LINE first.");
+                }
+                checkState4();
+                if (state4finished) {
+                    JOptionPane.showMessageDialog(this, "State already done.");
+                    return;
+                }
+                data.getCoordInner().add(point);
+                checkState4();
+                break;
+            default:
+                JOptionPane.showMessageDialog(this, "Something went wrong!");
+        }
+    }
+
+    private boolean checkReadyToSave() {
+        if (!state1finished) {
+            JOptionPane.showMessageDialog(this, "State 1 not finished.");
+            return false;
+        }
+        if (!state2finished) {
+            JOptionPane.showMessageDialog(this, "State 2 not finished.");
+            return false;
+        }
+        if (!state3finished) {
+            JOptionPane.showMessageDialog(this, "State 3 not finished.");
+            return false;
+        }
+        if (!state4finished) {
+            JOptionPane.showMessageDialog(this, "State 4 not finished.");
+            return false;
+        }
+        return true;
+    }
+
+    private void deleteState() {
+        setLastPoint = false;
+        switch (state) {
+            case 1:
+                data.getCoordStart().clear();
+                state1finished = false;
+                break;
+            case 2:
+                data.getCoordControl().clear();
+                state2finished = false;
+                break;
+            case 3:
+                List<Point> deleteListOut = data.getCoordOuter().subList(1, data.getCoordOuter().size());
+                data.getCoordOuter().removeAll(deleteListOut);
+                state3finished = false;
+                break;
+            case 4:
+                List<Point> deleteListIn = data.getCoordInner().subList(1, data.getCoordInner().size());
+                data.getCoordInner().removeAll(deleteListIn);
+                state4finished = false;
+                break;
+            default:
+                JOptionPane.showMessageDialog(this, "Something went wrong!");
+        }
+        setToDoText();
+        this.repaint();
+    }
+
+    private Point calcClosePoint(ArrayList<Point> list, Point point) {
+        int rangeX = Integer.MAX_VALUE;
+        int rangeY = Integer.MAX_VALUE;
+        int tempX;
+        int tempY;
+        Point tempPoint = new Point();
+
+        for (Point listPoint : list) {
+            if ((tempX = Math.abs(listPoint.x - point.x)) < rangeX && (tempY = Math.abs(listPoint.y - point.y)) < rangeY) {
+                rangeX = tempX;
+                rangeY = tempY;
+                tempPoint = point;
+            }
+        }
+        System.out.println(tempPoint.toString());
+        return tempPoint;
+
     }
 
     /**
@@ -219,12 +315,23 @@ public class CreationFrame extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        buttonGroup_Work = new javax.swing.ButtonGroup();
         jPanel1 = new CreationPanel();
         label_Title = new java.awt.Label();
         label_ToDo = new java.awt.Label();
         jButton_Undo = new javax.swing.JButton();
         jButton_LastPoint = new javax.swing.JButton();
         jButton_SaveMap = new javax.swing.JButton();
+        jRadioButton_Start = new javax.swing.JRadioButton();
+        jRadioButton_Controll = new javax.swing.JRadioButton();
+        jRadioButton_Out = new javax.swing.JRadioButton();
+        jRadioButton_In = new javax.swing.JRadioButton();
+        jTextField_Width = new javax.swing.JTextField();
+        jTextField_Height = new javax.swing.JTextField();
+        jTextField_Dicstance = new javax.swing.JTextField();
+        jButton_Refresh = new javax.swing.JButton();
+        jButton_Clean = new javax.swing.JButton();
+        jTextField_Name = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -242,7 +349,7 @@ public class CreationFrame extends javax.swing.JFrame {
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 570, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
 
         label_Title.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
@@ -258,7 +365,7 @@ public class CreationFrame extends javax.swing.JFrame {
             }
         });
 
-        jButton_LastPoint.setText("Set last Point");
+        jButton_LastPoint.setText("Finish Line");
         jButton_LastPoint.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton_LastPointActionPerformed(evt);
@@ -272,6 +379,65 @@ public class CreationFrame extends javax.swing.JFrame {
             }
         });
 
+        buttonGroup_Work.add(jRadioButton_Start);
+        jRadioButton_Start.setSelected(true);
+        jRadioButton_Start.setText("Start Line");
+        jRadioButton_Start.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jRadioButtonGroup_ActionPerformed_State(evt);
+            }
+        });
+
+        buttonGroup_Work.add(jRadioButton_Controll);
+        jRadioButton_Controll.setText("Controll Line");
+        jRadioButton_Controll.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jRadioButtonGroup_ActionPerformed_State(evt);
+            }
+        });
+
+        buttonGroup_Work.add(jRadioButton_Out);
+        jRadioButton_Out.setText("Out Line");
+        jRadioButton_Out.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jRadioButtonGroup_ActionPerformed_State(evt);
+            }
+        });
+
+        buttonGroup_Work.add(jRadioButton_In);
+        jRadioButton_In.setText("Inner Line");
+        jRadioButton_In.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jRadioButtonGroup_ActionPerformed_State(evt);
+            }
+        });
+
+        jTextField_Width.setText("1200");
+        jTextField_Width.setBorder(javax.swing.BorderFactory.createTitledBorder("Width"));
+
+        jTextField_Height.setText("800");
+        jTextField_Height.setBorder(javax.swing.BorderFactory.createTitledBorder("Height"));
+
+        jTextField_Dicstance.setText("12");
+        jTextField_Dicstance.setBorder(javax.swing.BorderFactory.createTitledBorder("Distance"));
+
+        jButton_Refresh.setText("Refresh");
+        jButton_Refresh.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_RefreshActionPerformed(evt);
+            }
+        });
+
+        jButton_Clean.setText("Delete State");
+        jButton_Clean.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_CleanActionPerformed(evt);
+            }
+        });
+
+        jTextField_Name.setText("RaceTrack");
+        jTextField_Name.setBorder(javax.swing.BorderFactory.createTitledBorder("Name"));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -280,42 +446,82 @@ public class CreationFrame extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addContainerGap())
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(label_Title, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(91, 91, 91)
-                        .addComponent(label_ToDo, javax.swing.GroupLayout.PREFERRED_SIZE, 506, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 21, Short.MAX_VALUE)
-                        .addComponent(jButton_SaveMap, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton_LastPoint)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton_Undo, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(25, 25, 25))))
+                        .addGap(93, 93, 93)
+                        .addComponent(label_ToDo, javax.swing.GroupLayout.DEFAULT_SIZE, 999, Short.MAX_VALUE)
+                        .addGap(90, 90, 90))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(11, 11, 11)))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jTextField_Width, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jTextField_Name, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 98, Short.MAX_VALUE)
+                    .addComponent(jTextField_Height, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jButton_LastPoint, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jRadioButton_Out, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jTextField_Dicstance, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jRadioButton_Start, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jRadioButton_Controll, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jRadioButton_In, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jButton_Undo, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jButton_SaveMap, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jButton_Refresh, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jButton_Clean, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(2, 2, 2)))
+                .addGap(4, 4, 4))
         );
+
+        layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jButton_Clean, jButton_LastPoint, jButton_Refresh, jButton_SaveMap, jButton_Undo, jRadioButton_Controll, jRadioButton_In, jRadioButton_Out, jRadioButton_Start, jTextField_Dicstance, jTextField_Height, jTextField_Name, jTextField_Width});
+
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(layout.createSequentialGroup()
-                            .addGap(4, 4, 4)
-                            .addComponent(label_Title, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jButton_Undo)
-                            .addComponent(jButton_LastPoint)
-                            .addComponent(jButton_SaveMap)))
+                    .addComponent(label_Title, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(label_ToDo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
+            .addGroup(layout.createSequentialGroup()
+                .addGap(18, 18, 18)
+                .addComponent(jTextField_Name, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jTextField_Width, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jTextField_Height, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jTextField_Dicstance, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jRadioButton_Start)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jRadioButton_Controll)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jRadioButton_Out)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jRadioButton_In)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton_Refresh)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton_Undo)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton_Clean)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton_LastPoint)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton_SaveMap)
+                .addContainerGap(203, Short.MAX_VALUE))
         );
+
+        layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButton_Clean, jButton_LastPoint, jButton_Refresh, jButton_SaveMap, jButton_Undo, jRadioButton_Controll, jRadioButton_In, jRadioButton_Out, jRadioButton_Start, jTextField_Dicstance, jTextField_Height, jTextField_Name, jTextField_Width});
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    // <editor-fold defaultstate="collapsed" desc="Actions">
     private void calcMousePoint(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_calcMousePoint
 
         //if (evt.getClickCount() == 2) {
@@ -324,33 +530,134 @@ public class CreationFrame extends javax.swing.JFrame {
         if (!gameRect.contains(x, y)) {
             return;
         }
-        tempPoints.add(new Point(x - gameRect.x, y - gameRect.y));
+        addPoint(new Point(x - gameRect.x, y - gameRect.y));
+        checkState1();
+        checkState2();
+        setToDoText();
         repaint();
         //}
     }//GEN-LAST:event_calcMousePoint
 
     private void jButton_LastPointActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_LastPointActionPerformed
         // TODO add your handling code here:
-        lastPoint = true;
+        setLastPoint = true;
+        checkState1();
+        checkState2();
+        switch (state) {
+            case 1:
+                break;
+            case 2:
+                break;
+            case 3:
+                checkState3();
+                break;
+            case 4:
+                checkState4();
+                break;
+            default:
+                JOptionPane.showMessageDialog(this, "Something went wrong.");
+        }
+        setToDoText();
+        repaint();
     }//GEN-LAST:event_jButton_LastPointActionPerformed
 
     private void jButton_UndoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_UndoActionPerformed
         // TODO add your handling code here:
-        useUnDo();
+        setToDoText();
+        useUNDO();
+        this.repaint();
     }//GEN-LAST:event_jButton_UndoActionPerformed
 
     private void jButton_SaveMapActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_SaveMapActionPerformed
         // TODO add your handling code here:
-        saveMap = true;
+        if (checkReadyToSave()) {
+            setValues();
+            JOptionPane.showMessageDialog(this, data.dataToString());
+            data.exportFile();
+        } else {
+            JOptionPane.showMessageDialog(this, "Something went wrong.");
+        }
     }//GEN-LAST:event_jButton_SaveMapActionPerformed
 
+    private void jButton_RefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_RefreshActionPerformed
+        checkState1();
+        checkState2();
+        checkState3();
+        checkState4();
+        setToDoText();
+        setValues();
+        this.repaint();
+    }//GEN-LAST:event_jButton_RefreshActionPerformed
 
+    private void jRadioButtonGroup_ActionPerformed_State(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButtonGroup_ActionPerformed_State
+        if (jRadioButton_Start.isSelected()) {
+            state = 1;
+        } else if (jRadioButton_Controll.isSelected()) {
+            state = 2;
+        } else if (jRadioButton_Out.isSelected()) {
+            state = 3;
+        } else if (jRadioButton_In.isSelected()) {
+            state = 4;
+        } else {
+            JOptionPane.showMessageDialog(this, "Something went wrong.");
+        }
+    }//GEN-LAST:event_jRadioButtonGroup_ActionPerformed_State
+
+    private void jButton_CleanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_CleanActionPerformed
+        deleteState();
+        this.repaint();
+    }//GEN-LAST:event_jButton_CleanActionPerformed
+
+    // </editor-fold> 
+    public static void main(String args[]) {
+        /* Set the Nimbus look and feel */
+        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         */
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(CreationFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(CreationFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(CreationFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(CreationFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        //</editor-fold>
+
+        /* Create and display the form */
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                System.out.println("Test Frame");
+                new CreationFrame();
+            }
+        });
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.ButtonGroup buttonGroup_Work;
+    private javax.swing.JButton jButton_Clean;
     private javax.swing.JButton jButton_LastPoint;
+    private javax.swing.JButton jButton_Refresh;
     private javax.swing.JButton jButton_SaveMap;
     private javax.swing.JButton jButton_Undo;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JRadioButton jRadioButton_Controll;
+    private javax.swing.JRadioButton jRadioButton_In;
+    private javax.swing.JRadioButton jRadioButton_Out;
+    private javax.swing.JRadioButton jRadioButton_Start;
+    private javax.swing.JTextField jTextField_Dicstance;
+    private javax.swing.JTextField jTextField_Height;
+    private javax.swing.JTextField jTextField_Name;
+    private javax.swing.JTextField jTextField_Width;
     private java.awt.Label label_Title;
     private java.awt.Label label_ToDo;
     // End of variables declaration//GEN-END:variables
@@ -379,86 +686,126 @@ public class CreationFrame extends javax.swing.JFrame {
             for (int y = data.getGridSize(); y < data.getHeightField(); y += data.getGridSize()) {
                 g2d.drawLine(gameRect.x, y, gameRect.x + data.getWidthField(), y);
             }
-            if (phase < 2) {
-                return;
-            };
+            drawAllPoints(g2d);
+            //State 1 ======================================================================
+            if (state1finished) {
+                g2d.setColor(Color.YELLOW);
+                g2d.setStroke(new BasicStroke(5.0f));
+                g2d.drawLine(gameRect.x + data.getCoordStart().get(0).x, gameRect.y + data.getCoordStart().get(0).y,
+                        gameRect.x + data.getCoordStart().get(1).x, gameRect.y + data.getCoordStart().get(0).y);
+            }
 
-            if (phase < 3) {
-                return;
-            };
-            //draw start line
-            g2d.setColor(Color.YELLOW);
-            g2d.setStroke(new BasicStroke(5.0f));
-            g2d.drawLine(gameRect.x + data.getCoordStart().get(0).x, gameRect.y + data.getCoordStart().get(0).y,
-                    gameRect.x + data.getCoordStart().get(1).x, gameRect.y + data.getCoordStart().get(0).y);
-            //start outer path
+            //State 2 ======================================================================
+            if (state2finished) {
+                g2d.setColor(Color.DARK_GRAY);
+                g2d.setStroke(new BasicStroke(10.0f));
+                g2d.drawLine(gameRect.x + data.getCoordControl().get(0).x, gameRect.y + data.getCoordControl().get(0).y,
+                        gameRect.x + data.getCoordControl().get(1).x, gameRect.y + data.getCoordControl().get(0).y);
+
+            }
+
             g2d.setColor(Color.RED);
             g2d.setStroke(new BasicStroke(1.0f));
+
+            //State 3 ======================================================================
             GeneralPath pathFormOuter = new GeneralPath(0);
-            pathFormOuter.moveTo(gameRect.x + data.getCoordOuter().get(0).x, gameRect.y + data.getCoordOuter().get(0).y);
+            if (!data.getCoordOuter().isEmpty()) {
+                //start outer path
+                pathFormOuter.moveTo(gameRect.x + data.getCoordOuter().get(0).x, gameRect.y + data.getCoordOuter().get(0).y);
 
-            //start inner path
+                //draw outer path
+                for (int i = 1; i < data.getCoordOuter().size() - 1; i += 2) {
+                    pathFormOuter.quadTo(gameRect.x + data.getCoordOuter().get(i).x, gameRect.y + data.getCoordOuter().get(i).y,
+                            gameRect.x + data.getCoordOuter().get(i + 1).x, gameRect.y + data.getCoordOuter().get(i + 1).y);
+                }
+
+                if (state3finished) {
+                    //close outer path
+                    pathFormOuter.quadTo(gameRect.x + data.getCoordOuter().get(data.getCoordOuter().size() - 1).x, gameRect.y + data.getCoordOuter().get(data.getCoordOuter().size() - 1).y,
+                            gameRect.x + data.getCoordOuter().get(0).x, gameRect.y + data.getCoordOuter().get(0).y);
+                    pathFormOuter.closePath();
+                    g2d.draw(pathFormOuter);
+                } else {
+                    g2d.draw(pathFormOuter);
+                }
+
+            }
+
+            //State 4 ======================================================================
             GeneralPath pathFormInner = new GeneralPath(0);
-            pathFormInner.moveTo(gameRect.x + data.getCoordInner().get(0).x, gameRect.y + data.getCoordInner().get(0).y);
-            if (phase < 4) {
-                return;
-            };
-            //draw outer path
-            for (int i = 1; i < data.getCoordOuter().size() - 1; i += 2) {
-                pathFormOuter.quadTo(gameRect.x + data.getCoordOuter().get(i).x, gameRect.y + data.getCoordOuter().get(i).y,
-                        gameRect.x + data.getCoordOuter().get(i + 1).x, gameRect.y + data.getCoordOuter().get(i + 1).y);
-            }
-            if (phase < 5) {
-                g2d.setColor(Color.green);
-                for (Point point : data.getCoordOuter()) {
-                    g2d.fillRect(point.x - 2, point.x - 2, 4, 4);
-                }
-                g2d.draw(pathFormOuter);
-                return;
-            };
-            //close outer path
-            pathFormOuter.quadTo(gameRect.x + data.getCoordOuter().get(data.getCoordOuter().size() - 1).x, gameRect.y + data.getCoordOuter().get(data.getCoordOuter().size() - 1).y,
-                    gameRect.x + data.getCoordOuter().get(0).x, gameRect.y + data.getCoordOuter().get(0).y);
-            pathFormOuter.closePath();
-            g2d.draw(pathFormOuter);
-            if (phase < 6) {
-                return;
-            };
-            //draw inner path
-            for (int i = 1; i < data.getCoordInner().size() - 1; i += 2) {
-                pathFormInner.quadTo(gameRect.x + data.getCoordInner().get(i).x, gameRect.y + data.getCoordInner().get(i).y,
-                        gameRect.x + data.getCoordInner().get(i + 1).x, gameRect.y + data.getCoordInner().get(i + 1).y);
-            }
-            if (phase < 7) {
-                g2d.setColor(Color.green);
-                for (Point point : data.getCoordInner()) {
-                    g2d.fillRect(point.x - 2, point.x - 2, 4, 4);
-                }
-                g2d.draw(pathFormInner);
-                return;
-            };
-            //close inner path
-            pathFormInner.quadTo(gameRect.x + data.getCoordInner().get(data.getCoordInner().size() - 1).x, gameRect.y + data.getCoordInner().get(data.getCoordInner().size() - 1).y,
-                    gameRect.x + data.getCoordInner().get(0).x, gameRect.y + data.getCoordInner().get(0).y);
-            pathFormInner.closePath();
-            g2d.draw(pathFormInner);
+            if (!data.getCoordInner().isEmpty()) {
+                //start inner path
+                pathFormInner.moveTo(gameRect.x + data.getCoordInner().get(0).x, gameRect.y + data.getCoordInner().get(0).y);
 
+                //draw inner path
+                for (int i = 1; i < data.getCoordInner().size() - 1; i += 2) {
+                    pathFormInner.quadTo(gameRect.x + data.getCoordInner().get(i).x, gameRect.y + data.getCoordInner().get(i).y,
+                            gameRect.x + data.getCoordInner().get(i + 1).x, gameRect.y + data.getCoordInner().get(i + 1).y);
+                }
+
+                if (state4finished) {
+                    //close inner path
+                    pathFormInner.quadTo(gameRect.x + data.getCoordInner().get(data.getCoordInner().size() - 1).x, gameRect.y + data.getCoordInner().get(data.getCoordInner().size() - 1).y,
+                            gameRect.x + data.getCoordInner().get(0).x, gameRect.y + data.getCoordInner().get(0).y);
+                    pathFormInner.closePath();
+                    g2d.draw(pathFormInner);
+                } else {
+                    g2d.draw(pathFormInner);
+                }
+
+            }
+            //Finished ======================================================================
+            if (state1finished && state2finished && state3finished && state4finished) {
+                g2d.setColor(Color.RED);
+                for (int x = gameRect.x + data.getGapSize(); x <= gameRect.x + gameRect.width - data.getGridSize(); x += data.getGridSize() + data.getGapSize()) {
+                    for (int y = gameRect.y + data.getGapSize(); y <= gameRect.y + gameRect.height - data.getGridSize(); y += data.getGridSize() + data.getGapSize()) {
+                        if (!pathFormOuter.contains(x + data.getGridSize() / 2, y + data.getGridSize() / 2) || pathFormInner.contains(x + data.getGridSize() / 2, y + data.getGridSize() / 2)) {
+                            continue;
+                        }
+                        data.getValidPoints().add(new Point(x, y));
+                        g2d.fillRect(x, y, data.getGridSize(), data.getGridSize());
+                    }
+                }
+
+                Point midStart = new Point(data.getCoordStart().get(0).x + (data.getCoordStart().get(1).x - data.getCoordStart().get(0).x),
+                        data.getCoordStart().get(0).y + (data.getCoordStart().get(1).y - data.getCoordStart().get(0).y));
+
+                ArrayList<Point> tempValidPoints = new ArrayList(data.getValidPoints());
+                loop:
+                for (int i = 0; i < 5; i++) {
+                    calcClosePoint(tempValidPoints, midStart);
+                    Point tempPoint = calcClosePoint(tempValidPoints, midStart);
+                    tempValidPoints.remove(tempPoint);
+                    data.getStartPoints().add(tempPoint);
+                    continue loop;
+                }
+            }
+
+            g2d.setColor(Color.pink);
+            for (Point startPoint : data.getStartPoints()) {
+                g2d.fillOval(gameRect.x + startPoint.x, gameRect.y + startPoint.y, data.getGridSize(), data.getGridSize());
+            }
+        }
+
+    }
+
+    private void drawAllPoints(Graphics2D g2d) {
+        g2d.setColor(Color.GREEN);
+        if (!data.getCoordStart().isEmpty()) {
+            drawArrayPoints(g2d, data.getCoordStart());
+        }
+        if (!data.getCoordControl().isEmpty()) {
+            drawArrayPoints(g2d, data.getCoordControl());
+        }
+        if (!data.getCoordOuter().isEmpty()) {
+            drawArrayPoints(g2d, data.getCoordOuter());
+        }
+        if (!data.getCoordInner().isEmpty()) {
+            drawArrayPoints(g2d, data.getCoordInner());
         }
     }
 
-    private class PhasesThread extends Thread {
-
-        @Override
-        public void run() {
-            try {
-                while (!readyToFinish) {
-                    toDoPhases();
-                    Thread.sleep(50);
-                }
-            } catch (InterruptedException ex) {
-                Logger.getLogger(CreationFrame.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
+    private void drawArrayPoints(Graphics2D g2d, ArrayList<Point> list) {
+        list.stream().forEach(point -> g2d.fillOval(point.x - 2 + gameRect.x, point.y + gameRect.y - 2, 4, 4));
     }
-
 }

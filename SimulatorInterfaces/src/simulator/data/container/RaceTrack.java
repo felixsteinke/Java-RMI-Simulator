@@ -9,6 +9,7 @@ import java.awt.Point;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -20,54 +21,55 @@ import java.util.logging.Logger;
 /**
  *
  * @author 82stfe1bif
- * 
+ *
  * !!!!!!!!!!!!!!!!new start line can produce some issues!!!!!!!!!!!!!!!!
  */
-public class RaceTrack implements Serializable{
-    
+public class RaceTrack implements Serializable {
+
     transient private File input;
     private String name;
     private int widthField;
     private int heightField;
     private int pointsOutter;
-    private ArrayList <Point> coordOuter;
+    private ArrayList<Point> coordOuter;
     private int pointsInner;
-    private ArrayList <Point> coordInner;
+    private ArrayList<Point> coordInner;
     private int distance;
-    private ArrayList <Point> coordStart;
-    private ArrayList <Point> coordControl;
+    private ArrayList<Point> coordStart;
+    private ArrayList<Point> coordControl;
     private int gridSize;
     private int gapSize;
-    private ArrayList <Point> validPoints;
-    private ArrayList <Point> startPoints;
-    
+    private ArrayList<Point> validPoints;
+    private ArrayList<Point> startPoints;
+
     public RaceTrack(File input) {
         this.input = input;
         this.name = input.getName();
         decode();
-        this.validPoints = new ArrayList <Point> ();
-        this.startPoints = new ArrayList <Point> ();
+        this.validPoints = new ArrayList<Point>();
+        this.startPoints = new ArrayList<Point>();
     }
-    
+
     public RaceTrack() {
-        this.coordInner = new ArrayList <Point> ();
-        this.coordOuter = new ArrayList <Point> ();
-        this.coordStart = new ArrayList <Point> ();
-        this.coordControl = new ArrayList <Point> ();
-        this.validPoints = new ArrayList <Point> ();
-        this.startPoints = new ArrayList <Point> ();
+        this.coordInner = new ArrayList<Point>();
+        this.coordOuter = new ArrayList<Point>();
+        this.coordStart = new ArrayList<Point>();
+        this.coordControl = new ArrayList<Point>();
+        this.validPoints = new ArrayList<Point>();
+        this.startPoints = new ArrayList<Point>();
     }
-    
-    public void exportFile(){
-        try{
-            PrintWriter writer = new PrintWriter(new File(name + ".csv"));
-            writer.write(dataToString());
+
+    public void exportFile() {
+        try {
+            PrintWriter writer = new PrintWriter(new FileOutputStream(name + ".csv", true));
+            writer.print(dataToString());
+            writer.close();
         } catch (FileNotFoundException ex) {
             Logger.getLogger(RaceTrack.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
-    private String dataToString() {
+
+    public String dataToString() {
         this.pointsOutter = coordOuter.size();
         this.pointsInner = coordInner.size();
         //Build Format String
@@ -82,7 +84,7 @@ public class RaceTrack implements Serializable{
         csvString.append(pointsArraytoString(coordControl));
         return csvString.toString();
     }
-    
+
     private String pointsArraytoString(ArrayList<Point> list) {
         StringBuilder arrayString = new StringBuilder();
         for (int i = 0; i < list.size(); i++) {
@@ -93,52 +95,55 @@ public class RaceTrack implements Serializable{
         }
         return arrayString.toString();
     }
-    
-    private void decode (){  
+
+    private void decode() {
         try {
             BufferedReader reader = new BufferedReader(new FileReader(input));
-            ArrayList <String> lines = new ArrayList <String> ();
+            ArrayList<String> lines = new ArrayList<String>();
             String line;
-            while ((line = reader.readLine()) != null){
+            while ((line = reader.readLine()) != null) {
                 lines.add(line);
             }
-            String [] splitLine = lines.get(0).split(",");
+            String[] splitLine = lines.get(0).split(",");
             widthField = Integer.valueOf(splitLine[0]);
             heightField = Integer.valueOf(splitLine[1]);
             pointsOutter = Integer.valueOf(lines.get(1));
-            coordOuter = createPointArray(lines.get(2),pointsOutter);
+            coordOuter = createPointArray(lines.get(2), pointsOutter);
             pointsInner = Integer.valueOf(lines.get(3));
-            coordInner = createPointArray(lines.get(4),pointsInner);
+            coordInner = createPointArray(lines.get(4), pointsInner);
             distance = Integer.valueOf(lines.get(5));
-            gridSize = (distance/3)*2;
-            gapSize = (distance/3);
-            coordStart = createPointArray(lines.get(6),2);
-            coordControl = createPointArray(lines.get(7),2);
-            
+            calcOnDistance();
+            coordStart = createPointArray(lines.get(6), 2);
+            coordControl = createPointArray(lines.get(7), 2);
+
         } catch (FileNotFoundException ex) {
             Logger.getLogger(RaceTrack.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
             Logger.getLogger(RaceTrack.class.getName()).log(Level.SEVERE, null, ex);
-        } 
+        }
     }
-    
-    private ArrayList <Point> createPointArray (String line, int length){
-        ArrayList <Point> points = new ArrayList<Point>();
-        String [] split = line.split(",");
-        for(int i = 0; i< (length*2); i+=2){
-            points.add(createPoint(split[i],split[i+1]));
+
+    private ArrayList<Point> createPointArray(String line, int length) {
+        ArrayList<Point> points = new ArrayList<Point>();
+        String[] split = line.split(",");
+        for (int i = 0; i < (length * 2); i += 2) {
+            points.add(createPoint(split[i], split[i + 1]));
         }
         return points;
     }
-    
-    private Point createPoint (String x, String y){
+
+    private Point createPoint(String x, String y) {
         Point point = new Point();
         point.x = Integer.valueOf(x);
         point.y = Integer.valueOf(y);
         return point;
     }
-    
-    
+
+    public void calcOnDistance() {
+        gridSize = (distance / 3) * 2;
+        gapSize = (distance / 3);
+    }
+
     public int getWidthField() {
         return widthField;
     }
@@ -151,7 +156,7 @@ public class RaceTrack implements Serializable{
         return pointsOutter;
     }
 
-    public ArrayList <Point> getCoordOuter() {
+    public ArrayList<Point> getCoordOuter() {
         return coordOuter;
     }
 
@@ -159,7 +164,7 @@ public class RaceTrack implements Serializable{
         return pointsInner;
     }
 
-    public ArrayList <Point> getCoordInner() {
+    public ArrayList<Point> getCoordInner() {
         return coordInner;
     }
 
@@ -167,7 +172,7 @@ public class RaceTrack implements Serializable{
         return gridSize;
     }
 
-    public ArrayList <Point> getCoordStart() {
+    public ArrayList<Point> getCoordStart() {
         return coordStart;
     }
 
@@ -258,6 +263,5 @@ public class RaceTrack implements Serializable{
     public void setCoordControl(ArrayList<Point> coordControl) {
         this.coordControl = coordControl;
     }
-    
-    
+
 }

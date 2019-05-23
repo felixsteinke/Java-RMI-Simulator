@@ -92,13 +92,11 @@
               <EmptySpace max="-2" attributes="0"/>
               <Component id="jRadioButton_4Player" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                  <Component id="jRadioButton_5Player" min="-2" max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="jButton_ContinueIP" alignment="3" max="32767" attributes="0"/>
-                      <Component id="jButton_ContinuePort" alignment="3" max="32767" attributes="0"/>
-                      <Component id="jButton_Continue" alignment="3" min="-2" max="-2" attributes="0"/>
-                  </Group>
+              <Group type="103" groupAlignment="3" max="-2" attributes="0">
+                  <Component id="jButton_ContinueIP" alignment="3" max="32767" attributes="0"/>
+                  <Component id="jButton_ContinuePort" alignment="3" max="32767" attributes="0"/>
+                  <Component id="jButton_Continue" alignment="3" max="32767" attributes="0"/>
+                  <Component id="jRadioButton_5Player" max="32767" attributes="0"/>
               </Group>
               <EmptySpace pref="11" max="32767" attributes="0"/>
           </Group>

@@ -12,40 +12,15 @@ import javax.swing.AbstractAction;
 /**
  *
  * @author Felix
- * 
- * TODO: !!!!!!!!!!!!!!!!
- * customize close options and check if it starts how its suposed to be
+ *
  */
 public class ActionDialogCreateMap extends AbstractAction {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        String [] args = {"Start Creation Frame"};
         Thread t = new Thread(() -> {
-            //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-            try {
-                for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                    if ("Nimbus".equals(info.getName())) {
-                        javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                        break;
-                    }
-                }
-            } catch (ClassNotFoundException ex) {
-                java.util.logging.Logger.getLogger(CreationFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-            } catch (InstantiationException ex) {
-                java.util.logging.Logger.getLogger(CreationFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-            } catch (IllegalAccessException ex) {
-                java.util.logging.Logger.getLogger(CreationFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-            } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-                java.util.logging.Logger.getLogger(CreationFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-            }
-            //</editor-fold>
-
-            /* Create and display the form */
-            java.awt.EventQueue.invokeLater(new Runnable() {
-                public void run() {
-                    new CreationFrame().setVisible(true);
-                }
-            });
+            CreationFrame.main(args);
         });
         t.start();
     }

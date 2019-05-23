@@ -21,6 +21,7 @@ public class Player implements Serializable {
     
     public String username;
     private ArrayList <Turn> turns;
+    private Point startPosition;
     private Point position;
     private Client connectedClient;
     private Server connectedServer;
@@ -67,12 +68,12 @@ public class Player implements Serializable {
         this.turns = turns;
     }
 
-    public Point getPosition() {
-        return position;
+    public Point getStartPosition() {
+        return startPosition;
     }
 
-    public void setPosition(Point position) {
-        this.position = position;
+    public void setStartPosition(Point startPosition) {
+        this.startPosition = startPosition;
     }
 
     public int getAmountOfTurns() {
@@ -135,6 +136,14 @@ public class Player implements Serializable {
 
     public void setWonTheGame(boolean wonTheGame) {
         this.wonTheGame = wonTheGame;
+    }
+
+    public Point getPosition() {
+        return position;
+    }
+
+    public void setPosition(Point position) {
+        this.position = position;
     }
     
     
