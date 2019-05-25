@@ -27,27 +27,16 @@ public class Player implements Serializable {
     private Server connectedServer;
     private int amountOfTurns = 0;
     private Color color;
-    private boolean activ = false;
+    private boolean alive;
     private boolean canDoMove = false;
     private boolean wonTheGame = false;
 
     public Player() {
         this.username = null;
+        this.alive = true;
         this.turns = new ArrayList <Turn>();
+        turns.add(new Turn("default"));
         this.color = Color.PINK;
-    }
-
-    public Player(String username, Client connectedClient, Server connectedServer) {
-        this.username = username;
-        this.connectedClient = connectedClient;
-        this.connectedServer = connectedServer;
-    }
-
-    public Player(String username, Client connectedClient, Server connectedServer, Color color) {
-        this.username = username;
-        this.connectedClient = connectedClient;
-        this.connectedServer = connectedServer;
-        this.color = color;
     }
 
     
@@ -84,18 +73,18 @@ public class Player implements Serializable {
         this.amountOfTurns = amountOfTurns;
     }
 
-    public boolean getActiv() {
-        return activ;
+    public boolean isAlive() {
+        return alive;
     }
 
-    public void setActiv(boolean activNew) {
+    public void setAlive(boolean activNew) {
         if(activNew == true){
             if(username == null){
                 JOptionPane.showMessageDialog(null, "Not ready to be activ, Username empty!");
                 return;
             }
         }
-        this.activ = activNew;
+        this.alive = activNew;
     } 
 
     public Color getColor() {

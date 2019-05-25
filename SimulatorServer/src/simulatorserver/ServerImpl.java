@@ -115,4 +115,21 @@ public class ServerImpl implements Server {
          }
     }
 
+    @Override
+    public void showRaceTrackList() throws RemoteException {
+        try {
+            //=====================================================================
+            //Request erhalten
+            String mesg = String.format("Method showRaceTrackList called from %s,",
+                     RemoteServer.getClientHost());
+            System.out.println(mesg);
+            
+            //Request wird weitergegeben
+            Administation.showRaceTrackList(this);
+            //=====================================================================
+         } catch (ServerNotActiveException ex) {
+             Logger.getLogger(ServerImpl.class.getName()).log(Level.SEVERE, null, ex);
+         }
+    }
+
 }

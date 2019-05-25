@@ -35,7 +35,9 @@ public class ActionStartGame extends AbstractAction implements PropertyChangeLis
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        //<editor-fold defaultstate="collapsed" desc=" Useless Method, just here for watching PropertyChange things ">
         //get settings
+        
         Thread t = new Thread(() -> {
             //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
             try {
@@ -71,6 +73,8 @@ public class ActionStartGame extends AbstractAction implements PropertyChangeLis
             });
         });
         t.start();
+         
+        //</editor-fold>
     }
 
     public boolean isEnabled() {

@@ -20,19 +20,20 @@ import java.io.IOException;
 import java.util.ArrayList;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
+import simulator.data.container.Player;
+import simulator.data.container.Turn;
 
 /**
  *
  * @author 82stfe1bif
- * 
- * TODO: !!!!!!!!!!!!!!!
- * playerDatabase needs to get painted
+ *
+ * TODO: !!!!!!!!!!!!!!! playerDatabase needs to get painted
  */
 public class SimulatorPanel extends JPanel {
-    
+
     private RaceTrack data;
     private BufferedImage image;
-    private int repaintCount = 0;
+    private Rectangle gameRect;
 
     public SimulatorPanel() {
     }
@@ -54,9 +55,8 @@ public class SimulatorPanel extends JPanel {
             }
             return;
         }
-        repaintCount++;
         //Size Game
-        Rectangle gameRect = new Rectangle(screenRect.width / 2 - data.getWidthField() / 2, 0, data.getWidthField(), data.getHeightField());
+        gameRect = new Rectangle(screenRect.width / 2 - data.getWidthField() / 2, 0, data.getWidthField(), data.getHeightField());
         //Background
         g2d.setColor(Color.BLACK);
         g2d.fillRect(gameRect.x, gameRect.y, gameRect.width, gameRect.height);
@@ -104,45 +104,49 @@ public class SimulatorPanel extends JPanel {
             }
         }
         //paint start
+        
         ArrayList<Point> pointsStart = data.getCoordStart();
         g2d.setColor(Color.YELLOW);
         g2d.setStroke(new BasicStroke(5.0f));
         g2d.drawLine(gameRect.x + pointsStart.get(0).x, gameRect.y + pointsStart.get(0).y,
                 gameRect.x + pointsStart.get(1).x, gameRect.y + pointsStart.get(1).y);
         SimulatorFrame.getInstance().consoleModel.addElement("Simulator Panel inizalized.");
-        //
-            /*
-            while (localStartPoints.size() < 5) {
-                distance = distance + data.getDistance() + (data.getDistance() / 2);
-                int size = localStartPoints.size();
-                loop:
-                for (int i = 0; i < 5 - size; i++) {
-                    for (Point point : localValidPoints) {
-                        if (Math.abs(point.x - midStart.x) <= distance || Math.abs(point.y - midStart.y) <= distance || Math.abs(midStart.x - point.x) <= distance) {
-                            if (point.y >= midStart.y || point.x <= pointsStart.get(1).x) {
-                                localValidPoints.remove(point);
-                                localStartPoints.add(point);
-                                continue loop;
-                            }
-                        }
-                    }
-                }
-            }
-            */
-            //save the start points the first time the map gets loaded
-        }
         
-        /*
-        for (int i = 0; i < SimulatorFrame.getInstance().activPlayer; i++) {
-            if (SimulatorFrame.getInstance().playerDatabase.playerlist.get(i).getActiv() == true) {
-                g2d.setColor(SimulatorFrame.getInstance().playerDatabase.playerlist.get(i).getColor());
-                Point playerPosition = SimulatorFrame.getInstance().playerDatabase.playerlist.get(i).getPosition();
-                g2d.fillOval(playerPosition.x, playerPosition.y, data.getGridSize(), data.getGridSize());
+        paintPlayerData(g2d);
+        
+    }
+
+    private void paintPlayerData(Graphics2D g2d) {
+        if (SimulatorFrame.getInstance().playerDatabase.playerlist != null && !SimulatorFrame.getInstance().playerDatabase.playerlist.isEmpty()) {
+            for (Player player : SimulatorFrame.getInstance().playerDatabase.playerlist) {
+                paintPlayer(g2d, player);
             }
-
         }
-        */
+    }
 
-    
+    private void paintPlayer(Graphics2D g2d, Player player) {
+        g2d.setColor(player.getColor());
+        g2d.setStroke(new BasicStroke(2.0f));
+        Point startPosition = new Point(player.getStartPosition().x + gameRect.x, player.getStartPosition().y + gameRect.y);
+        g2d.fillRect(startPosition.x, startPosition.y, data.getGridSize(), data.getGridSize());
+        Point position = new Point(player.getPosition().x + gameRect.x, player.getPosition().y + gameRect.y);
+        g2d.fillOval(position.x, position.y, data.getGridSize(), data.getGridSize());
+        Point tempPointBack = new Point(startPosition);
+        Point tempPointFront;
+        if (!player.getTurns().isEmpty() && player.getTurns() != null) {
+            for (Turn turn : player.getTurns()) {
+                tempPointFront = new Point(tempPointBack.x + turn.turnVektor[0], tempPointBack.y + turn.turnVektor[1]);
+                g2d.drawLine(tempPointBack.x, tempPointBack.y, tempPointFront.x, tempPointFront.y);
+                tempPointBack = tempPointFront;
+            }
+            if (player.getConnectedClient() == SimulatorFrame.getInstance().ClientImpl) {
+                paintNextTurn(g2d, player, position);
+            }
+        }
+    }
 
+    private void paintNextTurn(Graphics2D g2d, Player player, Point position) {
+        Turn lastTurn = player.getTurns().get(player.getTurns().size() - 1);
+        g2d.drawLine(position.x, position.y, position.x + lastTurn.turnVektor[0], position.y + lastTurn.turnVektor[1]);
+    }
 }

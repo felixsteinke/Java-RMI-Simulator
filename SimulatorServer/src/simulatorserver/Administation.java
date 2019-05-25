@@ -64,15 +64,9 @@ public class Administation {
                     if (player.getConnectedServer() == source) {
                         if (player.getCanDoMove() == true) {
                             player.getTurns().add(data);
-                            game.refreshPlayerDatabase();
-                        }
-                    }
-                }
-                for (Player player : game.playerData.playerlist) {
-                    if (player.getConnectedServer() != source) {
-                        if (player.getActiv() == true) {
+                            game.turnCollection.add(data);
                             try {
-                                player.getConnectedClient().receivePlayerDatabase(game.playerData);
+                                game.refreshPlayerDatabase();
                             } catch (RemoteException ex) {
                                 Logger.getLogger(Administation.class.getName()).log(Level.SEVERE, null, ex);
                             }
@@ -80,9 +74,6 @@ public class Administation {
                     }
                 }
             });
-            //needs to get implemented
-            game.refreshPlayerDatabase();
-            //send player database
         }
     }
 
@@ -108,6 +99,16 @@ public class Administation {
                         }
                     }
                     shareRaceTrack(game);
+                    if(game.playerData.playerlist.size() == game.getGameSize()){
+                        game.setGameStarted(true);
+                        game.startGame();
+                        System.out.println("Game: " + game.getName() + " started!");
+                        try {
+                            game.refreshPlayerDatabase();
+                        } catch (RemoteException ex) {
+                            Logger.getLogger(Administation.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
                 } else {
                     //Feedback für volles Game
                     System.out.println("Game was full.");
@@ -136,7 +137,7 @@ public class Administation {
             try {
                 for (Player playerVar : games.get(gameName).playerData.playerlist) {
                     if (playerVar.getConnectedServer() == source) {
-                        playerVar.setActiv(false);
+                        playerVar.setAlive(false);
                         games.get(gameName).playerData.playerlist.remove(playerVar);
                         System.out.println("Player " + playerVar.username + " the Game " + gameName);
                         break;
@@ -164,7 +165,7 @@ public class Administation {
                 }
                 int activCount = 0;
                 for (int i = 0; i < game.playerData.playerlist.size(); i++) {
-                    if (game.playerData.playerlist.get(i).getActiv() == false) {
+                    if (game.playerData.playerlist.get(i).isAlive() == false) {
                         activCount++;
                     }
                     if (activCount == game.playerData.playerlist.size()) {
@@ -204,6 +205,24 @@ public class Administation {
         }
     }
 
+    static void showRaceTrackList(Server source) {
+        for (Game game : games.values()) {
+            game.executorService.submit(() -> {
+                //findet das Game mit dem Spieler
+                for (Player player : game.getPlayerData().playerlist) {
+                    if (player.getConnectedServer() == source) {
+                        try {
+                            player.getConnectedClient().receiveError("222:" + createRaceTrackListString());
+                        } catch (RemoteException ex) {
+                            Logger.getLogger(Administation.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                        return;
+                    }
+                }
+            });
+        }
+    }
+    
     //should be done
     static void sendRaceTrackDecision(Server source, String data) {
         for (Game game : games.values()) {

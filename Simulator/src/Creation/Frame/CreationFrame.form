@@ -33,7 +33,7 @@
                   <Group type="102" attributes="0">
                       <Component id="label_Title" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="93" max="-2" attributes="0"/>
-                      <Component id="label_ToDo" pref="999" max="32767" attributes="0"/>
+                      <Component id="label_ToDo" pref="997" max="32767" attributes="0"/>
                       <EmptySpace min="90" pref="90" max="-2" attributes="0"/>
                   </Group>
                   <Group type="102" attributes="0">
@@ -41,29 +41,35 @@
                       <EmptySpace min="-2" pref="11" max="-2" attributes="0"/>
                   </Group>
               </Group>
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="jTextField_Width" linkSize="1" alignment="1" max="32767" attributes="0"/>
-                  <Component id="jTextField_Name" linkSize="1" alignment="1" pref="98" max="32767" attributes="0"/>
-                  <Component id="jTextField_Height" linkSize="1" alignment="1" max="32767" attributes="0"/>
-                  <Group type="103" alignment="1" groupAlignment="0" attributes="0">
-                      <Component id="jButton_LastPoint" linkSize="1" min="-2" pref="98" max="-2" attributes="0"/>
-                      <Component id="jRadioButton_Out" linkSize="1" alignment="1" min="-2" pref="100" max="-2" attributes="0"/>
-                      <Component id="jTextField_Dicstance" linkSize="1" alignment="0" min="-2" pref="100" max="-2" attributes="0"/>
-                      <Component id="jRadioButton_Start" linkSize="1" min="-2" pref="100" max="-2" attributes="0"/>
-                      <Component id="jRadioButton_Controll" linkSize="1" alignment="1" min="-2" pref="100" max="-2" attributes="0"/>
-                      <Component id="jRadioButton_In" linkSize="1" alignment="1" min="-2" pref="100" max="-2" attributes="0"/>
-                      <Component id="jButton_Undo" linkSize="1" alignment="1" min="-2" pref="100" max="-2" attributes="0"/>
-                      <Component id="jButton_SaveMap" linkSize="1" alignment="1" min="-2" pref="100" max="-2" attributes="0"/>
-                  </Group>
-                  <Group type="102" alignment="1" attributes="0">
+              <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                  <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="jButton_Refresh" linkSize="1" alignment="1" min="-2" pref="102" max="-2" attributes="0"/>
-                          <Component id="jButton_Clean" linkSize="1" alignment="1" min="-2" pref="102" max="-2" attributes="0"/>
+                          <Group type="102" attributes="0">
+                              <EmptySpace min="-2" pref="2" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Component id="jTextField_Width" linkSize="1" alignment="1" max="32767" attributes="0"/>
+                                  <Component id="jTextField_Name" linkSize="1" alignment="1" pref="98" max="32767" attributes="0"/>
+                                  <Component id="jTextField_Height" linkSize="1" alignment="1" max="32767" attributes="0"/>
+                                  <Group type="103" alignment="1" groupAlignment="0" attributes="0">
+                                      <Component id="jTextField_Dicstance" linkSize="1" alignment="0" min="-2" pref="100" max="-2" attributes="0"/>
+                                      <Component id="jRadioButton_Start" linkSize="1" min="-2" pref="100" max="-2" attributes="0"/>
+                                  </Group>
+                              </Group>
+                          </Group>
+                          <Component id="jButton_LoadMap" linkSize="1" alignment="0" min="-2" pref="100" max="-2" attributes="0"/>
+                          <Component id="jButton_SaveMap" linkSize="1" alignment="0" min="-2" pref="100" max="-2" attributes="0"/>
+                          <Component id="jButton_LastPoint" linkSize="1" alignment="1" min="-2" pref="98" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace min="2" pref="2" max="-2" attributes="0"/>
+                      <Component id="jButton_Clean" linkSize="1" alignment="0" min="-2" pref="102" max="-2" attributes="0"/>
+                      <Component id="jButton_Undo" linkSize="1" alignment="1" min="-2" pref="100" max="-2" attributes="0"/>
                   </Group>
+                  <Component id="jButton_Refresh" linkSize="1" alignment="0" min="-2" pref="102" max="-2" attributes="0"/>
+                  <Component id="jRadioButton_Out" linkSize="1" alignment="0" min="-2" pref="100" max="-2" attributes="0"/>
+                  <Component id="jRadioButton_In" linkSize="1" alignment="0" min="-2" pref="100" max="-2" attributes="0"/>
+                  <Component id="jRadioButton_Controll" linkSize="1" alignment="0" min="-2" pref="100" max="-2" attributes="0"/>
+                  <Component id="jRadioButton_StartPoints" linkSize="1" alignment="1" max="32767" attributes="0"/>
               </Group>
-              <EmptySpace min="-2" pref="4" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -91,12 +97,14 @@
               <EmptySpace max="-2" attributes="0"/>
               <Component id="jRadioButton_Start" linkSize="2" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="jRadioButton_Controll" linkSize="2" min="-2" max="-2" attributes="0"/>
-              <EmptySpace max="-2" attributes="0"/>
               <Component id="jRadioButton_Out" linkSize="2" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="jRadioButton_In" linkSize="2" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
+              <Component id="jRadioButton_Controll" linkSize="2" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="jRadioButton_StartPoints" linkSize="2" min="-2" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="21" max="-2" attributes="0"/>
               <Component id="jButton_Refresh" linkSize="2" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="jButton_Undo" linkSize="2" min="-2" max="-2" attributes="0"/>
@@ -106,7 +114,9 @@
               <Component id="jButton_LastPoint" linkSize="2" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="jButton_SaveMap" linkSize="2" min="-2" max="-2" attributes="0"/>
-              <EmptySpace pref="203" max="32767" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="jButton_LoadMap" linkSize="2" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -123,12 +133,12 @@
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
-              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+              <EmptySpace min="0" pref="1320" max="32767" attributes="0"/>
           </Group>
         </DimensionLayout>
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
-              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+              <EmptySpace min="0" pref="746" max="32767" attributes="0"/>
           </Group>
         </DimensionLayout>
       </Layout>
@@ -273,6 +283,25 @@
           </Border>
         </Property>
       </Properties>
+    </Component>
+    <Component class="javax.swing.JButton" name="jButton_LoadMap">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Load Map"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton_LoadMapActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JRadioButton" name="jRadioButton_StartPoints">
+      <Properties>
+        <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
+          <ComponentRef name="buttonGroup_Work"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="Start Points"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jRadioButtonGroup_ActionPerformed_State"/>
+      </Events>
     </Component>
   </SubComponents>
 </Form>

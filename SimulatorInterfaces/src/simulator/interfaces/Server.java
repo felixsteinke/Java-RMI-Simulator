@@ -22,4 +22,5 @@ public interface Server extends Remote {
     public void sendRaceTrack(RaceTrack data) throws RemoteException;
     public void sendRaceTrackDecision(String data) throws RemoteException;
     public void sendRaceTrackDelete (String data) throws RemoteException;
+    public void showRaceTrackList () throws RemoteException;
 }

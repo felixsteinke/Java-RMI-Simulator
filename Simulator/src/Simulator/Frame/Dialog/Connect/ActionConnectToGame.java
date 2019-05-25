@@ -52,7 +52,8 @@ public class ActionConnectToGame extends AbstractAction {
             
             frame.connect(gameName, gameCode);
             
-            frame.playerDialog.dispose();
+            frame.connectDialog.dispose();
+   
             
         } catch (RemoteException ex) {
             Logger.getLogger(Simulator.Frame.SimulatorFrame.class.getName()).log(Level.SEVERE, null, ex);

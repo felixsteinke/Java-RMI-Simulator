@@ -5,27 +5,33 @@
  */
 package simulatorserver;
 
+import java.awt.Point;
+import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import simulator.data.container.Player;
 import simulator.data.container.PlayerDatabase;
 import simulator.data.container.RaceTrack;
-
 
 /**
  *
  * @author Felix
- * 
- * TODO: !!!!!!!!!!!!!!!!!!!!!!!
- * the refresh game Method needs to get implemented
- * the start of the game needs to get implemented
+ *
+ * TODO: !!!!!!!!!!!!!!!!!!!!!!! the refresh game Method needs to get
+ * implemented the start of the game needs to get implemented
  */
 public class Game {
-    
+
     private String name;                //beliebig
     private int gameSize;               //theoretisch beliebig, soll aber <=5 sein
     private String code;                //passwort
     private RaceTrack raceTrack;        //soll im nachhinen festgelegt werden
+    private boolean gameStarted = false;
     private int gameState = 1;
+    public ArrayList turnCollection;
     public PlayerDatabase playerData;   //spieler müssen vom nutzer hinzugefügt werden
     public ExecutorService executorService;
 
@@ -35,21 +41,57 @@ public class Game {
         this.gameSize = gameSize;
         this.code = code;
         this.raceTrack = null;
+        this.turnCollection = new ArrayList();
         this.playerData = new PlayerDatabase();
         this.executorService = Executors.newFixedThreadPool(gameSize);
     }
-    
-    //Rest von altem Ansatz
-    /*
-    public Game(String name, int count, String code, RaceTrack raceTrack) {
-        this.name = name;
-        this.playerData = new PlayerDatabase(count);
-        this.code = code;
-        this.raceTrack = raceTrack;
-        executorService = Executors.newFixedThreadPool(count);
-    }
-    */
-    public void refreshPlayerDatabase (){
+
+    public void refreshPlayerDatabase() throws RemoteException {
+        if (turnCollection.size() == getActivPlayer()) {
+            turnCollection.clear();
+            Point player0Position;
+            Point player1Position;
+            Point player2Position;
+            Point player3Position;
+            Point player4Position;
+
+            for (int i = 0; i < playerData.playerlist.size(); i++) {
+                Player player = playerData.playerlist.get(i);
+                Point startPosition = player.getStartPosition();
+                int[] moveVektor = new int[2];
+                player.getTurns().stream().forEach(turn -> {
+                    moveVektor[0] = moveVektor[0] + turn.turnVektor[0];
+                    moveVektor[1] = moveVektor[1] + turn.turnVektor[1];
+                });
+                Point position = new Point (startPosition.x + moveVektor [0], startPosition.y + moveVektor [1]);
+                if(!raceTrack.getValidPoints().contains(position)){
+                    player.setAlive(false);
+                    player.getConnectedClient().receiveError("888:You Lost!");
+                }
+                switch (i) {
+                    case 0:
+                        player0Position = position;
+                        break;
+                    case 1:
+                        player1Position = position;
+                        break;
+                    case 2:
+                        player2Position = position;
+                        break;
+                    case 3:
+                        player3Position = position;
+                        break;
+                    case 4:
+                        player4Position = position;
+                        break;
+                    default:
+                        System.out.println("Got more players than expected.");
+
+                }
+            }
+            sendDatabaseToAll();
+        }
+
         /*
         !!!!MISSING!!!!
         Durch alle Spieler Spieler gehen und schauen, ob die ArrayList turns.size == gameState ist.
@@ -63,9 +105,52 @@ public class Game {
         bei positionskonflikt, wer mehr speed in seinem turn hatte, gewinnt die position -> der andere muss
         seinen Turn wiederholen
         wer nach zeit x keinen move gemacht hat wird inactiv und hat verloren
-        */
+         */
     }
-    
+
+    private boolean antiCheatTool(Player player) {
+        ArrayList sendedOut = player.getTurns().get(player.getTurns().size() - 1).getOldMoves();
+        ArrayList gotIn = player.getTurns().get(player.getTurns().size() - 2).getOldMoves();
+        if (sendedOut.equals(gotIn)) {
+            return false;
+        } else {
+            //SHOULD BE TRUE!!!! MISSING!!!!!!! need to overthing this method
+            return false;
+        }
+    }
+
+    public void sendDatabaseToAll() {
+        for (Player player : playerData.playerlist) {
+            try {
+                player.getConnectedClient().receivePlayerDatabase(playerData);
+            } catch (RemoteException ex) {
+                Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+
+    private int getActivPlayer() {
+        int count = 0;
+        for (Player player : playerData.playerlist) {
+            if (player.isAlive()) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    public void startGame() {
+        for (int i = 0; i < playerData.playerlist.size(); i++) {
+            Point startPosition = raceTrack.getStartPoints().get(i);
+            playerData.playerlist.get(i).setStartPosition(startPosition);
+            try {
+                playerData.playerlist.get(i).getConnectedClient().receiveError("555:Lets Start!");
+            } catch (RemoteException ex) {
+                Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+
     public RaceTrack getRaceTrack() {
         return raceTrack;
     }
@@ -105,7 +190,21 @@ public class Game {
     public void setGameSize(int gameSize) {
         this.gameSize = gameSize;
     }
-    
-    
-    
+
+    public boolean isGameStarted() {
+        return gameStarted;
+    }
+
+    public void setGameStarted(boolean gameStarted) {
+        this.gameStarted = gameStarted;
+    }
+
+    public int getGameState() {
+        return gameState;
+    }
+
+    public void setGameState(int gameState) {
+        this.gameState = gameState;
+    }
+
 }

@@ -19,24 +19,31 @@ import java.util.ArrayList;
  */
 public class Turn implements Serializable {
 
-    private ArrayList <Move> oldTurn;
+    private ArrayList <Move> oldMoves;
     private Move move;
     private double speed;
     public ArrayList <Move> moves;
-    public int [] turnVektor;
+    public int [] turnVektor = new int [2];
     
     
-    public Turn(ArrayList <Move> oldTurn, Move move) {
-        this.oldTurn = oldTurn;
+    public Turn(ArrayList <Move> oldMoves, Move move) {
+        this.oldMoves = oldMoves;
         this.move = move;
-        moves = new ArrayList (oldTurn);
+        moves = new ArrayList (oldMoves);
         moves.add(move);
-        turnVektor = new int [2];
         cleanUselessMoves();
         calcTurnVektor();
         calcSpeed();
     }
 
+    public Turn(String start){
+        this.oldMoves = new ArrayList();
+        this.move = new Move(5, 0);
+        oldMoves.add(move);
+        this.moves = new ArrayList();
+        moves.add(move);
+        this.speed = 0;
+    }
     private void calcTurnVektor() {
         int x = 0;
         int y = 0;
@@ -83,12 +90,12 @@ public class Turn implements Serializable {
         }
     }
 
-    public ArrayList<Move> getOldTurn() {
-        return oldTurn;
+    public ArrayList<Move> getOldMoves() {
+        return oldMoves;
     }
 
-    public void setOldTurn(ArrayList<Move> oldTurn) {
-        this.oldTurn = oldTurn;
+    public void setOldMoves(ArrayList<Move> oldMoves) {
+        this.oldMoves = oldMoves;
     }
 
     public Move getMove() {

@@ -71,6 +71,9 @@ public class SimulatorFrame extends javax.swing.JFrame {
         instanceSimulatorFrame = this;
         setExtendedState(MAXIMIZED_BOTH);
         initComponents();
+        jButton_Turn.setEnabled(false);
+        jLabelTurn.setVisible(false);
+        
     }
 
     /**
@@ -85,24 +88,27 @@ public class SimulatorFrame extends javax.swing.JFrame {
         jScrollPane_Console = new javax.swing.JScrollPane();
         jList_Console = new javax.swing.JList<>();
         jPanel_Map = simulatorPanel;
+        jPanelTurn = new javax.swing.JPanel();
+        jLabelTurn = new javax.swing.JLabel();
+        jButton_Turn = new javax.swing.JButton();
+        jTextField_Turn = new javax.swing.JTextField();
         jMenuBar1 = new javax.swing.JMenuBar();
-        jMenu_Game = new javax.swing.JMenu();
-        jMenuItem_LoadGame = new javax.swing.JMenuItem();
-        jMenuItem_StartGame = new javax.swing.JMenuItem();
+        jMenu_GetStarted = new javax.swing.JMenu();
+        jMenuItem_Player = new javax.swing.JMenuItem();
         jMenuItem_CloseGame = new javax.swing.JMenuItem();
         jMenu_Connection = new javax.swing.JMenu();
-        jMenuItem_Player = new javax.swing.JMenuItem();
         jSeparator1 = new javax.swing.JPopupMenu.Separator();
         jMenuItem_Game = new javax.swing.JMenuItem();
         jSeparator2 = new javax.swing.JPopupMenu.Separator();
         jMenuItem_Connect = new javax.swing.JMenuItem();
         jMenuItem_Disconnect = new javax.swing.JMenuItem();
-        jMenu_Messenger = new javax.swing.JMenu();
-        jMenuItem_ShowMess = new javax.swing.JMenuItem();
         jMenu_CreateMap = new javax.swing.JMenu();
         jMenuItem_CreateFrame = new javax.swing.JMenuItem();
         jMenuItem_Upload = new javax.swing.JMenuItem();
+        jMenuItem_GetRTList = new javax.swing.JMenuItem();
         jMenuItem_Delete = new javax.swing.JMenuItem();
+        jMenu_Messenger = new javax.swing.JMenu();
+        jMenuItem_ShowMess = new javax.swing.JMenuItem();
         jMenu_Help = new javax.swing.JMenu();
         jMenuItem_Guide = new javax.swing.JMenuItem();
         jMenu_Exit = new javax.swing.JMenu();
@@ -120,34 +126,66 @@ public class SimulatorFrame extends javax.swing.JFrame {
         jPanel_Map.setLayout(jPanel_MapLayout);
         jPanel_MapLayout.setHorizontalGroup(
             jPanel_MapLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGap(0, 949, Short.MAX_VALUE)
         );
         jPanel_MapLayout.setVerticalGroup(
             jPanel_MapLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 335, Short.MAX_VALUE)
+            .addGap(0, 351, Short.MAX_VALUE)
         );
 
-        jMenu_Game.setText("Game");
+        jPanelTurn.setBorder(javax.swing.BorderFactory.createTitledBorder("Turn"));
 
-        jMenuItem_LoadGame.setAction(new Simulator.Frame.ActionLoadGame());
-        jMenuItem_LoadGame.setText("Load Game");
-        jMenu_Game.add(jMenuItem_LoadGame);
+        jLabelTurn.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+        jLabelTurn.setForeground(new java.awt.Color(255, 0, 0));
+        jLabelTurn.setText("SEND TURN:");
 
-        jMenuItem_StartGame.setAction(new Simulator.Frame.ActionStartGame());
-        jMenuItem_StartGame.setText("Start Game");
-        jMenu_Game.add(jMenuItem_StartGame);
+        jButton_Turn.setAction(new ActionSendTurn());
+        jButton_Turn.setText("SEND");
 
-        jMenuItem_CloseGame.setAction(new ActionCloseGame());
-        jMenuItem_CloseGame.setText("Close Game");
-        jMenu_Game.add(jMenuItem_CloseGame);
+        jTextField_Turn.setText("5");
 
-        jMenuBar1.add(jMenu_Game);
+        javax.swing.GroupLayout jPanelTurnLayout = new javax.swing.GroupLayout(jPanelTurn);
+        jPanelTurn.setLayout(jPanelTurnLayout);
+        jPanelTurnLayout.setHorizontalGroup(
+            jPanelTurnLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelTurnLayout.createSequentialGroup()
+                .addGroup(jPanelTurnLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jButton_Turn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanelTurnLayout.createSequentialGroup()
+                        .addGroup(jPanelTurnLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanelTurnLayout.createSequentialGroup()
+                                .addGap(29, 29, 29)
+                                .addComponent(jTextField_Turn, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanelTurnLayout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(jLabelTurn)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
+        );
+        jPanelTurnLayout.setVerticalGroup(
+            jPanelTurnLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelTurnLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabelTurn)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jTextField_Turn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 8, Short.MAX_VALUE)
+                .addComponent(jButton_Turn))
+        );
 
-        jMenu_Connection.setText("Connection");
+        jMenu_GetStarted.setText("Get Started");
 
         jMenuItem_Player.setAction(new ActionDialogPlayer());
         jMenuItem_Player.setText("Create Player");
-        jMenu_Connection.add(jMenuItem_Player);
+        jMenu_GetStarted.add(jMenuItem_Player);
+
+        jMenuItem_CloseGame.setAction(new ActionCloseGame());
+        jMenuItem_CloseGame.setText("Close Game");
+        jMenu_GetStarted.add(jMenuItem_CloseGame);
+
+        jMenuBar1.add(jMenu_GetStarted);
+
+        jMenu_Connection.setText("Connection");
         jMenu_Connection.add(jSeparator1);
 
         jMenuItem_Game.setAction(new ActionDialogGame());
@@ -165,14 +203,6 @@ public class SimulatorFrame extends javax.swing.JFrame {
 
         jMenuBar1.add(jMenu_Connection);
 
-        jMenu_Messenger.setText("Messenger");
-
-        jMenuItem_ShowMess.setAction(new Simulator.Frame.ActionDialogMessenger());
-        jMenuItem_ShowMess.setText("Show Messenger");
-        jMenu_Messenger.add(jMenuItem_ShowMess);
-
-        jMenuBar1.add(jMenu_Messenger);
-
         jMenu_CreateMap.setText("Create Map");
 
         jMenuItem_CreateFrame.setAction(new Simulator.Frame.ActionDialogCreateMap());
@@ -183,11 +213,22 @@ public class SimulatorFrame extends javax.swing.JFrame {
         jMenuItem_Upload.setText("Upload RaceTrack");
         jMenu_CreateMap.add(jMenuItem_Upload);
 
+        jMenuItem_GetRTList.setText("Show RaceTracks");
+        jMenu_CreateMap.add(jMenuItem_GetRTList);
+
         jMenuItem_Delete.setAction(new ActionDeleteUploadedGame());
         jMenuItem_Delete.setText("Delete RaceTrack");
         jMenu_CreateMap.add(jMenuItem_Delete);
 
         jMenuBar1.add(jMenu_CreateMap);
+
+        jMenu_Messenger.setText("Messenger");
+
+        jMenuItem_ShowMess.setAction(new Simulator.Frame.ActionDialogMessenger());
+        jMenuItem_ShowMess.setText("Show Messenger");
+        jMenu_Messenger.add(jMenuItem_ShowMess);
+
+        jMenuBar1.add(jMenu_Messenger);
 
         jMenu_Help.setText("Help");
 
@@ -214,7 +255,11 @@ public class SimulatorFrame extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel_Map, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jScrollPane_Console, javax.swing.GroupLayout.DEFAULT_SIZE, 949, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jScrollPane_Console)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jPanelTurn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(4, 4, 4)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -223,7 +268,9 @@ public class SimulatorFrame extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jPanel_Map, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane_Console, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jScrollPane_Console, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addComponent(jPanelTurn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -262,6 +309,8 @@ public class SimulatorFrame extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    public javax.swing.JButton jButton_Turn;
+    public javax.swing.JLabel jLabelTurn;
     private javax.swing.JList<String> jList_Console;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem_CloseGame;
@@ -271,22 +320,23 @@ public class SimulatorFrame extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem_Disconnect;
     private javax.swing.JMenuItem jMenuItem_ExitNow;
     private javax.swing.JMenuItem jMenuItem_Game;
+    private javax.swing.JMenuItem jMenuItem_GetRTList;
     private javax.swing.JMenuItem jMenuItem_Guide;
-    private javax.swing.JMenuItem jMenuItem_LoadGame;
     private javax.swing.JMenuItem jMenuItem_Player;
     private javax.swing.JMenuItem jMenuItem_ShowMess;
-    private javax.swing.JMenuItem jMenuItem_StartGame;
     private javax.swing.JMenuItem jMenuItem_Upload;
     private javax.swing.JMenu jMenu_Connection;
     private javax.swing.JMenu jMenu_CreateMap;
     private javax.swing.JMenu jMenu_Exit;
-    private javax.swing.JMenu jMenu_Game;
+    private javax.swing.JMenu jMenu_GetStarted;
     private javax.swing.JMenu jMenu_Help;
     private javax.swing.JMenu jMenu_Messenger;
+    private javax.swing.JPanel jPanelTurn;
     private javax.swing.JPanel jPanel_Map;
     private javax.swing.JScrollPane jScrollPane_Console;
     private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JPopupMenu.Separator jSeparator2;
+    public javax.swing.JTextField jTextField_Turn;
     // End of variables declaration//GEN-END:variables
 
     public RaceTrack getRaceTrackToPlay() {

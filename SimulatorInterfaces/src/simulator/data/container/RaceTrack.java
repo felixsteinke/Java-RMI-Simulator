@@ -22,7 +22,6 @@ import java.util.logging.Logger;
  *
  * @author 82stfe1bif
  *
- * !!!!!!!!!!!!!!!!new start line can produce some issues!!!!!!!!!!!!!!!!
  */
 public class RaceTrack implements Serializable {
 
@@ -45,9 +44,10 @@ public class RaceTrack implements Serializable {
     public RaceTrack(File input) {
         this.input = input;
         this.name = input.getName();
-        decode();
         this.validPoints = new ArrayList<Point>();
         this.startPoints = new ArrayList<Point>();
+        decode();
+
     }
 
     public RaceTrack() {
@@ -69,6 +69,7 @@ public class RaceTrack implements Serializable {
         }
     }
 
+    
     public String dataToString() {
         this.pointsOutter = coordOuter.size();
         this.pointsInner = coordInner.size();
@@ -81,7 +82,8 @@ public class RaceTrack implements Serializable {
         csvString.append(pointsArraytoString(coordInner) + "\n");
         csvString.append(distance + "\n");
         csvString.append(pointsArraytoString(coordStart) + "\n");
-        csvString.append(pointsArraytoString(coordControl));
+        csvString.append(pointsArraytoString(coordControl) + "\n");
+        csvString.append(pointsArraytoString(startPoints));
         return csvString.toString();
     }
 
@@ -114,13 +116,30 @@ public class RaceTrack implements Serializable {
             distance = Integer.valueOf(lines.get(5));
             calcOnDistance();
             coordStart = createPointArray(lines.get(6), 2);
-            coordControl = createPointArray(lines.get(7), 2);
-
+            if (lines.size() > 7) {
+                coordControl = createPointArray(lines.get(7), 2);
+            } else {
+                coordControl = new ArrayList<Point>();
+            }
+            if (lines.size() > 8) {
+                startPoints = createPointArray(lines.get(8), 5);
+            } else {
+                startPoints = new ArrayList<Point>();
+            }
         } catch (FileNotFoundException ex) {
             Logger.getLogger(RaceTrack.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
             Logger.getLogger(RaceTrack.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    private ArrayList<Point> createPointArray(String line) {
+        ArrayList<Point> points = new ArrayList<Point>();
+        String[] split = line.split(",");
+        for (int i = 0; i < split.length; i += 2) {
+            points.add(createPoint(split[i], split[i + 1]));
+        }
+        return points;
     }
 
     private ArrayList<Point> createPointArray(String line, int length) {

@@ -14,53 +14,48 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
-import java.awt.event.MouseEvent;
 import java.awt.geom.GeneralPath;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
  *
  * @author Felix
- * 
- * TODO:!!!!!!!!!!!!!!!!!!!!!!!!
- * Start Points berechenen!!!!!!!
- * Valid Points überprüfen!!!!!!
- * Controll Line fixen!!!!!!!!!
- * drawLine fixen!!!!!!!!!!!!
- * !!!!!!!!!!!!!!!!!!!!!!!!!!!!
+ *
  */
+
 public class CreationFrame extends javax.swing.JFrame {
 
     public RaceTrack data = new RaceTrack();
     private int state = 1;
-    //start
+    //startLine
     private boolean state1finished = false;
-    //controll
+    //controlLine
     private boolean state2finished = false;
-    //outer
+    //outerLine
     private boolean state3finished = false;
-    //inner
+    //innerLine
     private boolean state4finished = false;
     private boolean setLastPoint = false;
-
+    //start Points
+    private boolean state5finished = false;
     private Rectangle gameRect;
     private Rectangle screenRect;
 
     /**
      * Creates new form CreationFrame
      */
+    
     public CreationFrame() {
         setExtendedState(MAXIMIZED_BOTH);
-        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         initComponents();
         setValues();
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setVisible(true);
 
     }
@@ -103,6 +98,12 @@ public class CreationFrame extends javax.swing.JFrame {
         }
     }
 
+    private void checkState5() {
+        if (data.getStartPoints().size() == 5) {
+            state5finished = true;
+        }
+    }
+
     private void setToDoText() {
         switch (state) {
             case 1:
@@ -116,7 +117,7 @@ public class CreationFrame extends javax.swing.JFrame {
                 if (state2finished) {
                     label_ToDo.setText("TODO: UNDO or CHANGE workspace.");
                 } else {
-                    label_ToDo.setText("TODO: Set 2 POINTS for sontrolline (1. left | 2. right)");
+                    label_ToDo.setText("TODO: Set 2 points for ControlLine (1. from innerLine | 2. from outerLine)");
                 }
                 break;
             case 3:
@@ -137,10 +138,17 @@ public class CreationFrame extends javax.swing.JFrame {
                     label_ToDo.setText("TODO: Set 2 POINTS for innerline (1. helper | 2. fix)");
                 }
                 break;
+            case 5:
+                if (state2finished) {
+                    label_ToDo.setText("TODO: UNDO or CHANGE workspace.");
+                } else {
+                    label_ToDo.setText("TODO: Click on 5 Rectangles to set Start Points");
+                }
+                break;
             default:
                 label_ToDo.setText("Something went wrong.");
         }
-        if (state1finished && state2finished && state3finished && state4finished) {
+        if (state1finished && state2finished && state3finished && state4finished && state5finished) {
             label_ToDo.setText("TODO: UNDO or SAVE the RaceTrack.");
         }
     }
@@ -172,6 +180,10 @@ public class CreationFrame extends javax.swing.JFrame {
                 data.getCoordInner().remove(data.getCoordInner().size() - 1);
                 state4finished = false;
                 break;
+            case 5:
+                data.getStartPoints().remove(data.getStartPoints().size() - 1);
+                state5finished = false;
+                break;
             default:
                 JOptionPane.showMessageDialog(this, "Something went wrong!");
         }
@@ -193,7 +205,7 @@ public class CreationFrame extends javax.swing.JFrame {
                 }
                 break;
             case 2:
-                if (!state3finished || !state4finished) {
+                if (!state3finished || !state4finished || !state1finished) {
                     JOptionPane.showMessageDialog(this, "Finish In- and Outline first.");
                     return;
                 }
@@ -234,6 +246,21 @@ public class CreationFrame extends javax.swing.JFrame {
                 data.getCoordInner().add(point);
                 checkState4();
                 break;
+            case 5:
+                if (!state3finished || !state4finished || !state1finished || !state2finished) {
+                    JOptionPane.showMessageDialog(this, "Finish all other things first.");
+                    return;
+                }
+                checkState5();
+                if (state5finished) {
+                    JOptionPane.showMessageDialog(this, "State already done.");
+                    return;
+                }
+                Point startPoint = calcClosePoint(data.getValidPoints(), point);
+                if (!data.getStartPoints().contains(startPoint)) {
+                    data.getStartPoints().add(startPoint);
+                }
+                break;
             default:
                 JOptionPane.showMessageDialog(this, "Something went wrong!");
         }
@@ -254,6 +281,10 @@ public class CreationFrame extends javax.swing.JFrame {
         }
         if (!state4finished) {
             JOptionPane.showMessageDialog(this, "State 4 not finished.");
+            return false;
+        }
+        if (!state5finished) {
+            JOptionPane.showMessageDialog(this, "State 5 not finished.");
             return false;
         }
         return true;
@@ -280,6 +311,9 @@ public class CreationFrame extends javax.swing.JFrame {
                 data.getCoordInner().removeAll(deleteListIn);
                 state4finished = false;
                 break;
+            case 5:
+                data.getStartPoints().clear();
+                state5finished = false;
             default:
                 JOptionPane.showMessageDialog(this, "Something went wrong!");
         }
@@ -288,24 +322,46 @@ public class CreationFrame extends javax.swing.JFrame {
     }
 
     private Point calcClosePoint(ArrayList<Point> list, Point point) {
-        int rangeX = Integer.MAX_VALUE;
-        int rangeY = Integer.MAX_VALUE;
-        int tempX;
-        int tempY;
+        double range = Integer.MAX_VALUE;
+        double tempRange;
         Point tempPoint = new Point();
 
         for (Point listPoint : list) {
-            if ((tempX = Math.abs(listPoint.x - point.x)) < rangeX && (tempY = Math.abs(listPoint.y - point.y)) < rangeY) {
-                rangeX = tempX;
-                rangeY = tempY;
-                tempPoint = point;
+            if ((tempRange = Math.sqrt((Math.pow(point.x - listPoint.x, 2) + Math.pow(point.y - listPoint.y, 2)))) < range) {
+                range = tempRange;
+                tempPoint = listPoint;
             }
         }
         System.out.println(tempPoint.toString());
         return tempPoint;
-
     }
 
+    /*<editor-fold defaultstate="collapsed" desc="Useless Method">   
+    private ArrayList<Point> calcStartPoints(ArrayList<Point> validPoints, Point midPoint) {
+
+        ArrayList<Point> startPoints = new ArrayList<Point>();
+        int range = Integer.MAX_VALUE;
+        int tempRange;
+        Point tempPoint = new Point();
+
+        for (int i = 0; i < 5; i++) {
+            for (Point listPoint : validPoints) {
+                if (!startPoints.contains(listPoint)) {
+                    if (listPoint.y > midPoint.y) {
+                        if ((tempRange = Math.abs((midPoint.x + midPoint.y) - (listPoint.x + listPoint.y))) < range) {
+                            range = tempRange;
+                            tempPoint = listPoint;
+                        }
+                    }
+                }
+                startPoints.add(tempPoint);
+            }
+        }
+        System.out.println(startPoints.toString());
+        return startPoints;
+    }
+     */
+    //</editor-fold>
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -332,6 +388,8 @@ public class CreationFrame extends javax.swing.JFrame {
         jButton_Refresh = new javax.swing.JButton();
         jButton_Clean = new javax.swing.JButton();
         jTextField_Name = new javax.swing.JTextField();
+        jButton_LoadMap = new javax.swing.JButton();
+        jRadioButton_StartPoints = new javax.swing.JRadioButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -345,11 +403,11 @@ public class CreationFrame extends javax.swing.JFrame {
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGap(0, 1320, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGap(0, 746, Short.MAX_VALUE)
         );
 
         label_Title.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
@@ -438,6 +496,21 @@ public class CreationFrame extends javax.swing.JFrame {
         jTextField_Name.setText("RaceTrack");
         jTextField_Name.setBorder(javax.swing.BorderFactory.createTitledBorder("Name"));
 
+        jButton_LoadMap.setText("Load Map");
+        jButton_LoadMap.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_LoadMapActionPerformed(evt);
+            }
+        });
+
+        buttonGroup_Work.add(jRadioButton_StartPoints);
+        jRadioButton_StartPoints.setText("Start Points");
+        jRadioButton_StartPoints.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jRadioButtonGroup_ActionPerformed_State(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -448,33 +521,37 @@ public class CreationFrame extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(label_Title, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(93, 93, 93)
-                        .addComponent(label_ToDo, javax.swing.GroupLayout.DEFAULT_SIZE, 999, Short.MAX_VALUE)
+                        .addComponent(label_ToDo, javax.swing.GroupLayout.DEFAULT_SIZE, 997, Short.MAX_VALUE)
                         .addGap(90, 90, 90))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGap(11, 11, 11)))
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jTextField_Width, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jTextField_Name, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 98, Short.MAX_VALUE)
-                    .addComponent(jTextField_Height, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jButton_LastPoint, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jRadioButton_Out, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jTextField_Dicstance, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jRadioButton_Start, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jRadioButton_Controll, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jRadioButton_In, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jButton_Undo, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jButton_SaveMap, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jButton_Refresh, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jButton_Clean, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(2, 2, 2)))
-                .addGap(4, 4, 4))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(2, 2, 2)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jTextField_Width, javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jTextField_Name, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 98, Short.MAX_VALUE)
+                                    .addComponent(jTextField_Height, javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(jTextField_Dicstance, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(jRadioButton_Start, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(jButton_LoadMap, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jButton_SaveMap, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jButton_LastPoint, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jButton_Clean, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jButton_Undo, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jButton_Refresh, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jRadioButton_Out, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jRadioButton_In, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jRadioButton_Controll, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jRadioButton_StartPoints, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
-        layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jButton_Clean, jButton_LastPoint, jButton_Refresh, jButton_SaveMap, jButton_Undo, jRadioButton_Controll, jRadioButton_In, jRadioButton_Out, jRadioButton_Start, jTextField_Dicstance, jTextField_Height, jTextField_Name, jTextField_Width});
+        layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jButton_Clean, jButton_LastPoint, jButton_LoadMap, jButton_Refresh, jButton_SaveMap, jButton_Undo, jRadioButton_Controll, jRadioButton_In, jRadioButton_Out, jRadioButton_Start, jRadioButton_StartPoints, jTextField_Dicstance, jTextField_Height, jTextField_Name, jTextField_Width});
 
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -498,12 +575,14 @@ public class CreationFrame extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jRadioButton_Start)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jRadioButton_Controll)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jRadioButton_Out)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jRadioButton_In)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jRadioButton_Controll)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jRadioButton_StartPoints)
+                .addGap(21, 21, 21)
                 .addComponent(jButton_Refresh)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton_Undo)
@@ -513,10 +592,12 @@ public class CreationFrame extends javax.swing.JFrame {
                 .addComponent(jButton_LastPoint)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton_SaveMap)
-                .addContainerGap(203, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton_LoadMap)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButton_Clean, jButton_LastPoint, jButton_Refresh, jButton_SaveMap, jButton_Undo, jRadioButton_Controll, jRadioButton_In, jRadioButton_Out, jRadioButton_Start, jTextField_Dicstance, jTextField_Height, jTextField_Name, jTextField_Width});
+        layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButton_Clean, jButton_LastPoint, jButton_LoadMap, jButton_Refresh, jButton_SaveMap, jButton_Undo, jRadioButton_Controll, jRadioButton_In, jRadioButton_Out, jRadioButton_Start, jRadioButton_StartPoints, jTextField_Dicstance, jTextField_Height, jTextField_Name, jTextField_Width});
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -533,6 +614,7 @@ public class CreationFrame extends javax.swing.JFrame {
         addPoint(new Point(x - gameRect.x, y - gameRect.y));
         checkState1();
         checkState2();
+        checkState5();
         setToDoText();
         repaint();
         //}
@@ -554,6 +636,8 @@ public class CreationFrame extends javax.swing.JFrame {
             case 4:
                 checkState4();
                 break;
+            case 5:
+                break;
             default:
                 JOptionPane.showMessageDialog(this, "Something went wrong.");
         }
@@ -563,8 +647,8 @@ public class CreationFrame extends javax.swing.JFrame {
 
     private void jButton_UndoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_UndoActionPerformed
         // TODO add your handling code here:
-        setToDoText();
         useUNDO();
+        setToDoText();
         this.repaint();
     }//GEN-LAST:event_jButton_UndoActionPerformed
 
@@ -574,6 +658,8 @@ public class CreationFrame extends javax.swing.JFrame {
             setValues();
             JOptionPane.showMessageDialog(this, data.dataToString());
             data.exportFile();
+            this.dispose();
+            SimulatorFrame.getInstance().setRaceTrackToUpload(data);
         } else {
             JOptionPane.showMessageDialog(this, "Something went wrong.");
         }
@@ -584,6 +670,7 @@ public class CreationFrame extends javax.swing.JFrame {
         checkState2();
         checkState3();
         checkState4();
+        checkState5();
         setToDoText();
         setValues();
         this.repaint();
@@ -598,15 +685,37 @@ public class CreationFrame extends javax.swing.JFrame {
             state = 3;
         } else if (jRadioButton_In.isSelected()) {
             state = 4;
+        } else if (jRadioButton_StartPoints.isSelected()) {
+            state = 5;
         } else {
             JOptionPane.showMessageDialog(this, "Something went wrong.");
         }
+        setToDoText();
     }//GEN-LAST:event_jRadioButtonGroup_ActionPerformed_State
 
     private void jButton_CleanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_CleanActionPerformed
         deleteState();
+        setToDoText();
         this.repaint();
     }//GEN-LAST:event_jButton_CleanActionPerformed
+
+    private void jButton_LoadMapActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_LoadMapActionPerformed
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setFileFilter(new FileNameExtensionFilter("Load CSV-File", "csv"));
+        int showOpenDialog = fileChooser.showOpenDialog(SimulatorFrame.getInstance());
+
+        if (showOpenDialog == JFileChooser.APPROVE_OPTION) {
+            File input = fileChooser.getSelectedFile();
+            this.data = new RaceTrack(input);
+            jTextField_Name.setText(data.getName());
+            jTextField_Width.setText("" + data.getWidthField());
+            jTextField_Height.setText("" + data.getHeightField());
+            jTextField_Dicstance.setText("" + data.getDistance());
+            jButton_RefreshActionPerformed(evt);
+        } else {
+            JOptionPane.showMessageDialog(SimulatorFrame.getInstance(), "No Selection");
+        }
+    }//GEN-LAST:event_jButton_LoadMapActionPerformed
 
     // </editor-fold> 
     public static void main(String args[]) {
@@ -638,14 +747,21 @@ public class CreationFrame extends javax.swing.JFrame {
             public void run() {
                 System.out.println("Test Frame");
                 new CreationFrame();
+
             }
-        });
+        }
+        );
+    }
+
+    public void windowClosing(java.awt.event.WindowEvent e) {
+        this.dispose();
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroup_Work;
     private javax.swing.JButton jButton_Clean;
     private javax.swing.JButton jButton_LastPoint;
+    private javax.swing.JButton jButton_LoadMap;
     private javax.swing.JButton jButton_Refresh;
     private javax.swing.JButton jButton_SaveMap;
     private javax.swing.JButton jButton_Undo;
@@ -654,6 +770,7 @@ public class CreationFrame extends javax.swing.JFrame {
     private javax.swing.JRadioButton jRadioButton_In;
     private javax.swing.JRadioButton jRadioButton_Out;
     private javax.swing.JRadioButton jRadioButton_Start;
+    private javax.swing.JRadioButton jRadioButton_StartPoints;
     private javax.swing.JTextField jTextField_Dicstance;
     private javax.swing.JTextField jTextField_Height;
     private javax.swing.JTextField jTextField_Name;
@@ -692,22 +809,21 @@ public class CreationFrame extends javax.swing.JFrame {
                 g2d.setColor(Color.YELLOW);
                 g2d.setStroke(new BasicStroke(5.0f));
                 g2d.drawLine(gameRect.x + data.getCoordStart().get(0).x, gameRect.y + data.getCoordStart().get(0).y,
-                        gameRect.x + data.getCoordStart().get(1).x, gameRect.y + data.getCoordStart().get(0).y);
+                        gameRect.x + data.getCoordStart().get(1).x, gameRect.y + data.getCoordStart().get(1).y);
             }
 
             //State 2 ======================================================================
             if (state2finished) {
                 g2d.setColor(Color.DARK_GRAY);
-                g2d.setStroke(new BasicStroke(10.0f));
+                g2d.setStroke(new BasicStroke(5.0f));
                 g2d.drawLine(gameRect.x + data.getCoordControl().get(0).x, gameRect.y + data.getCoordControl().get(0).y,
-                        gameRect.x + data.getCoordControl().get(1).x, gameRect.y + data.getCoordControl().get(0).y);
+                        gameRect.x + data.getCoordControl().get(1).x, gameRect.y + data.getCoordControl().get(1).y);
 
             }
 
+            //State 3 ======================================================================
             g2d.setColor(Color.RED);
             g2d.setStroke(new BasicStroke(1.0f));
-
-            //State 3 ======================================================================
             GeneralPath pathFormOuter = new GeneralPath(0);
             if (!data.getCoordOuter().isEmpty()) {
                 //start outer path
@@ -754,36 +870,24 @@ public class CreationFrame extends javax.swing.JFrame {
                 }
 
             }
-            //Finished ======================================================================
+            //Finished  1 - 2 - 3 - 4 ======================================================================
             if (state1finished && state2finished && state3finished && state4finished) {
                 g2d.setColor(Color.RED);
+                data.setValidPoints(new ArrayList<Point>());
                 for (int x = gameRect.x + data.getGapSize(); x <= gameRect.x + gameRect.width - data.getGridSize(); x += data.getGridSize() + data.getGapSize()) {
                     for (int y = gameRect.y + data.getGapSize(); y <= gameRect.y + gameRect.height - data.getGridSize(); y += data.getGridSize() + data.getGapSize()) {
                         if (!pathFormOuter.contains(x + data.getGridSize() / 2, y + data.getGridSize() / 2) || pathFormInner.contains(x + data.getGridSize() / 2, y + data.getGridSize() / 2)) {
                             continue;
                         }
-                        data.getValidPoints().add(new Point(x, y));
+                        data.getValidPoints().add(new Point(x - gameRect.x, y - gameRect.y));
                         g2d.fillRect(x, y, data.getGridSize(), data.getGridSize());
                     }
                 }
-
-                Point midStart = new Point(data.getCoordStart().get(0).x + (data.getCoordStart().get(1).x - data.getCoordStart().get(0).x),
-                        data.getCoordStart().get(0).y + (data.getCoordStart().get(1).y - data.getCoordStart().get(0).y));
-
-                ArrayList<Point> tempValidPoints = new ArrayList(data.getValidPoints());
-                loop:
-                for (int i = 0; i < 5; i++) {
-                    calcClosePoint(tempValidPoints, midStart);
-                    Point tempPoint = calcClosePoint(tempValidPoints, midStart);
-                    tempValidPoints.remove(tempPoint);
-                    data.getStartPoints().add(tempPoint);
-                    continue loop;
+                //State 5 ======================================================================
+                g2d.setColor(Color.YELLOW);
+                for (Point startPoint : data.getStartPoints()) {
+                    g2d.fillOval(gameRect.x + startPoint.x, gameRect.y + startPoint.y, data.getGridSize(), data.getGridSize());
                 }
-            }
-
-            g2d.setColor(Color.pink);
-            for (Point startPoint : data.getStartPoints()) {
-                g2d.fillOval(gameRect.x + startPoint.x, gameRect.y + startPoint.y, data.getGridSize(), data.getGridSize());
             }
         }
 
