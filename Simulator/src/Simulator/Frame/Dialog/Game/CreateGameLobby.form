@@ -117,6 +117,7 @@
         <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
           <ComponentRef name="buttonGroup_Player"/>
         </Property>
+        <Property name="selected" type="boolean" value="true"/>
         <Property name="text" type="java.lang.String" value="2 Player"/>
       </Properties>
     </Component>
@@ -159,8 +160,14 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="jTextField_GameName">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="testGame"/>
+      </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="jTextField_GameCode">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="123456"/>
+      </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel_Title">
       <Properties>

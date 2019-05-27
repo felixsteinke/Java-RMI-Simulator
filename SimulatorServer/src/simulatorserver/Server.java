@@ -32,7 +32,7 @@ public class Server {
         Connection connection = new ConnectionImpl();                // connection erstellung
         UnicastRemoteObject.exportObject(connection, 0);             // senden der connection über egal welchen port
         registry.bind(Connection.class.getName(), connection);       // zuordnung in der registry 
-        Administation.getInstanceEngine();                           // sollte nicht nötig sein
+        Administation.getInstance();                           // sollte nicht nötig sein
         System.out.println("Server is running.");
         
         //Falls der Server vergessen wird, dass er nicht ewig läuft (1h)

@@ -33,7 +33,7 @@ public class ActionHelpGuide extends AbstractAction {
                 //Menu Messenger
                 + "Zusätzliche Funktion: Messenger, hier können alle Spieler die in einem Spiel sind kommunizieren.\n\n"
                 + "Bei Problemen über 82stfe1bif@hft-stuttgart.de den Support kontaktieren.";
-        JOptionPane.showMessageDialog(SimulatorFrame.getInstance(),guide);
+        JOptionPane.showMessageDialog(null ,guide);
         
     }
     

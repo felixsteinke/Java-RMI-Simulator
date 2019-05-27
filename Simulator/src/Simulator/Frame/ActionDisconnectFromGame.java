@@ -38,7 +38,7 @@ public class ActionDisconnectFromGame extends AbstractAction {
                 frame.setRaceTrackToPlay(null);
                 frame.playerDatabase = null;
                 frame.connected = false;
-                frame.consoleModel.addElement("You are now disconnected!");
+                frame.consoleModel.addElement(mesg);
             } catch (RemoteException ex) {
                 Logger.getLogger(Simulator.Frame.SimulatorFrame.class.getName()).log(Level.SEVERE, null, ex);
             }

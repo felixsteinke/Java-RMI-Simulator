@@ -100,6 +100,8 @@ public class SimulatorFrame extends javax.swing.JFrame {
         jSeparator1 = new javax.swing.JPopupMenu.Separator();
         jMenuItem_Game = new javax.swing.JMenuItem();
         jSeparator2 = new javax.swing.JPopupMenu.Separator();
+        jMenuItem_ShowMaps = new javax.swing.JMenuItem();
+        jMenuItem_SelectMap = new javax.swing.JMenuItem();
         jMenuItem_Connect = new javax.swing.JMenuItem();
         jMenuItem_Disconnect = new javax.swing.JMenuItem();
         jMenu_CreateMap = new javax.swing.JMenu();
@@ -193,6 +195,14 @@ public class SimulatorFrame extends javax.swing.JFrame {
         jMenu_Connection.add(jMenuItem_Game);
         jMenu_Connection.add(jSeparator2);
 
+        jMenuItem_ShowMaps.setAction(new ActionShowServerRaceTracks());
+        jMenuItem_ShowMaps.setText("Show Maps");
+        jMenu_Connection.add(jMenuItem_ShowMaps);
+
+        jMenuItem_SelectMap.setAction(new ActionSelectMap());
+        jMenuItem_SelectMap.setText("Select Map");
+        jMenu_Connection.add(jMenuItem_SelectMap);
+
         jMenuItem_Connect.setAction(new ActionDialogConnect());
         jMenuItem_Connect.setText("Connect");
         jMenu_Connection.add(jMenuItem_Connect);
@@ -213,6 +223,7 @@ public class SimulatorFrame extends javax.swing.JFrame {
         jMenuItem_Upload.setText("Upload RaceTrack");
         jMenu_CreateMap.add(jMenuItem_Upload);
 
+        jMenuItem_GetRTList.setAction(new ActionShowServerRaceTracks());
         jMenuItem_GetRTList.setText("Show RaceTracks");
         jMenu_CreateMap.add(jMenuItem_GetRTList);
 
@@ -230,8 +241,10 @@ public class SimulatorFrame extends javax.swing.JFrame {
 
         jMenuBar1.add(jMenu_Messenger);
 
+        jMenu_Help.setAction(new ActionHelpGuide());
         jMenu_Help.setText("Help");
 
+        jMenuItem_Guide.setAction(new ActionHelpGuide());
         jMenuItem_Guide.setText("Guide");
         jMenu_Help.add(jMenuItem_Guide);
 
@@ -287,6 +300,7 @@ public class SimulatorFrame extends javax.swing.JFrame {
             connected = true;
             
             String mesg = player.username + " made it in " + gameName;
+            chatModel.addElement(mesg);
             server.sendString(mesg);
     }
     
@@ -323,6 +337,8 @@ public class SimulatorFrame extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem_GetRTList;
     private javax.swing.JMenuItem jMenuItem_Guide;
     private javax.swing.JMenuItem jMenuItem_Player;
+    private javax.swing.JMenuItem jMenuItem_SelectMap;
+    private javax.swing.JMenuItem jMenuItem_ShowMaps;
     private javax.swing.JMenuItem jMenuItem_ShowMess;
     private javax.swing.JMenuItem jMenuItem_Upload;
     private javax.swing.JMenu jMenu_Connection;

@@ -67,6 +67,7 @@ public class CreateGameLobby extends javax.swing.JDialog {
         jRadioButton_1Player.setText("1 Player");
 
         buttonGroup_Player.add(jRadioButton_2Player);
+        jRadioButton_2Player.setSelected(true);
         jRadioButton_2Player.setText("2 Player");
 
         buttonGroup_Player.add(jRadioButton_3Player);
@@ -83,6 +84,10 @@ public class CreateGameLobby extends javax.swing.JDialog {
 
         jLabel_GameName.setText("Game-Name:");
         jLabel_GameName.setToolTipText("");
+
+        jTextField_GameName.setText("testGame");
+
+        jTextField_GameCode.setText("123456");
 
         jLabel_Title.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
         jLabel_Title.setText("Game-Lobby Settings");

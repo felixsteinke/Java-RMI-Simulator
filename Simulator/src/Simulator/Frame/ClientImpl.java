@@ -25,6 +25,7 @@ public class ClientImpl implements Client { //old BarImpl
 
     public ClientImpl() {
     }
+
     @Override
     public void receiveString(String data) {
         EventQueue.invokeLater(() -> {
@@ -94,41 +95,43 @@ public class ClientImpl implements Client { //old BarImpl
         String[] feedback = data.split(":");
         int feedbackCode = Integer.valueOf(feedback[0]);
         String feedbackMessage = feedback[1];
-
-        switch (feedbackCode) {
-            case 111:
-                unexportClient();
-                break;
-            case 222:
-                JOptionPane.showMessageDialog(SimulatorFrame.getInstance(), feedbackMessage);
-                break;
-            case 333:
-                break;
-            case 444:
-                break;
-            case 555:
-                enableTurn();
-                break;
-            case 666:
-                break;
-            case 777:
-                break;
-            case 888:
-                JOptionPane.showMessageDialog(SimulatorFrame.getInstance(), feedbackMessage);
-            break;
-            case 999:
-                break;
-            default:
-                System.out.println("False code for feedback.");
-        }
+        Thread t = new Thread(() -> {
+            switch (feedbackCode) {
+                case 111:
+                    unexportClient();
+                    break;
+                case 222:
+                    JOptionPane.showMessageDialog(SimulatorFrame.getInstance(), feedbackMessage);
+                    break;
+                case 333:
+                    break;
+                case 444:
+                    break;
+                case 555:
+                    enableTurn();
+                    break;
+                case 666:
+                    break;
+                case 777:
+                    break;
+                case 888:
+                    JOptionPane.showMessageDialog(SimulatorFrame.getInstance(), feedbackMessage);
+                    break;
+                case 999:
+                    break;
+                default:
+                    System.out.println("False code for feedback.");
+            }
+        });
+        t.start();
     }
 
-    private void enableTurn () {
+    private void enableTurn() {
         SimulatorFrame.getInstance().jButton_Turn.setEnabled(true);
         SimulatorFrame.getInstance().jLabelTurn.setVisible(true);
     }
-    
-    private void unexportClient () {           
+
+    private void unexportClient() {
         try {
             UnicastRemoteObject.unexportObject(SimulatorFrame.getInstance().clientExported, false);
             SimulatorFrame.getInstance().connected = false;

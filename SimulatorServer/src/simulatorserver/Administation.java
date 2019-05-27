@@ -28,31 +28,32 @@ import simulator.data.container.Turn;
 /**
  *
  * @author Felix
- * 
- * TODO: !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
- * some improvements to leave game 
- * how to do the start of a game needs to get implemented
- * send Turn and the refresh DataPlayerBase needs to get implemented
- * client.receiveError needs to get added, for negativ Feedback on the client
+ *
+ * TODO: !!!!!!!!!!!!!!!!!!!!!!!!!!!!! some improvements to leave game how to do
+ * the start of a game needs to get implemented send Turn and the refresh
+ * DataPlayerBase needs to get implemented client.receiveError needs to get
+ * added, for negativ Feedback on the client
  */
 public class Administation {
 
     private static HashMap<String, Game> games = new HashMap<>();
-    private static ArrayList<RaceTrack> raceTracks;
+    private static ArrayList<RaceTrack> raceTracks = new ArrayList <>();
 
-    private static ExecutorService executorService= Executors.newSingleThreadExecutor();
-    private static Administation instanceEngine;
-    
+    private static ExecutorService executorService = Executors.newSingleThreadExecutor();
+    private static Administation instanceAdministation;
 
     //weil alles static ist, ist das eigetnlich nicht nötig (glaube ich)
     public synchronized static Administation getInstance() {                           //Object kann einmal erzeugt werden
-        if (instanceEngine == null) {
-            instanceEngine = new Administation();
+        if (instanceAdministation == null) {
+            instanceAdministation = new Administation();
         }
-        return instanceEngine;
+        return instanceAdministation;
     }
 
-    private Administation() {
+    public Administation() {
+        this.raceTracks = readFile();
+        System.out.println("Readed file.");
+        this.raceTracks.stream().forEach(x -> System.out.println(x.getName() + x.dataToString()));
     }
 
     //prototyp, needs to get implemented last
@@ -81,51 +82,40 @@ public class Administation {
     public static void joinGame(Server source, Client client, Player player, String gameName, String code) {
         //Methode wird auf Basis des jeweiligen GameThreads ausgeführt
         games.get(gameName).executorService.submit(() -> {
-            //vereinfachter aufruf des games
             Game game = games.get(gameName);
-            //Zugangscode wird geprüft
-            if (game.getCode().equalsIgnoreCase(code)) {
-                //Es wird geprüft ob das game schon voll ist
-                if (game.playerData.playerlist.size() < game.getGameSize()) {
-                    //adde den Spieler zum Spiel
-                    game.playerData.playerlist.add(player);
-                    if (game.playerData.playerlist.size() == 1) {
-                        System.out.println("Send RaceTrackList to " + player.getUsername());
-                        try {
-                            //sendet alle namen der Racetracks in der Liste
-                            player.getConnectedClient().receiveRacetracksList(createRaceTrackListString());
-                        } catch (RemoteException ex) {
-                            Logger.getLogger(Administation.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-                    }
-                    shareRaceTrack(game);
-                    if(game.playerData.playerlist.size() == game.getGameSize()){
-                        game.setGameStarted(true);
-                        game.startGame();
-                        System.out.println("Game: " + game.getName() + " started!");
-                        try {
+            try {
+                if (game.getCode().equalsIgnoreCase(code)) {
+                    if (game.playerData.playerlist.size() < game.getGameSize()) {
+                        
+                        game.playerData.playerlist.add(player);
+                        
+                        System.out.println("Player " + player.getUsername() + " joined " + game.getName());
+                        player.getConnectedClient().receiveError("999: You (" + player.getUsername() + ") joined " + game.getName());
+                        
+                        shareRaceTrack(game);
+                        
+                        if (game.playerData.playerlist.size() == game.getGameSize()) {
+                            
+                            game.setGameStarted(true);
+                            game.startGame();
+                            System.out.println("Game: " + game.getName() + " started!");
                             game.refreshPlayerDatabase();
-                        } catch (RemoteException ex) {
-                            Logger.getLogger(Administation.class.getName()).log(Level.SEVERE, null, ex);
                         }
+                    } else {
+                        //Feedback für volles Game
+                        System.out.println("Game was full.");
+                        player.getConnectedClient().receiveError("Code was wrong - not connected!");
+
                     }
                 } else {
-                    //Feedback für volles Game
-                    System.out.println("Game was full.");
-                    try {
-                        player.getConnectedClient().receiveError("Code was wrong - not connected!");
-                    } catch (RemoteException ex) {
-                        Logger.getLogger(Administation.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                }
-            } else {
-                //Feedback für falschen Code
-                System.out.println("Code was wrong");
-                try {
+                    //Feedback für falschen Code
+                    System.out.println("Code was wrong");
+
                     player.getConnectedClient().receiveError("Code was wrong - not connected!");
-                } catch (RemoteException ex) {
-                    Logger.getLogger(Administation.class.getName()).log(Level.SEVERE, null, ex);
+
                 }
+            } catch (RemoteException ex) {
+                Logger.getLogger(Administation.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
     }
@@ -152,8 +142,6 @@ public class Administation {
 
     //should be done !!!Cleaner nerver tested!!!
     public static void createGame(String gameName, int count, String code) {
-        //ich weis nicht wo ich das sonst aufrufen soll
-        initRaceTracks();
         executorService.submit(() -> {
             //Clean old Games
             HashMap<String, Game> gamesCopy = new HashMap<>(games);
@@ -222,7 +210,7 @@ public class Administation {
             });
         }
     }
-    
+
     //should be done
     static void sendRaceTrackDecision(Server source, String data) {
         for (Game game : games.values()) {
@@ -240,23 +228,26 @@ public class Administation {
                         break;
                     }
                 }
-                //!!!MISSING!!! wird eigentlich zu oft aufgerufen
-                shareRaceTrack(game);
+                try {
+                    //!!!MISSING!!! wird eigentlich zu oft aufgerufen
+                    shareRaceTrack(game);
+                } catch (RemoteException ex) {
+                    Logger.getLogger(Administation.class.getName()).log(Level.SEVERE, null, ex);
+                }
             });
         }
     }
-    
+
     //should be done
     static void sendRaceTrack(Server source, RaceTrack data) {
         //thread für mehr kapazität auf dem Server
-        executorService.submit(() -> {
-            //added der Auswahl den track
+        //executorService.submit(() -> {
             raceTracks.add(data);
-            //überschreibt (hoffentlich) die File, für das Laden beim starten
-            saveRaceTracks();
-        });
+            System.out.println("Server: added RaceTrack " + data.getName());
+            writeArray(raceTracks);
+        //});
     }
-    
+
     //should be done
     public static void sendRaceTrackDelete(Server source, String data) {
         executorService.submit(() -> {
@@ -266,19 +257,16 @@ public class Administation {
                     raceTracks.remove(x);
                 }
             });
-            saveRaceTracks();
+            writeArray(raceTracks);
         });
     }
 
     //should be done
-    private static void shareRaceTrack(Game game) {
+    private static void shareRaceTrack(Game game) throws RemoteException {
         if (game.getRaceTrack() != null) {
             for (Player player : game.getPlayerData().playerlist) {
-                try {
                     player.getConnectedClient().receiveRacetrack(game.getRaceTrack());
-                } catch (RemoteException ex) {
-                    Logger.getLogger(Administation.class.getName()).log(Level.SEVERE, null, ex);
-                }
+                
             }
         }
     }
@@ -295,46 +283,60 @@ public class Administation {
         return listString.toString();
     }
 
-    //should be done
-    private static void saveRaceTracks() {
+    private static void writeArray(ArrayList<RaceTrack> list) {
+        ObjectOutputStream oos = null;
         try {
-            ObjectOutputStream raceTracksOutput = new ObjectOutputStream(new FileOutputStream("RaceTracks.ser"));
-            for (RaceTrack raceTrack : raceTracks) {
-                raceTracksOutput.writeObject(raceTrack);
+            //==============================================================================
+            oos = new ObjectOutputStream(new FileOutputStream("racetracks.ser"));
+            for (RaceTrack person : list) {
+                oos.writeObject(person);
             }
-            raceTracksOutput.close();
-            System.out.println("RaceTracks are saved!");
+            list.stream().forEach(x -> System.out.println(x.dataToString()));
+            //==============================================================================
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(Administation.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
             Logger.getLogger(Administation.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                oos.close();
+            } catch (IOException ex) {
+                Logger.getLogger(Administation.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
 
-    //should be done
-    private static void initRaceTracks() {
-        raceTracks = new ArrayList <RaceTrack>();
+    private static ArrayList<RaceTrack> readFile() {
+        ArrayList<RaceTrack> tracks = new ArrayList<RaceTrack>();
+        ObjectInputStream ois = null;
         try {
-            RaceTrack tempTrack;
-            ObjectInputStream raceTracksInput = new ObjectInputStream(new FileInputStream("RaceTracks.ser"));
-            while ((tempTrack = (RaceTrack) raceTracksInput.readObject()) != null) {
-                raceTracks.add(tempTrack);
+            //==============================================================================
+            ois = new ObjectInputStream(new FileInputStream("racetracks.ser"));
+            RaceTrack input;
+            while ((input = (RaceTrack) ois.readObject()) != null) {
+                tracks.add(input);
             }
-            System.out.println("RaceTracks are loaded!");
-        } catch (EOFException ex) {
-            System.out.println("Loaded RaceTracks and got over the edge.");
-            //Logger.getLogger(Administation.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (FileNotFoundException ex) {
-            System.out.println("Dont found the File for RaceTracks");
-            //Logger.getLogger(Administation.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            Logger.getLogger(Administation.class.getName()).log(Level.SEVERE, null, ex);
+            //==============================================================================
+        } catch (EOFException e) {
+            //==============================================================================
+            tracks.stream().forEach(x -> System.out.println(x.dataToString()));
+            return tracks;
+            //==============================================================================
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(Administation.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
 
-    //wird einmal im Server erzeugt um die Maps zu laden
-    public static Administation getInstanceEngine() {
-        return instanceEngine;
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(Administation.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(Administation.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                ois.close();
+            } catch (IOException ex) {
+                Logger.getLogger(Administation.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return null;
     }
 
 }
