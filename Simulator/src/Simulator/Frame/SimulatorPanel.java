@@ -55,6 +55,7 @@ public class SimulatorPanel extends JPanel {
             }
             return;
         }
+        
         //Size Game
         gameRect = new Rectangle(screenRect.width / 2 - data.getWidthField() / 2, 0, data.getWidthField(), data.getHeightField());
         //Background

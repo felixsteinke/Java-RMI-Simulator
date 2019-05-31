@@ -25,7 +25,7 @@ public class ActionDeleteUploadedGame extends AbstractAction {
         if(frame.connected == true){
             String name = JOptionPane.showInputDialog("Which RaceTrack should be deleted on the Server?");
             try {
-                frame.server.sendRaceTrackDelete(name);
+                frame.server.deleteRaceTrack(name);
             } catch (RemoteException ex) {
                 Logger.getLogger(ActionDeleteUploadedGame.class.getName()).log(Level.SEVERE, null, ex);
             }

@@ -20,5 +20,5 @@ public interface Client extends Remote{
     public void receiveRacetrack(RaceTrack data) throws RemoteException;
     public void receiveString(String data) throws RemoteException; //old bar
     public void receiveRacetracksList (String data) throws RemoteException;
-    public void receiveError(String data) throws RemoteException;
+    public void receiveFeedback(String data) throws RemoteException;
 }

@@ -69,6 +69,24 @@ public class RaceTrack implements Serializable {
         }
     }
 
+    @Override
+    public String toString() {
+        return "RaceTrack: " + name + "\n" 
+                + widthField + ", " + heightField + "\n" 
+                + "PointsOut: " + pointsOutter + "\n" 
+                + coordOuter.toString() + "\n" 
+                + "PointsIn: " + pointsInner + "\n" 
+                + coordInner.toString() + "\n" 
+                + "Distance: " + distance + "\n" 
+                + "Start: " + coordStart.toString() + "\n" 
+                + "Control: " + coordControl.toString() + "\n" 
+                + "Grid: " + gridSize + "\n" 
+                + "Gap: " + gapSize + "\n" 
+                + "ValidPoints: " + validPoints + "\n" 
+                + "StartPoints: " + startPoints.toString();
+    }
+
+    
     
     public String dataToString() {
         this.pointsOutter = coordOuter.size();

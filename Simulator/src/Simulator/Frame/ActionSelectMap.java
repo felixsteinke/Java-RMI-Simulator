@@ -22,7 +22,7 @@ public class ActionSelectMap extends AbstractAction{
     public void actionPerformed(ActionEvent e) {
         try {
             String selection = JOptionPane.showInputDialog("Write the Map-Name:");
-            SimulatorFrame.getInstance().server.sendRaceTrackDecision(selection);
+            SimulatorFrame.getInstance().server.setRaceTrackForGame(selection);
         } catch (RemoteException ex) {
             Logger.getLogger(ActionSelectMap.class.getName()).log(Level.SEVERE, null, ex);
         }

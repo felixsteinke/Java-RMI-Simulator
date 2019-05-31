@@ -34,7 +34,8 @@ public class ActionDisconnectFromGame extends AbstractAction {
                 String mesg = frame.player.username + " disconnected from " + frame.gameName;
                 frame.server.sendString(mesg);
                 frame.connection.leaveGame(frame.server,frame.player,frame.gameName);
-                UnicastRemoteObject.unexportObject(frame.clientExported, false);
+                ///!!!!!!!MISSING!!!!!!!! warum ist das nicht exporte
+                UnicastRemoteObject.unexportObject(frame.ClientImpl, false);
                 frame.setRaceTrackToPlay(null);
                 frame.playerDatabase = null;
                 frame.connected = false;

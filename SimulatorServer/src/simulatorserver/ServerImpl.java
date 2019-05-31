@@ -65,7 +65,7 @@ public class ServerImpl implements Server {
     }
 
     @Override
-    public void sendRaceTrack(RaceTrack data) throws RemoteException {
+    public void addRaceTrack(RaceTrack data) throws RemoteException {
         try {
             //=====================================================================
             //Request erhalten
@@ -74,7 +74,7 @@ public class ServerImpl implements Server {
             System.out.println(mesg);
             
             //Request wird weitergegeben
-            Administation.sendRaceTrack(this, data);
+            Administation.addRaceTrack(this, data);
             //=====================================================================
          } catch (ServerNotActiveException ex) {
              Logger.getLogger(ServerImpl.class.getName()).log(Level.SEVERE, null, ex);
@@ -82,7 +82,7 @@ public class ServerImpl implements Server {
     }
 
     @Override
-    public void sendRaceTrackDecision(String data) throws RemoteException {
+    public void setRaceTrackForGame(String data) throws RemoteException {
         try {
             //=====================================================================
             //Request erhalten
@@ -91,7 +91,7 @@ public class ServerImpl implements Server {
             System.out.println(mesg);
             
             //Request wird weitergegeben
-            Administation.sendRaceTrackDecision(this, data);
+            Administation.setRaceTrackForGame(this, data);
             //=====================================================================
          } catch (ServerNotActiveException ex) {
              Logger.getLogger(ServerImpl.class.getName()).log(Level.SEVERE, null, ex);
@@ -99,7 +99,7 @@ public class ServerImpl implements Server {
     }
 
     @Override
-    public void sendRaceTrackDelete(String data) throws RemoteException {
+    public void deleteRaceTrack(String data) throws RemoteException {
         try {
             //=====================================================================
             //Request erhalten
@@ -108,7 +108,7 @@ public class ServerImpl implements Server {
             System.out.println(mesg);
             
             //Request wird weitergegeben
-            Administation.sendRaceTrackDelete(this, data);
+            Administation.deleteRaceTrack(this, data);
             //=====================================================================
          } catch (ServerNotActiveException ex) {
              Logger.getLogger(ServerImpl.class.getName()).log(Level.SEVERE, null, ex);

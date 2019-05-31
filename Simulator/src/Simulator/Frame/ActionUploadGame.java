@@ -31,7 +31,7 @@ public class ActionUploadGame extends AbstractAction {
         
         if (validateRaceTrack(raceTrack) == true){
             try {
-                frame.server.sendRaceTrack(raceTrack);
+                frame.server.addRaceTrack(raceTrack);
             } catch (RemoteException ex) {
                 Logger.getLogger(ActionUploadGame.class.getName()).log(Level.SEVERE, null, ex);
             }

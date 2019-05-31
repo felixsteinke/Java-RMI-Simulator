@@ -19,8 +19,8 @@ import simulator.data.container.Turn;
 public interface Server extends Remote {
     public void sendTurn(Turn turn) throws RemoteException;
     public void sendString(String data) throws RemoteException;
-    public void sendRaceTrack(RaceTrack data) throws RemoteException;
-    public void sendRaceTrackDecision(String data) throws RemoteException;
-    public void sendRaceTrackDelete (String data) throws RemoteException;
+    public void addRaceTrack(RaceTrack data) throws RemoteException;
+    public void setRaceTrackForGame(String data) throws RemoteException;
+    public void deleteRaceTrack (String data) throws RemoteException;
     public void showRaceTrackList () throws RemoteException;
 }

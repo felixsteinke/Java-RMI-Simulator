@@ -78,12 +78,12 @@ public class ClientImpl implements Client { //old BarImpl
         //Dialog mit jList machen, und dann auswählen welches genommen werden soll
         String decision = JOptionPane.showInputDialog(data);
         SimulatorFrame.getInstance().consoleModel.addElement("RaceTrackList received");
-        SimulatorFrame.getInstance().server.sendRaceTrackDecision(decision);
+        SimulatorFrame.getInstance().server.setRaceTrackForGame(decision);
         SimulatorFrame.getInstance().consoleModel.addElement("RaceTrackDecision sended");
     }
 
     @Override
-    public void receiveError(String data) throws RemoteException {
+    public void receiveFeedback(String data) throws RemoteException {
         EventQueue.invokeLater(() -> {
             try {
                 Thread.sleep(50);
@@ -92,6 +92,7 @@ public class ClientImpl implements Client { //old BarImpl
             }
         });
         SimulatorFrame.getInstance().consoleModel.addElement(data);
+        
         String[] feedback = data.split(":");
         int feedbackCode = Integer.valueOf(feedback[0]);
         String feedbackMessage = feedback[1];

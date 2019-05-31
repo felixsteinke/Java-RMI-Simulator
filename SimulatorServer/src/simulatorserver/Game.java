@@ -46,6 +46,7 @@ public class Game {
         this.executorService = Executors.newFixedThreadPool(gameSize);
     }
 
+    //MISSING!!!!!!!!
     public void refreshPlayerDatabase() throws RemoteException {
         if (turnCollection.size() == getActivPlayer()) {
             turnCollection.clear();
@@ -66,7 +67,7 @@ public class Game {
                 Point position = new Point (startPosition.x + moveVektor [0], startPosition.y + moveVektor [1]);
                 if(!raceTrack.getValidPoints().contains(position)){
                     player.setAlive(false);
-                    player.getConnectedClient().receiveError("888:You Lost!");
+                    player.getConnectedClient().receiveFeedback("888:You Lost!");
                 }
                 switch (i) {
                     case 0:
@@ -108,6 +109,7 @@ public class Game {
          */
     }
 
+    //optional
     private boolean antiCheatTool(Player player) {
         ArrayList sendedOut = player.getTurns().get(player.getTurns().size() - 1).getOldMoves();
         ArrayList gotIn = player.getTurns().get(player.getTurns().size() - 2).getOldMoves();
@@ -144,7 +146,7 @@ public class Game {
             Point startPosition = raceTrack.getStartPoints().get(i);
             playerData.playerlist.get(i).setStartPosition(startPosition);
             try {
-                playerData.playerlist.get(i).getConnectedClient().receiveError("555:Lets Start!");
+                playerData.playerlist.get(i).getConnectedClient().receiveFeedback("555:Lets Start!");
             } catch (RemoteException ex) {
                 Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
             }
