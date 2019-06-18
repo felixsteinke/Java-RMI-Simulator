@@ -85,13 +85,13 @@ public class Administation {
 
                         game.playerData.playerlist.add(player);
 
-                        System.out.println("Server: Player " + player.getUsername() + " joined " + game.getName());
+                        System.out.println("Server: Player " + player.getName() + " joined " + game.getName());
 
                         //!!!!MISSING!!! warum geht das nicht?
                         //player.getConnectedClient().receiveFeedback("999:You (" + player.getUsername() + ") joined " + game.getName());
                         shareRaceTrack(game);
 
-                        if (game.playerData.playerlist.size() == game.getGameSize()) {
+                        if ((game.playerData.playerlist.size() == game.getGameSize()) && !game.isGameStarted() && game.getRaceTrack() != null) {
                             game.setGameStarted(true);
                             game.startGame();
                             System.out.println("Server: Game: " + game.getName() + " started!");
@@ -115,15 +115,15 @@ public class Administation {
         });
     }
 
-    //FINISHED! - should test on serverObj and not on username
+    //FINISHED! - should test on serverObj and not on name
     public static void leaveGame(Server source, Player player, String gameName) {
         games.get(gameName).executorService.submit(() -> {
             for (Player playerVar : games.get(gameName).playerData.playerlist) {
                 //!!!!!MISSING!!!! eigentlich mit source auf Server abgleichen aber das geht irgendwie nicht
-                if (playerVar.getUsername().equalsIgnoreCase(player.getUsername())) {
+                if (playerVar.getName().equalsIgnoreCase(player.getName())) {
                     playerVar.setAlive(false);
                     games.get(gameName).playerData.playerlist.remove(playerVar);
-                    System.out.println("Server: Player " + playerVar.username + " left the Game " + gameName);
+                    System.out.println("Server: Player " + playerVar.name + " left the Game " + gameName);
                     break;
                 }
             }
@@ -167,7 +167,7 @@ public class Administation {
                         for (Player playerVar : game.playerData.playerlist) {
                             if (playerVar.getConnectedServer() != source) {
                                 try {
-                                    System.out.println("Server: sendString to: " + playerVar.getUsername());
+                                    System.out.println("Server: sendString to: " + playerVar.getName());
                                     playerVar.getConnectedClient().receiveString(message);
                                 } catch (Exception e) {
                                     e.printStackTrace();
@@ -190,7 +190,7 @@ public class Administation {
                     if (player.getConnectedServer() == source) {
                         try {
                             player.getConnectedClient().receiveFeedback("222:" + createRaceTrackListString());
-                            System.out.println("Server: Sended Player: " + player.getUsername() + "RaceTrackList.");
+                            System.out.println("Server: Sended Player: " + player.getName() + " RaceTrackList.");
                         } catch (RemoteException ex) {
                             Logger.getLogger(Administation.class.getName()).log(Level.SEVERE, null, ex);
                         }
@@ -207,14 +207,29 @@ public class Administation {
             game.executorService.submit(() -> {
                 //findet das Game mit dem Spieler
                 for (Player player : game.getPlayerData().playerlist) {
+
                     if (player.getConnectedServer() == source) {
                         //findet den richtige Track und setzt ihn dem Game ein
+
                         raceTracks.stream().forEach(raceTrack -> {
                             if (raceTrack.getName().equalsIgnoreCase(data)) {
                                 System.out.println(game.getName() + " got a RaceTrack: " + raceTrack.getName());
                                 game.setRaceTrack(raceTrack);
                             }
                         });
+
+                        if ((game.playerData.playerlist.size() == game.getGameSize()) && !game.isGameStarted()) {
+                            try {
+                                shareRaceTrack(game);
+                                game.setGameStarted(true);
+                                game.startGame();
+                                System.out.println("Server: Game: " + game.getName() + " started!");
+                                game.refreshPlayerDatabase();
+                                return;
+                            } catch (RemoteException ex) {
+                                Logger.getLogger(Administation.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                        }
                         break;
                     }
                 }
@@ -277,7 +292,8 @@ public class Administation {
     }
 
     private static void writeArray(ArrayList<RaceTrack> list) {
-        list.stream().forEach(raceTrack -> System.out.println(raceTrack.dataToString()));
+        System.out.println("RaceTracks on Server-Data:");
+        list.stream().forEach(raceTrack -> System.out.println(raceTrack.toString()));
         ObjectOutputStream oos = null;
         try {
             //==============================================================================
@@ -313,9 +329,7 @@ public class Administation {
             //==============================================================================
         } catch (EOFException e) {
             //==============================================================================
-            tracks.stream().forEach(x -> System.out.println(x.dataToString()));
-            System.out.println("Server Method: Updated RaceTracks on the Server.");
-            return tracks;
+            //tracks.stream().forEach(x -> System.out.println(x.dataToString()));
             //==============================================================================
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(Administation.class.getName()).log(Level.SEVERE, null, ex);
@@ -328,7 +342,7 @@ public class Administation {
             try {
                 //==============================================================================
                 ois.close();
-                tracks.stream().forEach(x -> System.out.println(x.dataToString()));
+                //tracks.stream().forEach(x -> System.out.println(x.dataToString()));
                 System.out.println("Server Method: Updated RaceTracks on the Server.");
                 return tracks;
                 //==============================================================================

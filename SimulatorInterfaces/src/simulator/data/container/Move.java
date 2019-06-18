@@ -67,7 +67,8 @@ public class Move implements Serializable{
                 break;
         }
     } 
-
+    
+    //<editor-fold defaultstate="collapsed" desc=" Getter & Setter ">
     public int getKey() {
         return key;
     }
@@ -83,6 +84,6 @@ public class Move implements Serializable{
     public void setStepWide(int stepWide) {
         this.stepWide = stepWide;
     }
-    
+    //</editor-fold>
     
 }

@@ -26,7 +26,7 @@ public class ActionSetPlayerSettings extends AbstractAction{
             JOptionPane.showMessageDialog(frame.playerDialog, "Invalid selection!");
             return;
         }
-        frame.player.setUsername(username);
+        frame.player.setName(username);
         frame.player.setColor(color);
         frame.playerDialog.dispose();
     }

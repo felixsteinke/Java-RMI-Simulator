@@ -86,8 +86,6 @@ public class RaceTrack implements Serializable {
                 + "StartPoints: " + startPoints.toString();
     }
 
-    
-    
     public String dataToString() {
         this.pointsOutter = coordOuter.size();
         this.pointsInner = coordInner.size();
@@ -181,6 +179,8 @@ public class RaceTrack implements Serializable {
         gapSize = (distance / 3);
     }
 
+    
+    //<editor-fold defaultstate="collapsed" desc=" Getter & Setter ">
     public int getWidthField() {
         return widthField;
     }
@@ -301,4 +301,5 @@ public class RaceTrack implements Serializable {
         this.coordControl = coordControl;
     }
 
+    //</editor-fold>
 }

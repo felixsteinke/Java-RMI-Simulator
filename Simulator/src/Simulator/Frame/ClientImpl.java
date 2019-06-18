@@ -13,6 +13,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.DefaultListModel;
+import simulator.data.container.Player;
 import simulator.data.container.PlayerDatabase;
 import simulator.data.container.RaceTrack;
 import simulator.interfaces.Client;
@@ -28,53 +29,30 @@ public class ClientImpl implements Client { //old BarImpl
 
     @Override
     public void receiveString(String data) {
-        EventQueue.invokeLater(() -> {
-            try {
-                Thread.sleep(50);
-                SimulatorFrame.getInstance().chatModel.addElement(data);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(ClientImpl.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        });
+        System.out.println("Client: String received - " + data);
+        SimulatorFrame.getInstance().chatModel.addElement(data);   
     }
 
     //Prototyp
     @Override
     public void receivePlayerDatabase(PlayerDatabase data) throws RemoteException {
-        EventQueue.invokeLater(() -> {
-            try {
-                Thread.sleep(50);
-
-            } catch (InterruptedException ex) {
-                Logger.getLogger(ClientImpl.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        });
+        System.out.println("Client: PlayerDatabase received");
         SimulatorFrame.getInstance().playerDatabase = data;
+        for (Player player : data.playerlist) {
+            player.controlData();
+        }
     }
 
     @Override
     public void receiveRacetrack(RaceTrack data) throws RemoteException {
-        EventQueue.invokeLater(() -> {
-            try {
-                Thread.sleep(50);
-
-            } catch (InterruptedException ex) {
-                Logger.getLogger(ClientImpl.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        });
+        System.out.println("Client: RaceTrack received");
         SimulatorFrame.getInstance().setRaceTrackToPlay(data);
         SimulatorFrame.getInstance().repaint();
     }
 
     @Override
     public void receiveRacetracksList(String data) throws RemoteException {
-        EventQueue.invokeLater(() -> {
-            try {
-                Thread.sleep(50);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(ClientImpl.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        });
+        System.out.println("Client: RaceTrackList received");
         //Dialog mit jList machen, und dann auswählen welches genommen werden soll
         String decision = JOptionPane.showInputDialog(data);
         SimulatorFrame.getInstance().consoleModel.addElement("RaceTrackList received");
@@ -84,13 +62,7 @@ public class ClientImpl implements Client { //old BarImpl
 
     @Override
     public void receiveFeedback(String data) throws RemoteException {
-        EventQueue.invokeLater(() -> {
-            try {
-                Thread.sleep(50);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(ClientImpl.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        });
+        System.out.println("Client: Feedback received");
         SimulatorFrame.getInstance().consoleModel.addElement(data);
         
         String[] feedback = data.split(":");

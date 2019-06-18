@@ -31,7 +31,7 @@ public class ActionDisconnectFromGame extends AbstractAction {
 
         EventQueue.invokeLater(() -> {
             try {
-                String mesg = frame.player.username + " disconnected from " + frame.gameName;
+                String mesg = frame.player.name + " disconnected from " + frame.gameName;
                 frame.server.sendString(mesg);
                 frame.connection.leaveGame(frame.server,frame.player,frame.gameName);
                 ///!!!!!!!MISSING!!!!!!!! warum ist das nicht exporte

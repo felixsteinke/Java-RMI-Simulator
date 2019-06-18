@@ -362,6 +362,7 @@ public class CreationFrame extends javax.swing.JFrame {
     }
      */
     //</editor-fold>
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -718,6 +719,7 @@ public class CreationFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton_LoadMapActionPerformed
 
     // </editor-fold> 
+    
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -745,7 +747,6 @@ public class CreationFrame extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                System.out.println("Test Frame");
                 new CreationFrame();
 
             }
@@ -804,6 +805,7 @@ public class CreationFrame extends javax.swing.JFrame {
                 g2d.drawLine(gameRect.x, y, gameRect.x + data.getWidthField(), y);
             }
             drawAllPoints(g2d);
+            //<editor-fold defaultstate="collapsed" desc=" State 1 - StartLine ">
             //State 1 ======================================================================
             if (state1finished) {
                 g2d.setColor(Color.YELLOW);
@@ -811,7 +813,8 @@ public class CreationFrame extends javax.swing.JFrame {
                 g2d.drawLine(gameRect.x + data.getCoordStart().get(0).x, gameRect.y + data.getCoordStart().get(0).y,
                         gameRect.x + data.getCoordStart().get(1).x, gameRect.y + data.getCoordStart().get(1).y);
             }
-
+            //</editor-fold>
+            //<editor-fold defaultstate="collapsed" desc=" State 2 - ControlLine ">
             //State 2 ======================================================================
             if (state2finished) {
                 g2d.setColor(Color.DARK_GRAY);
@@ -820,7 +823,8 @@ public class CreationFrame extends javax.swing.JFrame {
                         gameRect.x + data.getCoordControl().get(1).x, gameRect.y + data.getCoordControl().get(1).y);
 
             }
-
+            //</editor-fold>
+            //<editor-fold defaultstate="collapsed" desc=" State 3 - Outline ">
             //State 3 ======================================================================
             g2d.setColor(Color.RED);
             g2d.setStroke(new BasicStroke(1.0f));
@@ -846,7 +850,8 @@ public class CreationFrame extends javax.swing.JFrame {
                 }
 
             }
-
+            //</editor-fold>
+            //<editor-fold defaultstate="collapsed" desc=" State 4 - Inline ">
             //State 4 ======================================================================
             GeneralPath pathFormInner = new GeneralPath(0);
             if (!data.getCoordInner().isEmpty()) {
@@ -870,6 +875,8 @@ public class CreationFrame extends javax.swing.JFrame {
                 }
 
             }
+            //</editor-fold>
+            //<editor-fold defaultstate="collapsed" desc=" After State 4 (State 5) - Rectangles ">
             //Finished  1 - 2 - 3 - 4 ======================================================================
             if (state1finished && state2finished && state3finished && state4finished) {
                 g2d.setColor(Color.RED);
@@ -883,12 +890,15 @@ public class CreationFrame extends javax.swing.JFrame {
                         g2d.fillRect(x, y, data.getGridSize(), data.getGridSize());
                     }
                 }
+                //<editor-fold defaultstate="collapsed" desc=" State 5 - StartPoints ">
                 //State 5 ======================================================================
                 g2d.setColor(Color.YELLOW);
                 for (Point startPoint : data.getStartPoints()) {
                     g2d.fillOval(gameRect.x + startPoint.x, gameRect.y + startPoint.y, data.getGridSize(), data.getGridSize());
                 }
+                //</editor-fold>
             }
+            //</editor-fold>
         }
 
     }

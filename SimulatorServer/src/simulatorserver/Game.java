@@ -6,6 +6,7 @@
 package simulatorserver;
 
 import java.awt.Point;
+import java.awt.geom.Line2D;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
@@ -48,6 +49,7 @@ public class Game {
 
     //MISSING!!!!!!!!
     public void refreshPlayerDatabase() throws RemoteException {
+        System.out.println("Game: " + this.name + " refreshedPlayerDatabase.");
         if (turnCollection.size() == getActivPlayer()) {
             turnCollection.clear();
             Point player0Position;
@@ -91,6 +93,12 @@ public class Game {
                 }
             }
             sendDatabaseToAll();
+            
+            for (Player player : playerData.playerlist) {
+                if(player.isAlive()){
+                    player.getConnectedClient().receiveFeedback("555:Lets do a turn!");
+                }
+            }
         }
 
         /*
@@ -111,8 +119,8 @@ public class Game {
 
     //optional
     private boolean antiCheatTool(Player player) {
-        ArrayList sendedOut = player.getTurns().get(player.getTurns().size() - 1).getOldMoves();
-        ArrayList gotIn = player.getTurns().get(player.getTurns().size() - 2).getOldMoves();
+        ArrayList sendedOut = player.getTurns().get(player.getTurns().size() - 1).getOldTurn();
+        ArrayList gotIn = player.getTurns().get(player.getTurns().size() - 2).getOldTurn();
         if (sendedOut.equals(gotIn)) {
             return false;
         } else {
@@ -131,6 +139,22 @@ public class Game {
         }
     }
 
+    private boolean checkPointIsValid(Point position){
+        return raceTrack.getValidPoints().contains(position);
+    }
+    
+    private boolean checkCrossedControlLine (Point oldPoint, Point newPoint){
+        Line2D line = new Line2D.Double(newPoint, oldPoint);
+        Line2D startLine = new Line2D.Double(raceTrack.getCoordControl().get(0), raceTrack.getCoordControl().get(1));
+        return startLine.intersectsLine(line);
+    }
+    
+    private boolean checkCrossedStartLine(Point oldPoint, Point newPoint){
+        Line2D line = new Line2D.Double(newPoint, oldPoint);
+        Line2D startLine = new Line2D.Double(raceTrack.getCoordStart().get(0), raceTrack.getCoordStart().get(1));
+        return startLine.intersectsLine(line);
+    }
+    
     private int getActivPlayer() {
         int count = 0;
         for (Player player : playerData.playerlist) {
@@ -142,17 +166,23 @@ public class Game {
     }
 
     public void startGame() {
+        System.out.println("Game: " + this.name + " started.");
         for (int i = 0; i < playerData.playerlist.size(); i++) {
             Point startPosition = raceTrack.getStartPoints().get(i);
             playerData.playerlist.get(i).setStartPosition(startPosition);
+            
             try {
                 playerData.playerlist.get(i).getConnectedClient().receiveFeedback("555:Lets Start!");
             } catch (RemoteException ex) {
                 Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
             }
+            
+            System.out.println(playerData.playerlist.get(i).getStartPosition().toString());
         }
+        sendDatabaseToAll();
     }
 
+    //<editor-fold defaultstate="collapsed" desc=" Getter & Setter ">
     public RaceTrack getRaceTrack() {
         return raceTrack;
     }
@@ -208,5 +238,6 @@ public class Game {
     public void setGameState(int gameState) {
         this.gameState = gameState;
     }
+    //</editor-fold>
 
 }

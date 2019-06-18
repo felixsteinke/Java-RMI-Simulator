@@ -19,7 +19,7 @@ import simulator.interfaces.Server;
  */
 public class Player implements Serializable {
     
-    public String username;
+    public String name;
     private ArrayList <Turn> turns;
     private Point startPosition;
     private Point position;
@@ -32,21 +32,28 @@ public class Player implements Serializable {
     private boolean wonTheGame = false;
 
     public Player() {
-        this.username = null;
+        this.name = null;
         this.alive = true;
         this.turns = new ArrayList <Turn>();
         turns.add(new Turn("default"));
         this.color = Color.PINK;
     }
 
+    public void controlData(){
+        System.out.println("Player Control:");
+        System.out.println("Player: " + name);
+        System.out.println("Startposition: " + startPosition.toString() + " | Position: " + position.toString());
+        System.out.println("Turns: " + turns.size());
+        System.out.println("Last Turn: " + turns.get(turns.size()-1).turnVektor[0] + "|" + turns.get(turns.size()-1).turnVektor[1]);
+    }
     
-    
-    public String getUsername() {
-        return username;
+    //<editor-fold defaultstate="collapsed" desc=" Getter & Setter ">
+    public String getName() {
+        return name;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public ArrayList<Turn> getTurns() {
@@ -78,12 +85,6 @@ public class Player implements Serializable {
     }
 
     public void setAlive(boolean activNew) {
-        if(activNew == true){
-            if(username == null){
-                JOptionPane.showMessageDialog(null, "Not ready to be activ, Username empty!");
-                return;
-            }
-        }
         this.alive = activNew;
     } 
 
@@ -134,7 +135,7 @@ public class Player implements Serializable {
     public void setPosition(Point position) {
         this.position = position;
     }
-    
+    //</editor-fold>
     
     
 }

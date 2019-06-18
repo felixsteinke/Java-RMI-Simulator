@@ -35,7 +35,7 @@ public class ConnectionImpl implements Connection {
             //====================================================================================================
             //Request erhalten
             String mesg = String.format("Method joinGame called from %s, user: %s, game %s, code: %s",
-                    RemoteServer.getClientHost(), player.username, gameName, code);
+                    RemoteServer.getClientHost(), player.name, gameName, code);
             System.out.println(mesg);
             
             //ServerObject erstellen und dem Player (Client) zuordnen
@@ -63,7 +63,7 @@ public class ConnectionImpl implements Connection {
             //====================================================================================================
             //Request erhalten
             String mesg = String.format("Method leaveGame called from %s, user: %s, game: %s",
-                    RemoteServer.getClientHost(), player.username, gameName);
+                    RemoteServer.getClientHost(), player.name, gameName);
             System.out.println(mesg);
             
             //Request der Administation weitergeben

@@ -44,7 +44,8 @@ public class SimulatorPanel extends JPanel {
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         //Size Screen
         Rectangle screenRect = this.getBounds();
-
+        
+        //<editor-fold defaultstate="collapsed" desc=" Startpicture ">
         if ((data = SimulatorFrame.getInstance().getRaceTrackToPlay()) == null) {
             SimulatorFrame.getInstance().consoleModel.addElement("Simulator Panel has no data.");
             try {
@@ -55,17 +56,20 @@ public class SimulatorPanel extends JPanel {
             }
             return;
         }
+        //</editor-fold>
         
         //Size Game
         gameRect = new Rectangle(screenRect.width / 2 - data.getWidthField() / 2, 0, data.getWidthField(), data.getHeightField());
+        
         //Background
         g2d.setColor(Color.BLACK);
         g2d.fillRect(gameRect.x, gameRect.y, gameRect.width, gameRect.height);
 
-        //Line Outer
+        
         g2d.setColor(Color.RED);
         g2d.setStroke(new BasicStroke(1.0f));
-
+        
+        //<editor-fold defaultstate="collapsed" desc=" Outline ">
         ArrayList<Point> pointsOuter = data.getCoordOuter();
         GeneralPath pathFormOuter = new GeneralPath(0);
         pathFormOuter.moveTo(gameRect.x + pointsOuter.get(0).x, gameRect.y + pointsOuter.get(0).y);
@@ -77,8 +81,8 @@ public class SimulatorPanel extends JPanel {
                 gameRect.x + pointsOuter.get(0).x, gameRect.y + pointsOuter.get(0).y);
         pathFormOuter.closePath();
         g2d.draw(pathFormOuter);
-
-        //Line Inner
+        //</editor-fold>
+        //<editor-fold defaultstate="collapsed" desc=" Inline ">
         ArrayList<Point> pointsInner = data.getCoordInner();
         GeneralPath pathFormInner = new GeneralPath(0);
         pathFormInner.moveTo(gameRect.x + pointsInner.get(0).x, gameRect.y + pointsInner.get(0).y);
@@ -90,8 +94,8 @@ public class SimulatorPanel extends JPanel {
                 gameRect.x + pointsInner.get(0).x, gameRect.y + pointsInner.get(0).y);
         pathFormInner.closePath();
         g2d.draw(pathFormInner);
-
-        //Map rectangles
+        //</editor-fold>
+        //<editor-fold defaultstate="collapsed" desc=" Rectangles ">
         g2d.setColor(Color.RED);
         for (int x = gameRect.x + data.getGapSize(); x <= gameRect.x + gameRect.width - data.getGridSize(); x += data.getGridSize() + data.getGapSize()) {
             for (int y = gameRect.y + data.getGapSize(); y <= gameRect.y + gameRect.height - data.getGridSize(); y += data.getGridSize() + data.getGapSize()) {
@@ -104,14 +108,16 @@ public class SimulatorPanel extends JPanel {
                 g2d.fillRect(x, y, data.getGridSize(), data.getGridSize());
             }
         }
-        //paint start
+        //</editor-fold>
         
-        ArrayList<Point> pointsStart = data.getCoordStart();
         g2d.setColor(Color.YELLOW);
         g2d.setStroke(new BasicStroke(5.0f));
+        
+        //<editor-fold defaultstate="collapsed" desc=" Startline ">
+        ArrayList<Point> pointsStart = data.getCoordStart();
         g2d.drawLine(gameRect.x + pointsStart.get(0).x, gameRect.y + pointsStart.get(0).y,
                 gameRect.x + pointsStart.get(1).x, gameRect.y + pointsStart.get(1).y);
-        SimulatorFrame.getInstance().consoleModel.addElement("Simulator Panel inizalized.");
+        //</editor-fold>
         
         paintPlayerData(g2d);
         
@@ -130,11 +136,11 @@ public class SimulatorPanel extends JPanel {
         g2d.setStroke(new BasicStroke(2.0f));
         Point startPosition = new Point(player.getStartPosition().x + gameRect.x, player.getStartPosition().y + gameRect.y);
         g2d.fillRect(startPosition.x, startPosition.y, data.getGridSize(), data.getGridSize());
-        Point position = new Point(player.getPosition().x + gameRect.x, player.getPosition().y + gameRect.y);
-        g2d.fillOval(position.x, position.y, data.getGridSize(), data.getGridSize());
         Point tempPointBack = new Point(startPosition);
-        Point tempPointFront;
-        if (!player.getTurns().isEmpty() && player.getTurns() != null) {
+        if (player.getPosition() != null) {
+            Point tempPointFront;
+            Point position = new Point(player.getPosition().x + gameRect.x, player.getPosition().y + gameRect.y);
+            g2d.fillOval(position.x, position.y, data.getGridSize(), data.getGridSize());
             for (Turn turn : player.getTurns()) {
                 tempPointFront = new Point(tempPointBack.x + turn.turnVektor[0], tempPointBack.y + turn.turnVektor[1]);
                 g2d.drawLine(tempPointBack.x, tempPointBack.y, tempPointFront.x, tempPointFront.y);
