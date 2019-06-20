@@ -23,10 +23,16 @@ public class ActionUploadGame extends AbstractAction {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if(frame.connected == false){
-            JOptionPane.showMessageDialog(frame, "Not Connected");
+        //<editor-fold defaultstate="collapsed" desc=" Action Conditions ">
+        if(frame.getRaceTrackToUpload() == null){
+            JOptionPane.showMessageDialog(frame, "RaceTrack needs to be created first!");
             return;
         }
+        if(!frame.connected){
+            JOptionPane.showMessageDialog(frame, "Not Connected.");
+            return;
+        }
+        //</editor-fold>
         RaceTrack raceTrack = frame.getRaceTrackToUpload();
         
         if (validateRaceTrack(raceTrack) == true){
@@ -49,7 +55,7 @@ public class ActionUploadGame extends AbstractAction {
                 && (raceTrack.getCoordOuter().size() == raceTrack.getPointsOutter())
                 && (raceTrack.getCoordInner().size() == raceTrack.getPointsInner())
                 && (raceTrack.getCoordStart().size() == 2)
-                /*&& (raceTrack.getCoordControl().size() == 2)*/
+                && (raceTrack.getCoordControl().size() == 2)
                 && raceTrack.getDistance() > 0
                 && raceTrack.getGridSize() > 0
                 && raceTrack.getGapSize() > 0

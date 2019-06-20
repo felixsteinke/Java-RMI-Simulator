@@ -8,6 +8,7 @@ package Simulator.Frame.Dialog.Player;
 import Simulator.Frame.Dialog.Connect.ActionConnectToGamePort;
 import Simulator.Frame.Dialog.Connect.ActionConnectToGameIP;
 import Simulator.Frame.Dialog.Connect.ActionConnectToGame;
+import Simulator.Frame.SimulatorFrame;
 import javax.swing.JButton;
 import javax.swing.JColorChooser;
 import javax.swing.JLabel;
@@ -49,7 +50,7 @@ public class CreatePlayerSettings extends javax.swing.JDialog {
 
         jLabel_Username.setText("Username:");
 
-        jTextField_Username.setText("testUser");
+        jTextField_Username.setText(SimulatorFrame.getInstance().player.getName());
 
         jButton_Continue.setAction(new ActionSetPlayerSettings());
         jButton_Continue.setText("Continue");

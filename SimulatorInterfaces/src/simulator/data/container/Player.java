@@ -30,9 +30,10 @@ public class Player implements Serializable {
     private boolean alive;
     private boolean canDoMove = false;
     private boolean wonTheGame = false;
+    private boolean crossedControlLine = false;
 
     public Player() {
-        this.name = null;
+        this.name = "DefaultUser";
         this.alive = true;
         this.turns = new ArrayList <Turn>();
         turns.add(new Turn("default"));
@@ -44,7 +45,7 @@ public class Player implements Serializable {
         System.out.println("Player: " + name);
         System.out.println("Startposition: " + startPosition.toString() + " | Position: " + position.toString());
         System.out.println("Turns: " + turns.size());
-        System.out.println("Last Turn: " + turns.get(turns.size()-1).turnVektor[0] + "|" + turns.get(turns.size()-1).turnVektor[1]);
+        System.out.println("Last Turn: " + turns.get(turns.size()-1).turnVektor.x + "|" + turns.get(turns.size()-1).turnVektor.y);
     }
     
     //<editor-fold defaultstate="collapsed" desc=" Getter & Setter ">
@@ -56,6 +57,16 @@ public class Player implements Serializable {
         this.name = name;
     }
 
+    public boolean isCrossedControlLine() {
+        return crossedControlLine;
+    }
+
+    public void setCrossedControlLine(boolean crossedControlLine) {
+        this.crossedControlLine = crossedControlLine;
+    }
+
+    
+    
     public ArrayList<Turn> getTurns() {
         return turns;
     }

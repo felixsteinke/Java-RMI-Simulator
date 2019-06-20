@@ -27,14 +27,14 @@ public class ActionSendTurn extends AbstractAction{
         Player myPlayer = new Player();
         
         for (Player player : frame.playerDatabase.playerlist) {
-            if(player.getConnectedClient()==frame.ClientImpl){
+            if(player.getConnectedServer()==frame.server){
                 System.out.println("You are player: " + player.getName());
                 myPlayer = player;
             }
         }
         Turn oldTurn = myPlayer.getTurns().get(myPlayer.getTurns().size() - 1);
         int moveValue = Integer.valueOf(frame.jTextField_Turn.getText());
-        Turn turn = new Turn(oldTurn.getOldTurn(), new Move(moveValue, frame.getRaceTrackToPlay().getDistance()));
+        Turn turn = new Turn(oldTurn, new Move(moveValue, frame.getRaceTrackToPlay().getDistance()));
         try {
             frame.server.sendTurn(turn);
         } catch (RemoteException ex) {

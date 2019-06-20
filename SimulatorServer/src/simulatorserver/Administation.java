@@ -255,14 +255,13 @@ public class Administation {
     //should be done - not tested
     public static void deleteRaceTrack(Server source, String data) {
         executorService.submit(() -> {
-            raceTracks.stream().forEach(raceTrack -> {
+            for (RaceTrack raceTrack : raceTracks) {
                 if (raceTrack.getName().equalsIgnoreCase(data)) {
-                    System.out.println("Server: RaceTrack " + raceTrack.getName() + " deleted!");
-                    raceTrack.toString();
                     raceTracks.remove(raceTrack);
+                    System.out.println("Server: RaceTrack " + raceTrack.getName() + " deleted!");
+                    break;
                 }
-
-            });
+            }
             writeArray(raceTracks);
         });
     }
@@ -293,7 +292,7 @@ public class Administation {
 
     private static void writeArray(ArrayList<RaceTrack> list) {
         System.out.println("RaceTracks on Server-Data:");
-        list.stream().forEach(raceTrack -> System.out.println(raceTrack.toString()));
+        list.stream().forEach(raceTrack -> System.out.println(raceTrack.getName()));
         ObjectOutputStream oos = null;
         try {
             //==============================================================================

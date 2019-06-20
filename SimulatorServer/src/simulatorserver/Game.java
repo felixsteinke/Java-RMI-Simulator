@@ -16,6 +16,7 @@ import java.util.logging.Logger;
 import simulator.data.container.Player;
 import simulator.data.container.PlayerDatabase;
 import simulator.data.container.RaceTrack;
+import simulator.data.container.Turn;
 
 /**
  *
@@ -31,6 +32,7 @@ public class Game {
     private String code;                //passwort
     private RaceTrack raceTrack;        //soll im nachhinen festgelegt werden
     private boolean gameStarted = false;
+    private boolean gameOver = false;
     private int gameState = 1;
     public ArrayList turnCollection;
     public PlayerDatabase playerData;   //spieler müssen vom nutzer hinzugefügt werden
@@ -52,75 +54,77 @@ public class Game {
         System.out.println("Game: " + this.name + " refreshedPlayerDatabase.");
         if (turnCollection.size() == getActivPlayer()) {
             turnCollection.clear();
-            Point player0Position;
-            Point player1Position;
-            Point player2Position;
-            Point player3Position;
-            Point player4Position;
-
-            for (int i = 0; i < playerData.playerlist.size(); i++) {
-                Player player = playerData.playerlist.get(i);
-                Point startPosition = player.getStartPosition();
-                int[] moveVektor = new int[2];
-                player.getTurns().stream().forEach(turn -> {
-                    moveVektor[0] = moveVektor[0] + turn.turnVektor[0];
-                    moveVektor[1] = moveVektor[1] + turn.turnVektor[1];
-                });
-                Point position = new Point (startPosition.x + moveVektor [0], startPosition.y + moveVektor [1]);
-                if(!raceTrack.getValidPoints().contains(position)){
-                    player.setAlive(false);
-                    player.getConnectedClient().receiveFeedback("888:You Lost!");
-                }
-                switch (i) {
-                    case 0:
-                        player0Position = position;
-                        break;
-                    case 1:
-                        player1Position = position;
-                        break;
-                    case 2:
-                        player2Position = position;
-                        break;
-                    case 3:
-                        player3Position = position;
-                        break;
-                    case 4:
-                        player4Position = position;
-                        break;
-                    default:
-                        System.out.println("Got more players than expected.");
-
-                }
-            }
-            sendDatabaseToAll();
-            
+            gameState++;
             for (Player player : playerData.playerlist) {
-                if(player.isAlive()){
-                    player.getConnectedClient().receiveFeedback("555:Lets do a turn!");
+                if (player.isAlive()) {
+                    Point oldPoint = player.getPosition();
+                    updatePosition(player);
+                    if (!checkPointIsValid(player.getPosition())) {
+                        player.setAlive(false);
+                        //<editor-fold defaultstate="collapsed" desc=" Send Lose ">
+                        this.executorService.submit(() -> {
+                            try {
+                                player.getConnectedClient().receiveFeedback("888:You LOST!");
+                            } catch (RemoteException ex) {
+                                Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                        });
+                        //</editor-fold>
+                        continue;
+                    }
+                    if (checkCrossedControlLine(oldPoint, player.getPosition())) {
+                        player.setCrossedControlLine(true);
+                    }
+                    if (checkCrossedStartLine(oldPoint, player.getPosition()) && player.isCrossedControlLine()) {
+                        player.setWonTheGame(true);
+                        //<editor-fold defaultstate="collapsed" desc=" Send Win ">
+                        this.executorService.submit(() -> {
+                            try {
+                                player.getConnectedClient().receiveFeedback("777: You WON!");
+                            } catch (RemoteException ex) {
+                                Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                        });
+                        //</editor-fold>
+                        gameStarted = false;
+                    }
+                    //<editor-fold defaultstate="collapsed" desc=" Send Turn Activation ">
+                    this.executorService.submit(() -> {
+                        try {
+                            player.getConnectedClient().receiveFeedback("555:Lets do a turn!");
+                        } catch (RemoteException ex) {
+                            Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    });
+                    //</editor-fold>
                 }
             }
+            //<editor-fold defaultstate="collapsed" desc=" Send Game Over ">
+            if (gameOver) {
+                for (Player player : playerData.playerlist) {
+                    this.executorService.submit(() -> {
+                        try {
+                            player.setAlive(false);
+                            player.getConnectedClient().receiveFeedback("888: Game is Over");
+                        } catch (RemoteException ex) {
+                            Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    });
+                }
+                playerData = new PlayerDatabase();
+                gameState = 1;
+                return;
+            }
+            //</editor-fold>
+            
+            sendDatabaseToAll();
         }
-
-        /*
-        !!!!MISSING!!!!
-        Durch alle Spieler Spieler gehen und schauen, ob die ArrayList turns.size == gameState ist.
-        Wenn das so ist, wird diese methode ausgeführt.
-
-        
-        muss player.canDoMove weiter schieben
-        muss player.isActiv prüfen, mit neuer Position compare mit ValidPoints von Racetrack
-        muss antiCheat prüfen player mit Turn muss OldTurns mit ClientOldTurns prüfen
-        bei allen spielern auf send Turn warten, wenn alle ihren Turn gesendet haben, verarbeiten
-        bei positionskonflikt, wer mehr speed in seinem turn hatte, gewinnt die position -> der andere muss
-        seinen Turn wiederholen
-        wer nach zeit x keinen move gemacht hat wird inactiv und hat verloren
-         */
     }
 
-    //optional
+    //optional IS WRONG
     private boolean antiCheatTool(Player player) {
-        ArrayList sendedOut = player.getTurns().get(player.getTurns().size() - 1).getOldTurn();
-        ArrayList gotIn = player.getTurns().get(player.getTurns().size() - 2).getOldTurn();
+        ArrayList sendedOut = player.getTurns().get(player.getTurns().size() - 1).getOldTurn().turnMoves;
+        ArrayList gotIn = player.getTurns().get(player.getTurns().size() - 2).getOldTurn().turnMoves;
         if (sendedOut.equals(gotIn)) {
             return false;
         } else {
@@ -131,30 +135,38 @@ public class Game {
 
     public void sendDatabaseToAll() {
         for (Player player : playerData.playerlist) {
-            try {
-                player.getConnectedClient().receivePlayerDatabase(playerData);
-            } catch (RemoteException ex) {
-                Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            this.executorService.submit(() -> {
+                try {
+                    player.getConnectedClient().receivePlayerDatabase(playerData);
+                } catch (RemoteException ex) {
+                    Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            });
         }
     }
 
-    private boolean checkPointIsValid(Point position){
+    private void updatePosition(Player player) {
+        Turn turn = player.getTurns().get(player.getTurns().size() - 1);
+        Point position = new Point(player.getPosition().x + turn.turnVektor.x, player.getPosition().y + turn.turnVektor.y);
+        player.setPosition(position);
+    }
+
+    private boolean checkPointIsValid(Point position) {
         return raceTrack.getValidPoints().contains(position);
     }
-    
-    private boolean checkCrossedControlLine (Point oldPoint, Point newPoint){
+
+    private boolean checkCrossedControlLine(Point oldPoint, Point newPoint) {
         Line2D line = new Line2D.Double(newPoint, oldPoint);
         Line2D startLine = new Line2D.Double(raceTrack.getCoordControl().get(0), raceTrack.getCoordControl().get(1));
         return startLine.intersectsLine(line);
     }
-    
-    private boolean checkCrossedStartLine(Point oldPoint, Point newPoint){
+
+    private boolean checkCrossedStartLine(Point oldPoint, Point newPoint) {
         Line2D line = new Line2D.Double(newPoint, oldPoint);
         Line2D startLine = new Line2D.Double(raceTrack.getCoordStart().get(0), raceTrack.getCoordStart().get(1));
         return startLine.intersectsLine(line);
     }
-    
+
     private int getActivPlayer() {
         int count = 0;
         for (Player player : playerData.playerlist) {
@@ -170,13 +182,14 @@ public class Game {
         for (int i = 0; i < playerData.playerlist.size(); i++) {
             Point startPosition = raceTrack.getStartPoints().get(i);
             playerData.playerlist.get(i).setStartPosition(startPosition);
-            
+            playerData.playerlist.get(i).setPosition(startPosition);
+
             try {
                 playerData.playerlist.get(i).getConnectedClient().receiveFeedback("555:Lets Start!");
             } catch (RemoteException ex) {
                 Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
             }
-            
+
             System.out.println(playerData.playerlist.get(i).getStartPosition().toString());
         }
         sendDatabaseToAll();

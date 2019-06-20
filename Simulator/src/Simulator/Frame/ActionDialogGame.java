@@ -8,6 +8,7 @@ package Simulator.Frame;
 import Simulator.Frame.Dialog.Game.CreateGameLobby;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -17,6 +18,7 @@ public class ActionDialogGame extends AbstractAction {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        
         Thread t = new Thread(() -> {
             //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
             try {

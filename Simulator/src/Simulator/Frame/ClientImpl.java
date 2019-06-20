@@ -23,30 +23,34 @@ import simulator.interfaces.Client;
  * @author Peter Heusch
  */
 public class ClientImpl implements Client { //old BarImpl
-
+    
     public ClientImpl() {
     }
 
     @Override
     public void receiveString(String data) {
         System.out.println("Client: String received - " + data);
-        SimulatorFrame.getInstance().chatModel.addElement(data);   
+        SimulatorFrame.getInstance().chatModel.addElement(data);
+        SimulatorFrame.getInstance().consoleModel.addElement("You got a Chat - Message.");
     }
 
-    //Prototyp
     @Override
     public void receivePlayerDatabase(PlayerDatabase data) throws RemoteException {
         System.out.println("Client: PlayerDatabase received");
         SimulatorFrame.getInstance().playerDatabase = data;
+        //!!!!!!!!!!!Nur für Test Zwecke !!!!!!!!!!!!
         for (Player player : data.playerlist) {
+            System.out.println("");
             player.controlData();
         }
+        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     }
 
     @Override
     public void receiveRacetrack(RaceTrack data) throws RemoteException {
         System.out.println("Client: RaceTrack received");
         SimulatorFrame.getInstance().setRaceTrackToPlay(data);
+        SimulatorFrame.getInstance().consoleModel.addElement("RaceTrack: " + data.getName() + " got selected.");
         SimulatorFrame.getInstance().repaint();
     }
 
@@ -54,16 +58,13 @@ public class ClientImpl implements Client { //old BarImpl
     public void receiveRacetracksList(String data) throws RemoteException {
         System.out.println("Client: RaceTrackList received");
         //Dialog mit jList machen, und dann auswählen welches genommen werden soll
-        String decision = JOptionPane.showInputDialog(data);
+        JOptionPane.showMessageDialog(SimulatorFrame.getInstance(), data, "RaceTrack - List", JOptionPane.INFORMATION_MESSAGE);
         SimulatorFrame.getInstance().consoleModel.addElement("RaceTrackList received");
-        SimulatorFrame.getInstance().server.setRaceTrackForGame(decision);
-        SimulatorFrame.getInstance().consoleModel.addElement("RaceTrackDecision sended");
     }
 
     @Override
     public void receiveFeedback(String data) throws RemoteException {
-        System.out.println("Client: Feedback received");
-        SimulatorFrame.getInstance().consoleModel.addElement(data);
+        System.out.println("Client: Feedback received: " + data);
         
         String[] feedback = data.split(":");
         int feedbackCode = Integer.valueOf(feedback[0]);
@@ -91,6 +92,7 @@ public class ClientImpl implements Client { //old BarImpl
                     JOptionPane.showMessageDialog(SimulatorFrame.getInstance(), feedbackMessage);
                     break;
                 case 999:
+                    SimulatorFrame.getInstance().consoleModel.addElement(feedbackMessage);
                     break;
                 default:
                     System.out.println("False code for feedback.");
