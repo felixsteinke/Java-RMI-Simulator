@@ -26,6 +26,9 @@ public class CreatePlayerSettings extends javax.swing.JDialog {
     public CreatePlayerSettings(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        super.pack();
+        setLocationRelativeTo(parent);
+        
     }
 
     /**

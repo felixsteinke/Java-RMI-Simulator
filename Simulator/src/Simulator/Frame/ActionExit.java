@@ -6,6 +6,7 @@
 package Simulator.Frame;
 
 import java.awt.event.ActionEvent;
+import java.awt.event.WindowEvent;
 import javax.swing.AbstractAction;
 
 /**
@@ -16,7 +17,16 @@ public class ActionExit extends AbstractAction {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        new ActionDisconnectFromGame().actionPerformed(e);
+        if(SimulatorFrame.getInstance().connected){
+            new ActionDisconnectFromGame().actionPerformed(e);
+        }
+        System.exit(0);
+    }
+    
+    public void actionPerformed(WindowEvent e) {
+        if(SimulatorFrame.getInstance().connected){
+            new ActionDisconnectFromGame().actionPerformed(e);
+        }
         System.exit(0);
     }
     

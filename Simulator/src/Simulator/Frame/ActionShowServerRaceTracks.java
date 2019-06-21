@@ -21,7 +21,8 @@ public class ActionShowServerRaceTracks extends AbstractAction{
     @Override
     public void actionPerformed(ActionEvent e) {
         if(!SimulatorFrame.getInstance().connected){
-            JOptionPane.showMessageDialog(null, "Not connected!");
+            JOptionPane.showMessageDialog(SimulatorFrame.getInstance(), "Not connected!");
+            return;
         }
         try {
             SimulatorFrame.getInstance().server.showRaceTrackList();

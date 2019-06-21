@@ -19,6 +19,8 @@ public class ConnectToGame extends javax.swing.JDialog {
     public ConnectToGame(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        super.pack();
+        setLocationRelativeTo(parent);
     }
 
     /**

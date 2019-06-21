@@ -23,7 +23,7 @@ public class ActionDeleteUploadedGame extends AbstractAction {
     @Override
     public void actionPerformed(ActionEvent e) {
         if(frame.connected == true){
-            String name = JOptionPane.showInputDialog("Which RaceTrack should be deleted on the Server?");
+            String name = JOptionPane.showInputDialog(frame,"Which RaceTrack should be deleted on the Server?");
             try {
                 frame.server.deleteRaceTrack(name);
             } catch (RemoteException ex) {

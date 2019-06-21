@@ -30,7 +30,7 @@ public class ActionConnectToGame extends AbstractAction {
     @Override
     public void actionPerformed(ActionEvent e) {
         if (frame.connected == true) {
-            JOptionPane.showMessageDialog(null, "Already Connected");
+            JOptionPane.showMessageDialog(SimulatorFrame.getInstance(), "Already Connected");
             return;
         }
         

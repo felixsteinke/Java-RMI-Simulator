@@ -9,7 +9,6 @@ import java.awt.Color;
 import java.awt.Point;
 import java.io.Serializable;
 import java.util.ArrayList;
-import javax.swing.JOptionPane;
 import simulator.interfaces.Client;
 import simulator.interfaces.Server;
 
@@ -39,7 +38,7 @@ public class Player implements Serializable {
         turns.add(new Turn("default"));
         this.color = Color.PINK;
     }
-
+    
     public void controlData(){
         System.out.println("Player Control:");
         System.out.println("Player: " + name);

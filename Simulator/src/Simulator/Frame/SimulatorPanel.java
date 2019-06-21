@@ -141,9 +141,9 @@ public class SimulatorPanel extends JPanel {
         g2d.fillOval(position.x, position.y, data.getGridSize(), data.getGridSize());
         
         //paint your next Turn
-        if (player.getConnectedServer() == SimulatorFrame.getInstance().server) {
+        if (player.getName().equalsIgnoreCase(SimulatorFrame.getInstance().player.getName())) {
             Turn lastTurn = player.getTurns().get(player.getTurns().size() - 1);
-            Point nextPosition = new Point (player.getPosition().x + lastTurn.turnVektor.x, player.getPosition().y + lastTurn.turnVektor.y);
+            Point nextPosition = new Point (position.x + lastTurn.turnVektor.x, position.y + lastTurn.turnVektor.y);
             g2d.drawLine(position.x + data.getGridSize()/2, position.y + data.getGridSize()/2, nextPosition.x + data.getGridSize()/2, nextPosition.y + data.getGridSize()/2);
         }
     }

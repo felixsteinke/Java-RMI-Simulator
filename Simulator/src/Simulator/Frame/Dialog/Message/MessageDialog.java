@@ -25,6 +25,8 @@ public class MessageDialog extends javax.swing.JDialog {
         this.chatModel = model;
         this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         initComponents();
+        super.pack();
+        setLocationRelativeTo(parent);
     }
 
     /**

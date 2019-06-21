@@ -39,7 +39,7 @@ public class ActionDialogMessenger extends AbstractAction {
 
             java.awt.EventQueue.invokeLater(new Runnable() {
                 public void run() {
-                    SimulatorFrame.getInstance().chatDialog = new MessageDialog(new javax.swing.JFrame(), true, SimulatorFrame.getInstance().chatModel);
+                    SimulatorFrame.getInstance().chatDialog = new MessageDialog(SimulatorFrame.getInstance(), true, SimulatorFrame.getInstance().chatModel);
                     SimulatorFrame.getInstance().chatDialog.addWindowListener(new java.awt.event.WindowAdapter() {
                         @Override
                         public void windowClosing(java.awt.event.WindowEvent e) {

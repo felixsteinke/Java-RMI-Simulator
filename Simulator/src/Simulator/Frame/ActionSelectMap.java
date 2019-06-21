@@ -20,6 +20,12 @@ public class ActionSelectMap extends AbstractAction{
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        
+        if(!SimulatorFrame.getInstance().connected){
+            JOptionPane.showMessageDialog(SimulatorFrame.getInstance(), "Not connected.");
+            return;
+        }
+        
         try {
             String selection = JOptionPane.showInputDialog("Write the Map-Name:");
             SimulatorFrame.getInstance().server.setRaceTrackForGame(selection);

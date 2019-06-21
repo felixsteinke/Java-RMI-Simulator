@@ -12,6 +12,9 @@ import Simulator.Frame.Dialog.Game.CreateGameLobby;
 import simulator.data.container.RaceTrack;
 import java.awt.EventQueue;
 import java.awt.Point;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.io.File;
 import java.rmi.RemoteException;
 import java.rmi.registry.Registry;
@@ -70,11 +73,21 @@ public class SimulatorFrame extends javax.swing.JFrame {
     private SimulatorFrame() {
         instanceSimulatorFrame = this;
         setExtendedState(MAXIMIZED_BOTH);
+        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+        this.addWindowListener(exitListener);
         initComponents();
         jButton_Turn.setEnabled(false);
         jLabelTurn.setVisible(false);
         
+
     }
+    
+    //!!!!MISSING!!!! funktioniert irgendwie nicht
+    WindowListener exitListener = new WindowAdapter() {
+        public void windowClosing(WindowEvent e) {
+            new ActionExit().actionPerformed(e);
+        }
+    };
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -95,17 +108,20 @@ public class SimulatorFrame extends javax.swing.JFrame {
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu_GetStarted = new javax.swing.JMenu();
         jMenuItem_Player = new javax.swing.JMenuItem();
+        jSeparator5 = new javax.swing.JPopupMenu.Separator();
         jMenuItem_CloseGame = new javax.swing.JMenuItem();
         jMenu_Connection = new javax.swing.JMenu();
-        jSeparator1 = new javax.swing.JPopupMenu.Separator();
         jMenuItem_Game = new javax.swing.JMenuItem();
         jSeparator2 = new javax.swing.JPopupMenu.Separator();
+        jMenuItem_Connect = new javax.swing.JMenuItem();
+        jSeparator1 = new javax.swing.JPopupMenu.Separator();
         jMenuItem_ShowMaps = new javax.swing.JMenuItem();
         jMenuItem_SelectMap = new javax.swing.JMenuItem();
-        jMenuItem_Connect = new javax.swing.JMenuItem();
+        jSeparator3 = new javax.swing.JPopupMenu.Separator();
         jMenuItem_Disconnect = new javax.swing.JMenuItem();
         jMenu_CreateMap = new javax.swing.JMenu();
         jMenuItem_CreateFrame = new javax.swing.JMenuItem();
+        jSeparator4 = new javax.swing.JPopupMenu.Separator();
         jMenuItem_Upload = new javax.swing.JMenuItem();
         jMenuItem_GetRTList = new javax.swing.JMenuItem();
         jMenuItem_Delete = new javax.swing.JMenuItem();
@@ -181,6 +197,9 @@ public class SimulatorFrame extends javax.swing.JFrame {
         jMenuItem_Player.setText("Create Player");
         jMenu_GetStarted.add(jMenuItem_Player);
 
+        jSeparator5.setPreferredSize(new java.awt.Dimension(0, 8));
+        jMenu_GetStarted.add(jSeparator5);
+
         jMenuItem_CloseGame.setAction(new ActionCloseGame());
         jMenuItem_CloseGame.setText("Close Game");
         jMenu_GetStarted.add(jMenuItem_CloseGame);
@@ -188,12 +207,20 @@ public class SimulatorFrame extends javax.swing.JFrame {
         jMenuBar1.add(jMenu_GetStarted);
 
         jMenu_Connection.setText("Connection");
-        jMenu_Connection.add(jSeparator1);
 
         jMenuItem_Game.setAction(new ActionDialogGame());
         jMenuItem_Game.setText("Create Game");
         jMenu_Connection.add(jMenuItem_Game);
+
+        jSeparator2.setPreferredSize(new java.awt.Dimension(0, 8));
         jMenu_Connection.add(jSeparator2);
+
+        jMenuItem_Connect.setAction(new ActionDialogConnect());
+        jMenuItem_Connect.setText("Connect");
+        jMenu_Connection.add(jMenuItem_Connect);
+
+        jSeparator1.setPreferredSize(new java.awt.Dimension(0, 8));
+        jMenu_Connection.add(jSeparator1);
 
         jMenuItem_ShowMaps.setAction(new ActionShowServerRaceTracks());
         jMenuItem_ShowMaps.setText("Show Maps");
@@ -203,9 +230,8 @@ public class SimulatorFrame extends javax.swing.JFrame {
         jMenuItem_SelectMap.setText("Select Map");
         jMenu_Connection.add(jMenuItem_SelectMap);
 
-        jMenuItem_Connect.setAction(new ActionDialogConnect());
-        jMenuItem_Connect.setText("Connect");
-        jMenu_Connection.add(jMenuItem_Connect);
+        jSeparator3.setPreferredSize(new java.awt.Dimension(0, 8));
+        jMenu_Connection.add(jSeparator3);
 
         jMenuItem_Disconnect.setAction(new ActionDisconnectFromGame());
         jMenuItem_Disconnect.setText("Disconnect");
@@ -218,6 +244,9 @@ public class SimulatorFrame extends javax.swing.JFrame {
         jMenuItem_CreateFrame.setAction(new Simulator.Frame.ActionDialogCreateMap());
         jMenuItem_CreateFrame.setText("Open CreationTool");
         jMenu_CreateMap.add(jMenuItem_CreateFrame);
+
+        jSeparator4.setPreferredSize(new java.awt.Dimension(0, 8));
+        jMenu_CreateMap.add(jSeparator4);
 
         jMenuItem_Upload.setAction(new ActionUploadGame());
         jMenuItem_Upload.setText("Upload RaceTrack");
@@ -293,21 +322,21 @@ public class SimulatorFrame extends javax.swing.JFrame {
     public void connect(String gameName, String gameCode) throws RemoteException {
         clientExported = (Client) UnicastRemoteObject.exportObject(ClientImpl, 0);
         player.setConnectedClient(ClientImpl);
-            
+
         server = connection.joinGame(ClientImpl, player, gameName, gameCode);
         player.setConnectedServer(server);
-            
-            connected = true;
-            
-            String mesg = player.name + " made it in " + gameName;
-            chatModel.addElement(mesg);
-            server.sendString(mesg);
+
+        connected = true;
+
+        String mesg = player.name + " made it in " + gameName;
+        chatModel.addElement(mesg);
+        server.sendString(mesg);
     }
-    
+
     public int calcPort() {
         String input;
         do {
-            input = JOptionPane.showInputDialog(null, "Gewünschten Port eingeben:");
+            input = JOptionPane.showInputDialog(this, "Gewünschten Port eingeben:");
             System.out.println("Input not valid!");
         } while (!input.matches("[0-9]{2,6}"));
         return Integer.valueOf(input);
@@ -316,7 +345,7 @@ public class SimulatorFrame extends javax.swing.JFrame {
     public String calcIP() {
         String input;
         do {
-            input = JOptionPane.showInputDialog(null, "Gewünschten IP eingeben:");
+            input = JOptionPane.showInputDialog(this, "Gewünschten IP eingeben:");
             System.out.println("Input not valid!");
         } while (!input.matches("[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}"));
         return input;
@@ -352,6 +381,9 @@ public class SimulatorFrame extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane_Console;
     private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JPopupMenu.Separator jSeparator2;
+    private javax.swing.JPopupMenu.Separator jSeparator3;
+    private javax.swing.JPopupMenu.Separator jSeparator4;
+    private javax.swing.JPopupMenu.Separator jSeparator5;
     public javax.swing.JTextField jTextField_Turn;
     // End of variables declaration//GEN-END:variables
 

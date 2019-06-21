@@ -60,7 +60,7 @@ public class ActionDialogConnect extends AbstractAction {
             /* Create and display the dialog */
             java.awt.EventQueue.invokeLater(new Runnable() {
                 public void run() {
-                    SimulatorFrame.getInstance().connectDialog = new ConnectToGame(new javax.swing.JFrame(), true);
+                    SimulatorFrame.getInstance().connectDialog = new ConnectToGame(frame, true);
                     SimulatorFrame.getInstance().connectDialog.addWindowListener(new java.awt.event.WindowAdapter() {
                         @Override
                         public void windowClosing(java.awt.event.WindowEvent e) {

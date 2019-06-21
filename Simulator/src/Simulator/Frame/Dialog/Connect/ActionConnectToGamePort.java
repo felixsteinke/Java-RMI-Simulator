@@ -31,7 +31,7 @@ public class ActionConnectToGamePort extends AbstractAction {
     public void actionPerformed(ActionEvent e) {
 
         if (frame.connected == true) {
-            JOptionPane.showMessageDialog(null, "Already Connected");
+            JOptionPane.showMessageDialog(SimulatorFrame.getInstance(), "Already Connected");
             return;
         }
         

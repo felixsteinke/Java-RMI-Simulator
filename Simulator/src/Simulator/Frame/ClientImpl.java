@@ -38,12 +38,7 @@ public class ClientImpl implements Client { //old BarImpl
     public void receivePlayerDatabase(PlayerDatabase data) throws RemoteException {
         System.out.println("Client: PlayerDatabase received");
         SimulatorFrame.getInstance().playerDatabase = data;
-        //!!!!!!!!!!!Nur für Test Zwecke !!!!!!!!!!!!
-        for (Player player : data.playerlist) {
-            System.out.println("");
-            player.controlData();
-        }
-        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        SimulatorFrame.getInstance().repaint();
     }
 
     @Override
@@ -108,7 +103,7 @@ public class ClientImpl implements Client { //old BarImpl
 
     private void unexportClient() {
         try {
-            UnicastRemoteObject.unexportObject(SimulatorFrame.getInstance().clientExported, false);
+            UnicastRemoteObject.unexportObject(SimulatorFrame.getInstance().ClientImpl, false);
             SimulatorFrame.getInstance().connected = false;
         } catch (NoSuchObjectException ex) {
             Logger.getLogger(ClientImpl.class.getName()).log(Level.SEVERE, null, ex);

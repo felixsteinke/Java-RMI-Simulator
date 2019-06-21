@@ -23,19 +23,20 @@ public class Turn implements Serializable {
     private Turn oldTurn;
     private Move move;
     private double speed;
-    public ArrayList <Move> turnMoves;
+    //public ArrayList <Move> turnMoves;
     public Point turnVektor;
     
     
     public Turn(Turn oldTurn, Move move) {
+        
         this.oldTurn = oldTurn;
         this.move = move;
-        this.turnMoves = new ArrayList (this.oldTurn.turnMoves);
-        this.turnMoves.add(move);
+        //this.turnMoves = new ArrayList (this.oldTurn.turnMoves);
+        //this.turnMoves.add(move);
         //cleanUselessMoves();
         this.turnVektor = calcTurnVektor();
         this.speed = calcSpeed();
-        showData();
+        //showData();
     }
     
     public void showData () {
@@ -45,13 +46,15 @@ public class Turn implements Serializable {
 
     public Turn(String start){
         this.move = new Move(5, 0);
-        this.turnMoves = new ArrayList();
-        turnMoves.add(move);
+        //this.turnMoves = new ArrayList();
+        //turnMoves.add(move);
         this.speed = 0;
         this.turnVektor = new Point (0,0);
     }
     
     private Point calcTurnVektor() {
+        //!!!!!!TEST!!!!!!
+        System.out.println("Calc Turn Method: " + oldTurn.turnVektor.toString());
         int x = this.oldTurn.turnVektor.x + this.move.x;
         int y = this.oldTurn.turnVektor.y + this.move.y;
         return new Point (x,y);
@@ -61,6 +64,7 @@ public class Turn implements Serializable {
         return Math.sqrt(Math.pow(turnVektor.x, 2) + Math.pow(turnVektor.y, 2));
     }
     
+    /*
     private void cleanUselessMoves(){
         int count = 0;
         loop:
@@ -91,7 +95,7 @@ public class Turn implements Serializable {
             }
         }
     }
-
+    */
     //<editor-fold defaultstate="collapsed" desc=" Getter & Setter ">
     public Turn getOldTurn() {
         return oldTurn;

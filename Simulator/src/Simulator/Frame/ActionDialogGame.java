@@ -41,7 +41,7 @@ public class ActionDialogGame extends AbstractAction {
 
             java.awt.EventQueue.invokeLater(new Runnable() {
                 public void run() {
-                    SimulatorFrame.getInstance().gameDialog = new CreateGameLobby(new javax.swing.JFrame(), true);
+                    SimulatorFrame.getInstance().gameDialog = new CreateGameLobby(SimulatorFrame.getInstance(), true);
                     SimulatorFrame.getInstance().gameDialog.addWindowListener(new java.awt.event.WindowAdapter() {
                         @Override
                         public void windowClosing(java.awt.event.WindowEvent e) {

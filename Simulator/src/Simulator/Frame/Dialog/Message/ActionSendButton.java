@@ -26,7 +26,7 @@ public class ActionSendButton extends AbstractAction {
     @Override
     public void actionPerformed(ActionEvent e) {
         if (frame.connected == false) {
-            JOptionPane.showMessageDialog(null, "Not Connected");
+            JOptionPane.showMessageDialog(SimulatorFrame.getInstance(), "Not Connected");
             return;
         }
         EventQueue.invokeLater(() -> {

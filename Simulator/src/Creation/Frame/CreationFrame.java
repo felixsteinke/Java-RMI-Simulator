@@ -714,7 +714,7 @@ public class CreationFrame extends javax.swing.JFrame {
             jTextField_Dicstance.setText("" + data.getDistance());
             jButton_RefreshActionPerformed(evt);
         } else {
-            JOptionPane.showMessageDialog(SimulatorFrame.getInstance(), "No Selection");
+            JOptionPane.showMessageDialog(this, "No Selection");
         }
     }//GEN-LAST:event_jButton_LoadMapActionPerformed
 

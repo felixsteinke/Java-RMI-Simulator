@@ -101,7 +101,7 @@ public class Administation {
                     } else {
                         //Feedback für volles Game
                         System.out.println("Server: Game was full.");
-                        player.getConnectedClient().receiveFeedback("111:Code was wrong - not connected!");
+                        player.getConnectedClient().receiveFeedback("111:Game was full - not connected!");
                     }
                 } else {
                     //Feedback für falschen Code
@@ -189,7 +189,7 @@ public class Administation {
                 for (Player player : game.getPlayerData().playerlist) {
                     if (player.getConnectedServer() == source) {
                         try {
-                            player.getConnectedClient().receiveFeedback("222:" + createRaceTrackListString());
+                            player.getConnectedClient().receiveFeedback("888:" + createRaceTrackListString());
                             System.out.println("Server: Sended Player: " + player.getName() + " RaceTrackList.");
                         } catch (RemoteException ex) {
                             Logger.getLogger(Administation.class.getName()).log(Level.SEVERE, null, ex);
@@ -218,7 +218,7 @@ public class Administation {
                             }
                         });
 
-                        if ((game.playerData.playerlist.size() == game.getGameSize()) && !game.isGameStarted()) {
+                        if ((game.playerData.playerlist.size() == game.getGameSize()) && !game.isGameStarted() && game.getRaceTrack() != null) {
                             try {
                                 shareRaceTrack(game);
                                 game.setGameStarted(true);
@@ -226,6 +226,12 @@ public class Administation {
                                 System.out.println("Server: Game: " + game.getName() + " started!");
                                 game.refreshPlayerDatabase();
                                 return;
+                            } catch (RemoteException ex) {
+                                Logger.getLogger(Administation.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                        } else {
+                            try {
+                                player.getConnectedClient().receiveFeedback("999:Game cant get started. (Game not full or wrong RaceTrack Input.");
                             } catch (RemoteException ex) {
                                 Logger.getLogger(Administation.class.getName()).log(Level.SEVERE, null, ex);
                             }

@@ -8,16 +8,22 @@ package Simulator.Frame;
 import Simulator.Frame.Dialog.Player.CreatePlayerSettings;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
+import javax.swing.JOptionPane;
 
 /**
  *
  * @author Felix
  */
 public class ActionDialogPlayer extends AbstractAction {
-
+    
+    
     @Override
     public void actionPerformed(ActionEvent e) {
 
+        if(SimulatorFrame.getInstance().connected){
+            JOptionPane.showMessageDialog(SimulatorFrame.getInstance(), "Cant edit Player when you are connected.");
+        }
+        
         Thread t = new Thread(() -> {
             //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
             try {
@@ -40,7 +46,7 @@ public class ActionDialogPlayer extends AbstractAction {
 
             java.awt.EventQueue.invokeLater(new Runnable() {
                 public void run() {
-                    SimulatorFrame.getInstance().playerDialog = new CreatePlayerSettings(new javax.swing.JFrame(), true);
+                    SimulatorFrame.getInstance().playerDialog = new CreatePlayerSettings(SimulatorFrame.getInstance(), true);
                     SimulatorFrame.getInstance().playerDialog.addWindowListener(new java.awt.event.WindowAdapter() {
                         @Override
                         public void windowClosing(java.awt.event.WindowEvent e) {

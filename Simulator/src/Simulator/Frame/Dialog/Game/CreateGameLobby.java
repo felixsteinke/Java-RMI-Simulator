@@ -35,6 +35,8 @@ public class CreateGameLobby extends javax.swing.JDialog {
         super(parent, modal);
         this.setBounds(50, 50, 400, 250);
         initComponents();
+        super.pack();
+        setLocationRelativeTo(parent);
     }
 
     /**
