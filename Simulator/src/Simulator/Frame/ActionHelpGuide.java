@@ -24,6 +24,7 @@ public class ActionHelpGuide extends AbstractAction {
                 + "Dann kann man zu einem Spiel beitreten, oder ein eigenes Spiel erstellen -> Connection \n"
                 + "(Hinweis: Die Buttons IP und Port sind für erweiterte Funktionen gedacht, nutzen sie 'Quick')\n\n"
                 + "Um ein Spiel zu Starten, muss ein RaceTrack ausgewählt werden ('MiniMap' für leichten Test zu empfehlen).\n"
+                + "Um zu sehen welche Racetracks es gibt, kann man showRaceTracks machen.\n"
                 + "Spiel muss auch voll sein, damit es startet.\n"
                 + "Wenn ein Spiel vorrüber ist, müssen sie disconnecten und ein neues Spiel erstellen.\n"
                 //Menu Create Map

@@ -330,6 +330,7 @@ public class SimulatorFrame extends javax.swing.JFrame {
 
         String mesg = player.name + " made it in " + gameName;
         chatModel.addElement(mesg);
+        consoleModel.addElement("Connected to " + gameName);
         server.sendString(mesg);
     }
 

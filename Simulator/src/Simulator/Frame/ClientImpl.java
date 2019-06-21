@@ -68,6 +68,7 @@ public class ClientImpl implements Client { //old BarImpl
             switch (feedbackCode) {
                 case 111:
                     unexportClient();
+                    SimulatorFrame.getInstance().consoleModel.addElement(feedbackMessage);
                     break;
                 case 222:
                     JOptionPane.showMessageDialog(SimulatorFrame.getInstance(), feedbackMessage);

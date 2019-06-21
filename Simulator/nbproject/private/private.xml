@@ -5,7 +5,12 @@
         <group>
             <file>file:/C:/Users/Felix/Documents/GitHub/SWP-Simulator/Simulator/src/Simulator/Frame/ActionDialogCreateMap.java</file>
             <file>file:/C:/Users/Felix/Documents/GitHub/SWP-Simulator/Simulator/src/Simulator/Frame/SimulatorFrame.java</file>
+            <file>file:/C:/Users/Felix/Documents/GitHub/SWP-Simulator/Simulator/src/Simulator/Frame/ActionHelpGuide.java</file>
             <file>file:/C:/Users/Felix/Documents/GitHub/SWP-Simulator/Simulator/src/Creation/Frame/CreationFrame.java</file>
+            <file>file:/C:/Users/Felix/Documents/GitHub/SWP-Simulator/Simulator/src/Simulator/Frame/ActionDisconnectFromGame.java</file>
+            <file>file:/C:/Users/Felix/Documents/GitHub/SWP-Simulator/Simulator/src/Simulator/Frame/Dialog/Player/CreatePlayerSettings.java</file>
+            <file>file:/C:/Users/Felix/Documents/GitHub/SWP-Simulator/Simulator/src/Simulator/Frame/Dialog/Connect/ActionConnectToGame.java</file>
+            <file>file:/C:/Users/Felix/Documents/GitHub/SWP-Simulator/Simulator/src/Simulator/Frame/ActionDialogConnect.java</file>
             <file>file:/C:/Users/Felix/Documents/GitHub/SWP-Simulator/Simulator/src/Simulator/Frame/ClientImpl.java</file>
             <file>file:/C:/Users/Felix/Documents/GitHub/SWP-Simulator/Simulator/src/Simulator/Frame/ActionExit.java</file>
             <file>file:/C:/Users/Felix/Documents/GitHub/SWP-Simulator/Simulator/src/Simulator/Frame/ActionSelectMap.java</file>

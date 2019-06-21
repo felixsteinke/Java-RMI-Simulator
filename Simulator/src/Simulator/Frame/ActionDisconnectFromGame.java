@@ -34,6 +34,7 @@ public class ActionDisconnectFromGame extends AbstractAction {
             try {
                 String mesg = frame.player.name + " disconnected from " + frame.gameName;
                 frame.server.sendString(mesg);
+                frame.chatModel.addElement(mesg);
                 frame.connection.leaveGame(frame.server,frame.player,frame.gameName);
                 ///!!!!!!!MISSING!!!!!!!! warum ist das nicht exporte
                 UnicastRemoteObject.unexportObject(frame.ClientImpl, false);

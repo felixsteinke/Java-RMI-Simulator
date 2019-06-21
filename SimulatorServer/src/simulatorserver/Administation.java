@@ -77,6 +77,16 @@ public class Administation {
     //shuld be done !!!Player needs: Name, client, color!!!!
     public static void joinGame(Server source, Client client, Player player, String gameName, String code) {
         //Methode wird auf Basis des jeweiligen GameThreads ausgeführt
+        if(games.get(gameName) == null){
+            executorService.submit(() -> {
+                try {
+                    player.getConnectedClient().receiveFeedback("111:Game does not exist.");
+                } catch (RemoteException ex) {
+                    Logger.getLogger(Administation.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            });
+            return;
+        }
         games.get(gameName).executorService.submit(() -> {
             Game game = games.get(gameName);
             try {
