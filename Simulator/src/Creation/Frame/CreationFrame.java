@@ -312,8 +312,11 @@ public class CreationFrame extends javax.swing.JFrame {
                 state4finished = false;
                 break;
             case 5:
+                JOptionPane.showMessageDialog(this, "Use UNDO.");
+                /*
                 data.getStartPoints().clear();
                 state5finished = false;
+                */
             default:
                 JOptionPane.showMessageDialog(this, "Something went wrong!");
         }
@@ -708,6 +711,8 @@ public class CreationFrame extends javax.swing.JFrame {
         if (showOpenDialog == JFileChooser.APPROVE_OPTION) {
             File input = fileChooser.getSelectedFile();
             this.data = new RaceTrack(input);
+            state3finished = true;
+            state4finished = true;
             jTextField_Name.setText(data.getName());
             jTextField_Width.setText("" + data.getWidthField());
             jTextField_Height.setText("" + data.getHeightField());

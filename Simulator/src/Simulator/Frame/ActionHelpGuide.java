@@ -17,23 +17,21 @@ public class ActionHelpGuide extends AbstractAction {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        String guide = "Welcome to the Simulator! \n"
+        String guide = "Willkommen im Simulator! \n"
                 + "Zuerst: Server starten nicht vergessen. \n\n"
                 //Menu Get Started / Connection
-                + "Um zu starten muss man erstmal ein Player erstellen! -> Get Started -> Create Player \n\n"
-                + "Dann kann man zu einem Spiel beitreten, oder ein eigenes Spiel erstellen -> Connection \n"
-                + "(Hinweis: Die Buttons IP und Port sind für erweiterte Funktionen gedacht, nutzen sie 'Quick')\n\n"
-                + "Um ein Spiel zu Starten, muss ein RaceTrack ausgewählt werden ('MiniMap' für leichten Test zu empfehlen).\n"
-                + "Um zu sehen welche Racetracks es gibt, kann man showRaceTracks machen.\n"
-                + "Spiel muss auch voll sein, damit es startet.\n"
-                + "Wenn ein Spiel vorrüber ist, müssen sie disconnecten und ein neues Spiel erstellen.\n"
+                + "1.Schritt: Spieler erstellen. -> Get Started -> Create Player \n\n"
+                + "2.Schritt: Spiel erstellen. -> Connection -> Create Game \n"
+                + "3.Schritt: Zu Spiel verbinden -> Connection -> Connect -> Local Connect \n"
+                + "(IP und Port Connect sind für Spiele auf externen Servern gedacht - ungetestet) \n"
+                + "4.Schritt: Racetrack für Spiel festlegen. Connection -> Show RaceTrack + ../ -> Select RaceTrack \n"
+                + "Spiel wird starten, sobald das Spiel  genug Spieler hat und einen RaceTrack ausgewählt ist.\n"
+                + "Wenn ein Spiel beendet ist, muss Disconnected werden, und zu einem neuen Spiel connected werden. \n\n"
+                + "Zusätzliche Funktionen:\n"
+                + "CreationTool: für neue RaceTracks, beachten sie die TODO-Anweisungen.\n"
+                + "Um die Server-RaceTrack-Datenbank zu verwalten nutzen sie die Buttons Upload und Delete.\n"
                 //Menu Create Map
-                + "Zusätzliche Funktion: Maps erstellen, auf den Server laden, oder diese löschen. -> CreateMap\n"
-                + "-> Creation Tool: Maps erstellen / editieren / in das Programm laden.\n"
-                + "-> Upload: Falls mit einem Server verbunden, die zuvor erstellte Map hochladen.\n"
-                + "-> Delete: Falls mit einem Server verbunden, eine bekannte Map löschen.\n"
-                //Menu Messenger
-                + "Zusätzliche Funktion: Messenger, hier können alle Spieler die in einem Spiel sind kommunizieren.\n\n"
+                + "Messenger: Nutzbar um mit anderen Spielern in einem Spiel zu kommunizieren.\n\n"
                 + "Bei Problemen über 82stfe1bif@hft-stuttgart.de den Support kontaktieren.";
         JOptionPane.showMessageDialog(SimulatorFrame.getInstance() ,guide);
         

@@ -82,7 +82,7 @@ public class CreateGameLobby extends javax.swing.JDialog {
         jRadioButton_5Player.setText("5 Player");
 
         jButton_Continue.setAction(new Simulator.Frame.Dialog.Game.ActionCreateGame());
-        jButton_Continue.setText("Quick Game");
+        jButton_Continue.setText("Local Game");
 
         jLabel_GameName.setText("Game-Name:");
         jLabel_GameName.setToolTipText("");

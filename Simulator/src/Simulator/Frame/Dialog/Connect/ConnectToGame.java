@@ -57,7 +57,7 @@ public class ConnectToGame extends javax.swing.JDialog {
         jButton_ConnectIP.setText("Connect IP");
 
         jButton_Connect.setAction(new ActionConnectToGame());
-        jButton_Connect.setText("Quick Connect");
+        jButton_Connect.setText("Local Connect");
 
         jTextField_GameName.setText("testGame");
 
@@ -86,7 +86,7 @@ public class ConnectToGame extends javax.swing.JDialog {
                                 .addComponent(jButton_Connect))
                             .addComponent(jTextField_GameCode)
                             .addComponent(jTextField_GameName))))
-                .addContainerGap(30, Short.MAX_VALUE))
+                .addContainerGap(32, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

@@ -48,7 +48,7 @@
                       </Group>
                   </Group>
               </Group>
-              <EmptySpace pref="30" max="32767" attributes="0"/>
+              <EmptySpace pref="32" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -118,7 +118,7 @@
         <Property name="action" type="javax.swing.Action" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
           <Connection code="new ActionConnectToGame()" type="code"/>
         </Property>
-        <Property name="text" type="java.lang.String" value="Quick Connect"/>
+        <Property name="text" type="java.lang.String" value="Local Connect"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="jTextField_GameName">
