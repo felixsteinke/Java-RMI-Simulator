@@ -26,7 +26,7 @@ public class Server {
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                //Connection müsste theoretisch unexportet werden?
+                //Connection müsste theoretisch der export löschen?
                 System.exit(0);
             }
         }, 3_600_000);
