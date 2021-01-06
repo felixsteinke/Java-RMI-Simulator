@@ -16,7 +16,6 @@ import java.util.ArrayList;
 public class SimulatorPanel extends JPanel {
 
     private RaceTrack data;
-    private BufferedImage image;
     private Rectangle gameRect;
 
     public SimulatorPanel() {
@@ -31,7 +30,7 @@ public class SimulatorPanel extends JPanel {
 
         if ((data = SimulatorFrame.getInstance().getRaceTrackToPlay()) == null) {
             try {
-                image = ImageIO.read(new File("Client/src/main/resources/title-screen.png"));
+                BufferedImage image = ImageIO.read(new File("Client/src/main/resources/title-screen.png"));
                 gc.drawImage(image, 0, 0, screenRect.width, screenRect.height, this);
             } catch (IOException ex) {
                 ex.printStackTrace();
@@ -42,14 +41,13 @@ public class SimulatorPanel extends JPanel {
         //Size Game
         gameRect = new Rectangle(screenRect.width / 2 - data.getWidthField() / 2, 0, data.getWidthField(), data.getHeightField());
 
-        //Background
+        // Background __________________________________________________________________________________________________
         g2d.setColor(Color.BLACK);
         g2d.fillRect(gameRect.x, gameRect.y, gameRect.width, gameRect.height);
 
         g2d.setColor(Color.RED);
         g2d.setStroke(new BasicStroke(1.0f));
-
-        //<editor-fold defaultstate="collapsed" desc=" Outline ">
+        // Outer line __________________________________________________________________________________________________
         ArrayList<Point> pointsOuter = data.getCoordOuter();
         GeneralPath pathFormOuter = new GeneralPath(0);
         pathFormOuter.moveTo(gameRect.x + pointsOuter.get(0).x, gameRect.y + pointsOuter.get(0).y);
@@ -61,8 +59,8 @@ public class SimulatorPanel extends JPanel {
                 gameRect.x + pointsOuter.get(0).x, gameRect.y + pointsOuter.get(0).y);
         pathFormOuter.closePath();
         g2d.draw(pathFormOuter);
-        //</editor-fold>
-        //<editor-fold defaultstate="collapsed" desc=" Inline ">
+
+        // Inner line __________________________________________________________________________________________________
         ArrayList<Point> pointsInner = data.getCoordInner();
         GeneralPath pathFormInner = new GeneralPath(0);
         pathFormInner.moveTo(gameRect.x + pointsInner.get(0).x, gameRect.y + pointsInner.get(0).y);
@@ -74,8 +72,8 @@ public class SimulatorPanel extends JPanel {
                 gameRect.x + pointsInner.get(0).x, gameRect.y + pointsInner.get(0).y);
         pathFormInner.closePath();
         g2d.draw(pathFormInner);
-        //</editor-fold>
-        //<editor-fold defaultstate="collapsed" desc=" Rectangles ">
+
+        // Rectangles __________________________________________________________________________________________________
         g2d.setColor(Color.RED);
         for (int x = gameRect.x + data.getGapSize(); x <= gameRect.x + gameRect.width - data.getGridSize(); x += data.getGridSize() + data.getGapSize()) {
             for (int y = gameRect.y + data.getGapSize(); y <= gameRect.y + gameRect.height - data.getGridSize(); y += data.getGridSize() + data.getGapSize()) {
@@ -88,19 +86,16 @@ public class SimulatorPanel extends JPanel {
                 g2d.fillRect(x, y, data.getGridSize(), data.getGridSize());
             }
         }
-        //</editor-fold>
 
         g2d.setColor(Color.YELLOW);
         g2d.setStroke(new BasicStroke(5.0f));
 
-        //<editor-fold defaultstate="collapsed" desc=" Startline ">
+        // Start line __________________________________________________________________________________________________
         ArrayList<Point> pointsStart = data.getCoordStart();
         g2d.drawLine(gameRect.x + pointsStart.get(0).x, gameRect.y + pointsStart.get(0).y,
                 gameRect.x + pointsStart.get(1).x, gameRect.y + pointsStart.get(1).y);
-        //</editor-fold>
 
         paintPlayerData(g2d);
-
     }
 
     private void paintPlayerData(Graphics2D g2d) {
