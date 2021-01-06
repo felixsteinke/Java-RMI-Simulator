@@ -1,5 +1,6 @@
 package simulator.server;
 
+import lombok.Data;
 import simulator.data.Player;
 import simulator.data.PlayerDatabase;
 import simulator.data.RaceTrack;
@@ -14,35 +15,34 @@ import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+@Data
 public class Game {
 
     private String name;                //beliebig
     private int gameSize;               //theoretisch beliebig, soll aber <=5 sein
     private String code;                //passwort
-    private RaceTrack raceTrack;        //soll im nachhinen festgelegt werden
+    public ArrayList<Turn> turnCollection;
     private boolean gameStarted = false;
     private boolean gameOver = false;
     private Player winner = new Player();
     private int gameState = 1;
-    public ArrayList turnCollection;
+    private RaceTrack raceTrack;        //soll im nachhinein festgelegt werden
     public PlayerDatabase playerData;   //spieler müssen vom nutzer hinzugefügt werden
     public ExecutorService executorService;
 
-    //Dieser Konsturktor wird verwendet
     public Game(String name, int gameSize, String code) {
         this.name = name;
         this.gameSize = gameSize;
         this.code = code;
         this.raceTrack = null;
-        this.turnCollection = new ArrayList();
+        this.turnCollection = new ArrayList<>();
         this.playerData = new PlayerDatabase();
         this.executorService = Executors.newFixedThreadPool(gameSize);
     }
 
-    //MISSING!!!!!!!!
     public void refreshPlayerDatabase() throws RemoteException {
         System.out.println("Game: " + this.name + " refreshedPlayerDatabase.");
-        if (turnCollection.size() == getActivPlayer()) {
+        if (turnCollection.size() == getActivePlayer()) {
             turnCollection.clear();
             gameState++;
             for (Player player : playerData.playerlist) {
@@ -52,7 +52,7 @@ public class Game {
                     if (!checkPointIsValid(player.getPosition())) {
                         player.setAlive(false);
                         System.out.println("Game: " + this.name + " - Player lost: " + player.getName());
-                        //<editor-fold defaultstate="collapsed" desc=" Send Lose ">
+                        // send lose
                         this.executorService.submit(() -> {
                             try {
                                 player.getConnectedClient().receiveFeedback("888:You LOST!");
@@ -60,7 +60,6 @@ public class Game {
                                 Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
                             }
                         });
-                        //</editor-fold>
                         continue;
                     }
                     if (checkCrossedControlLine(oldPoint, player.getPosition())) {
@@ -71,7 +70,7 @@ public class Game {
                         player.setWonTheGame(true);
                         gameOver = true;
                         System.out.println("Game: " + this.name + " - Player won: " + player.getName());
-                        //<editor-fold defaultstate="collapsed" desc=" Send Win ">
+                        // send win
                         this.executorService.submit(() -> {
                             try {
                                 player.getConnectedClient().receiveFeedback("888: You WON!");
@@ -79,9 +78,8 @@ public class Game {
                                 Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
                             }
                         });
-                        //</editor-fold>
                     }
-                    //<editor-fold defaultstate="collapsed" desc=" Send Turn Activation ">
+                    // send turn activation
                     this.executorService.submit(() -> {
                         try {
                             player.getConnectedClient().receiveFeedback("555:Lets do a turn!");
@@ -89,22 +87,15 @@ public class Game {
                             Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
                         }
                     });
-                    //</editor-fold>
                 }
             }
             sendDatabaseToAll();
-            //<editor-fold defaultstate="collapsed" desc=" Send Game Over ">
+            // Game over _______________________________________________________________________________________________
             if (gameOver) {
-                ArrayList <Player> winnerList = new ArrayList <>();
-                for (Player player : playerData.playerlist) {
-                    if(player.isWonTheGame()){
-                        winnerList.add(player);
-                    }
-                }
                 double winnerSpeed = 0;
-                for (Player player : playerData.playerlist){
-                    if(player.getTurns().get(player.getTurns().size()-1).getSpeed() > winnerSpeed){
-                        winnerSpeed = player.getTurns().get(player.getTurns().size()-1).getSpeed();
+                for (Player player : playerData.playerlist) {
+                    if (player.getTurns().get(player.getTurns().size() - 1).getSpeed() > winnerSpeed) {
+                        winnerSpeed = player.getTurns().get(player.getTurns().size() - 1).getSpeed();
                         winner = player;
                     }
                 }
@@ -121,27 +112,12 @@ public class Game {
                 playerData = new PlayerDatabase();
                 gameStarted = false;
                 gameState = 1;
-                return;
             }
-            //</editor-fold>
         }
     }
-    
+
     //Spieler Kollision wurde nicht gemacht, durch das Speed attribut könnte man das jedoch leicht regeln, wie die Gewinner Überprüfung
-    
-    //optional IS WRONG
-    /*
-    private boolean antiCheatTool(Player player) {
-        ArrayList sendedOut = player.getTurns().get(player.getTurns().size() - 1).getOldTurn().turnMoves;
-        ArrayList gotIn = player.getTurns().get(player.getTurns().size() - 2).getOldTurn().turnMoves;
-        if (sendedOut.equals(gotIn)) {
-            return false;
-        } else {
-            //SHOULD BE TRUE!!!! MISSING!!!!!!! need to overthing this method
-            return false;
-        }
-    }
-    */
+
     public void sendDatabaseToAll() {
         for (Player player : playerData.playerlist) {
             this.executorService.submit(() -> {
@@ -176,7 +152,7 @@ public class Game {
         return startLine.intersectsLine(line);
     }
 
-    private int getActivPlayer() {
+    private int getActivePlayer() {
         int count = 0;
         for (Player player : playerData.playerlist) {
             if (player.isAlive()) {
@@ -203,62 +179,4 @@ public class Game {
         }
         sendDatabaseToAll();
     }
-
-    //<editor-fold defaultstate="collapsed" desc=" Getter & Setter ">
-    public RaceTrack getRaceTrack() {
-        return raceTrack;
-    }
-
-    public void setRaceTrack(RaceTrack raceTrack) {
-        this.raceTrack = raceTrack;
-    }
-
-    public PlayerDatabase getPlayerData() {
-        return playerData;
-    }
-
-    public void setPlayerData(PlayerDatabase playerData) {
-        this.playerData = playerData;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public int getGameSize() {
-        return gameSize;
-    }
-
-    public void setGameSize(int gameSize) {
-        this.gameSize = gameSize;
-    }
-
-    public boolean isGameStarted() {
-        return gameStarted;
-    }
-
-    public void setGameStarted(boolean gameStarted) {
-        this.gameStarted = gameStarted;
-    }
-
-    public int getGameState() {
-        return gameState;
-    }
-
-    public void setGameState(int gameState) {
-        this.gameState = gameState;
-    }
-    //</editor-fold>
 }
