@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package simulator.client.game.Frame;
 
 import javax.swing.*;
@@ -14,17 +9,13 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- *
- * @author Felix
- */
 public class ActionDisconnectFromGame extends AbstractAction {
 
     private final SimulatorFrame frame = SimulatorFrame.getInstance();
-    
+
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (frame.connected == false) {
+        if (!frame.connected) {
             JOptionPane.showMessageDialog(frame, "Not Connected");
             return;
         }
@@ -34,7 +25,7 @@ public class ActionDisconnectFromGame extends AbstractAction {
                 String mesg = frame.player.name + " disconnected from " + frame.gameName;
                 frame.server.sendString(mesg);
                 frame.chatModel.addElement(mesg);
-                frame.connection.leaveGame(frame.server,frame.player,frame.gameName);
+                frame.connection.leaveGame(frame.server, frame.player, frame.gameName);
                 ///!!!!!!!MISSING!!!!!!!! warum ist das nicht exporte
                 UnicastRemoteObject.unexportObject(frame.ClientImpl, false);
                 frame.setRaceTrackToPlay(null);
@@ -46,9 +37,9 @@ public class ActionDisconnectFromGame extends AbstractAction {
             }
         });
     }
-    
+
     public void actionPerformed(WindowEvent e) {
-        if (frame.connected == false) {
+        if (!frame.connected) {
             JOptionPane.showMessageDialog(frame, "Not Connected");
             return;
         }
@@ -57,7 +48,7 @@ public class ActionDisconnectFromGame extends AbstractAction {
             try {
                 String mesg = frame.player.name + " disconnected from " + frame.gameName;
                 frame.server.sendString(mesg);
-                frame.connection.leaveGame(frame.server,frame.player,frame.gameName);
+                frame.connection.leaveGame(frame.server, frame.player, frame.gameName);
                 ///!!!!!!!MISSING!!!!!!!! warum ist das nicht exporte
                 UnicastRemoteObject.unexportObject(frame.ClientImpl, false);
                 frame.setRaceTrackToPlay(null);
@@ -69,5 +60,4 @@ public class ActionDisconnectFromGame extends AbstractAction {
             }
         });
     }
-    
 }

@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package simulator.client.game.Frame.Dialog.Game;
 
 import simulator.client.game.Frame.ActionStartGame;
@@ -17,10 +12,6 @@ import java.rmi.registry.LocateRegistry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- *
- * @author Felix
- */
 public class ActionCreateGamePort extends AbstractAction {
 
     private final SimulatorFrame frame = SimulatorFrame.getInstance();
@@ -49,12 +40,9 @@ public class ActionCreateGamePort extends AbstractAction {
 
             frame.connection.createGame(frame.gameName, frame.playerCount, frame.gameCode);
 
-        } catch (RemoteException ex) {
-            Logger.getLogger(ActionStartGame.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (NotBoundException ex) {
+        } catch (RemoteException | NotBoundException ex) {
             Logger.getLogger(ActionStartGame.class.getName()).log(Level.SEVERE, null, ex);
         }
         frame.gameDialog.dispose();
     }
-
 }

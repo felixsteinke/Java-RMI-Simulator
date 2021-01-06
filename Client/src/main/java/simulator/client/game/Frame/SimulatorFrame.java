@@ -1,17 +1,12 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package simulator.client.game.Frame;
 
 import simulator.client.game.Frame.Dialog.Connect.ConnectToGame;
 import simulator.client.game.Frame.Dialog.Game.CreateGameLobby;
 import simulator.client.game.Frame.Dialog.Message.MessageDialog;
 import simulator.client.game.Frame.Dialog.Player.CreatePlayerSettings;
-import simulator.data.container.Player;
-import simulator.data.container.PlayerDatabase;
-import simulator.data.container.RaceTrack;
+import simulator.data.Player;
+import simulator.data.PlayerDatabase;
+import simulator.data.RaceTrack;
 import simulator.interfaces.Client;
 import simulator.interfaces.Connection;
 import simulator.interfaces.Server;
@@ -25,10 +20,6 @@ import java.rmi.RemoteException;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 
-/**
- *
- * @author 82stfe1bif
- */
 public class SimulatorFrame extends javax.swing.JFrame {
 
     private static SimulatorFrame instanceSimulatorFrame;
@@ -74,10 +65,10 @@ public class SimulatorFrame extends javax.swing.JFrame {
         initComponents();
         jButton_Turn.setEnabled(false);
         jLabelTurn.setVisible(false);
-        
+
 
     }
-    
+
     //!!!!MISSING!!!! funktioniert irgendwie nicht
     WindowListener exitListener = new WindowAdapter() {
         public void windowClosing(WindowEvent e) {
@@ -139,12 +130,12 @@ public class SimulatorFrame extends javax.swing.JFrame {
         javax.swing.GroupLayout jPanel_MapLayout = new javax.swing.GroupLayout(jPanel_Map);
         jPanel_Map.setLayout(jPanel_MapLayout);
         jPanel_MapLayout.setHorizontalGroup(
-            jPanel_MapLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 949, Short.MAX_VALUE)
+                jPanel_MapLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGap(0, 949, Short.MAX_VALUE)
         );
         jPanel_MapLayout.setVerticalGroup(
-            jPanel_MapLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 351, Short.MAX_VALUE)
+                jPanel_MapLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGap(0, 351, Short.MAX_VALUE)
         );
 
         jPanelTurn.setBorder(javax.swing.BorderFactory.createTitledBorder("Turn"));
@@ -161,30 +152,30 @@ public class SimulatorFrame extends javax.swing.JFrame {
         javax.swing.GroupLayout jPanelTurnLayout = new javax.swing.GroupLayout(jPanelTurn);
         jPanelTurn.setLayout(jPanelTurnLayout);
         jPanelTurnLayout.setHorizontalGroup(
-            jPanelTurnLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanelTurnLayout.createSequentialGroup()
-                .addGroup(jPanelTurnLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton_Turn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(jPanelTurnLayout.createSequentialGroup()
-                        .addGroup(jPanelTurnLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanelTurnLayout.createSequentialGroup()
-                                .addGap(29, 29, 29)
-                                .addComponent(jTextField_Turn, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanelTurnLayout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(jLabelTurn)))
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
+                jPanelTurnLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanelTurnLayout.createSequentialGroup()
+                                .addGroup(jPanelTurnLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(jButton_Turn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addGroup(jPanelTurnLayout.createSequentialGroup()
+                                                .addGroup(jPanelTurnLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                        .addGroup(jPanelTurnLayout.createSequentialGroup()
+                                                                .addGap(29, 29, 29)
+                                                                .addComponent(jTextField_Turn, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                        .addGroup(jPanelTurnLayout.createSequentialGroup()
+                                                                .addContainerGap()
+                                                                .addComponent(jLabelTurn)))
+                                                .addGap(0, 0, Short.MAX_VALUE)))
+                                .addContainerGap())
         );
         jPanelTurnLayout.setVerticalGroup(
-            jPanelTurnLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanelTurnLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabelTurn)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextField_Turn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 8, Short.MAX_VALUE)
-                .addComponent(jButton_Turn))
+                jPanelTurnLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanelTurnLayout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(jLabelTurn)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jTextField_Turn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 8, Short.MAX_VALUE)
+                                .addComponent(jButton_Turn))
         );
 
         jMenu_GetStarted.setText("Get Started");
@@ -288,28 +279,28 @@ public class SimulatorFrame extends javax.swing.JFrame {
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel_Map, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jScrollPane_Console)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanelTurn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(4, 4, 4)))
-                .addContainerGap())
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(jPanel_Map, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addGroup(layout.createSequentialGroup()
+                                                .addComponent(jScrollPane_Console)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(jPanelTurn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addGap(4, 4, 4)))
+                                .addContainerGap())
         );
         layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel_Map, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jScrollPane_Console, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                    .addComponent(jPanelTurn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(jPanel_Map, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                        .addComponent(jScrollPane_Console, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                                        .addComponent(jPanelTurn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addContainerGap())
         );
 
         pack();

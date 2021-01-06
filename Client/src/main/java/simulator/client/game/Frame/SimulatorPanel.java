@@ -1,13 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package simulator.client.game.Frame;
 
-import simulator.data.container.Player;
-import simulator.data.container.RaceTrack;
-import simulator.data.container.Turn;
+import simulator.data.Player;
+import simulator.data.RaceTrack;
+import simulator.data.Turn;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -18,12 +13,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-/**
- *
- * @author 82stfe1bif
- *
- * TODO: !!!!!!!!!!!!!!! playerDatabase needs to get painted
- */
 public class SimulatorPanel extends JPanel {
 
     private RaceTrack data;
@@ -130,17 +119,16 @@ public class SimulatorPanel extends JPanel {
         //Points definition
         Point startPosition = new Point(player.getStartPosition().x + gameRect.x, player.getStartPosition().y + gameRect.y);
         Point position = new Point(player.getPosition().x + gameRect.x, player.getPosition().y + gameRect.y);
-        
+
         //paint Points
         g2d.fillRect(startPosition.x, startPosition.y, data.getGridSize(), data.getGridSize());
         g2d.fillOval(position.x, position.y, data.getGridSize(), data.getGridSize());
-        
+
         //paint your next Turn
         if (player.getName().equalsIgnoreCase(SimulatorFrame.getInstance().player.getName())) {
             Turn lastTurn = player.getTurns().get(player.getTurns().size() - 1);
-            Point nextPosition = new Point (position.x + lastTurn.turnVektor.x, position.y + lastTurn.turnVektor.y);
-            g2d.drawLine(position.x + data.getGridSize()/2, position.y + data.getGridSize()/2, nextPosition.x + data.getGridSize()/2, nextPosition.y + data.getGridSize()/2);
+            Point nextPosition = new Point(position.x + lastTurn.turnVektor.x, position.y + lastTurn.turnVektor.y);
+            g2d.drawLine(position.x + data.getGridSize() / 2, position.y + data.getGridSize() / 2, nextPosition.x + data.getGridSize() / 2, nextPosition.y + data.getGridSize() / 2);
         }
     }
-
 }

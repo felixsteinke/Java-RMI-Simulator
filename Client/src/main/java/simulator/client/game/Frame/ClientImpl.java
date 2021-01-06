@@ -1,12 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package simulator.client.game.Frame;
 
-import simulator.data.container.PlayerDatabase;
-import simulator.data.container.RaceTrack;
+import simulator.data.PlayerDatabase;
+import simulator.data.RaceTrack;
 import simulator.interfaces.Client;
 
 import javax.swing.*;
@@ -17,11 +12,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
  * @author Peter Heusch
  */
 public class ClientImpl implements Client { //old BarImpl
-    
+
     public ClientImpl() {
     }
 
@@ -58,7 +52,7 @@ public class ClientImpl implements Client { //old BarImpl
     @Override
     public void receiveFeedback(String data) throws RemoteException {
         System.out.println("Client: Feedback received: " + data);
-        
+
         String[] feedback = data.split(":");
         int feedbackCode = Integer.valueOf(feedback[0]);
         String feedbackMessage = feedback[1];

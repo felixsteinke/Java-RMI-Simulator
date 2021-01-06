@@ -1,12 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package simulator.client.creation;
 
 import simulator.client.game.Frame.SimulatorFrame;
-import simulator.data.container.RaceTrack;
+import simulator.data.RaceTrack;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -15,12 +10,6 @@ import java.awt.geom.GeneralPath;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-
-/**
- *
- * @author Felix
- *
- */
 
 public class CreationFrame extends javax.swing.JFrame {
 

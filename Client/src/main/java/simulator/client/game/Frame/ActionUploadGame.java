@@ -1,11 +1,6 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package simulator.client.game.Frame;
 
-import simulator.data.container.RaceTrack;
+import simulator.data.RaceTrack;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -14,7 +9,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
  * @author Felix
  */
 public class ActionUploadGame extends AbstractAction {
@@ -23,19 +17,18 @@ public class ActionUploadGame extends AbstractAction {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        //<editor-fold defaultstate="collapsed" desc=" Action Conditions ">
-        if(frame.getRaceTrackToUpload() == null){
+        if (frame.getRaceTrackToUpload() == null) {
             JOptionPane.showMessageDialog(frame, "RaceTrack needs to be created first!");
             return;
         }
-        if(!frame.connected){
+        if (!frame.connected) {
             JOptionPane.showMessageDialog(frame, "Not Connected.");
             return;
         }
-        //</editor-fold>
+
         RaceTrack raceTrack = frame.getRaceTrackToUpload();
-        
-        if (validateRaceTrack(raceTrack) == true){
+
+        if (validateRaceTrack(raceTrack)) {
             try {
                 frame.server.addRaceTrack(raceTrack);
             } catch (RemoteException ex) {
@@ -43,7 +36,7 @@ public class ActionUploadGame extends AbstractAction {
             }
         } else {
             JOptionPane.showMessageDialog(frame, raceTrack.getName() + " was not ready to upload!");
-        }    
+        }
     }
 
     private boolean validateRaceTrack(RaceTrack raceTrack) {
