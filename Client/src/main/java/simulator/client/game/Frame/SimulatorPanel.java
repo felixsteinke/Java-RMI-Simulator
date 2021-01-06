@@ -29,17 +29,15 @@ public class SimulatorPanel extends JPanel {
         //Size Screen
         Rectangle screenRect = this.getBounds();
 
-        //<editor-fold defaultstate="collapsed" desc=" Startpicture ">
         if ((data = SimulatorFrame.getInstance().getRaceTrackToPlay()) == null) {
             try {
-                image = ImageIO.read(new File("./Titelbild.PNG"));
+                image = ImageIO.read(new File("Client/src/main/resources/title-screen.png"));
                 gc.drawImage(image, 0, 0, screenRect.width, screenRect.height, this);
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
             return;
         }
-        //</editor-fold>
 
         //Size Game
         gameRect = new Rectangle(screenRect.width / 2 - data.getWidthField() / 2, 0, data.getWidthField(), data.getHeightField());
