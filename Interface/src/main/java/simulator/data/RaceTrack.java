@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package simulator.data;
 
 import java.awt.*;
@@ -11,11 +6,6 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- *
- * @author 82stfe1bif
- *
- */
 public class RaceTrack implements Serializable {
 
     transient private File input;
@@ -172,7 +162,6 @@ public class RaceTrack implements Serializable {
         gapSize = (distance / 3);
     }
 
-    
     //<editor-fold defaultstate="collapsed" desc=" Getter & Setter ">
     public int getWidthField() {
         return widthField;

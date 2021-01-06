@@ -1,18 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package simulator.data;
 
 import java.io.Serializable;
 
-/**
- *
- * @author Felix
- */
-public class Move implements Serializable{
-    
+public class Move implements Serializable {
     private int stepWide;
     private int key;
     public int x;
@@ -28,9 +18,9 @@ public class Move implements Serializable{
     public Move(int key, int stepWide) {
         this.key = key;
         this.stepWide = stepWide;
-        switch(key){
+        switch (key) {
             case 1:
-                this.x = - stepWide;
+                this.x = -stepWide;
                 this.y = stepWide;
                 break;
             case 2:
@@ -42,7 +32,7 @@ public class Move implements Serializable{
                 this.y = stepWide;
                 break;
             case 4:
-                this.x = - stepWide;
+                this.x = -stepWide;
                 this.y = 0;
                 break;
             case 5:
@@ -54,20 +44,20 @@ public class Move implements Serializable{
                 this.y = 0;
                 break;
             case 7:
-                this.x = - stepWide;
-                this.y = - stepWide;
+                this.x = -stepWide;
+                this.y = -stepWide;
                 break;
             case 8:
                 this.x = 0;
-                this.y = - stepWide;
+                this.y = -stepWide;
                 break;
             case 9:
                 this.x = stepWide;
-                this.y = - stepWide;
+                this.y = -stepWide;
                 break;
         }
-    } 
-    
+    }
+
     //<editor-fold defaultstate="collapsed" desc=" Getter & Setter ">
     public int getKey() {
         return key;
@@ -85,5 +75,4 @@ public class Move implements Serializable{
         this.stepWide = stepWide;
     }
     //</editor-fold>
-    
 }
