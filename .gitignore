@@ -1,3 +1,4 @@
-/Simulator/dist/
-.idea
+.idea/
 *.iml
+output/
+target/
