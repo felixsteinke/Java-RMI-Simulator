@@ -1,14 +1,9 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package simulator.server;
 
-import simulator.data.container.Player;
-import simulator.data.container.PlayerDatabase;
-import simulator.data.container.RaceTrack;
-import simulator.data.container.Turn;
+import simulator.data.Player;
+import simulator.data.PlayerDatabase;
+import simulator.data.RaceTrack;
+import simulator.data.Turn;
 
 import java.awt.*;
 import java.awt.geom.Line2D;
@@ -19,13 +14,6 @@ import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- *
- * @author Felix
- *
- * TODO: !!!!!!!!!!!!!!!!!!!!!!! the refresh game Method needs to get
- * implemented the start of the game needs to get implemented
- */
 public class Game {
 
     private String name;                //beliebig
@@ -273,5 +261,4 @@ public class Game {
         this.gameState = gameState;
     }
     //</editor-fold>
-
 }

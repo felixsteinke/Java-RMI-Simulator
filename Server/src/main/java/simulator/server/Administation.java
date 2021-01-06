@@ -1,14 +1,10 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package simulator.server;
 
-import simulator.data.container.Player;
-import simulator.data.container.RaceTrack;
-import simulator.data.container.Turn;
+import simulator.data.Player;
+import simulator.data.RaceTrack;
+import simulator.data.Turn;
 import simulator.interfaces.Client;
+import simulator.interfaces.Server;
 
 import java.io.*;
 import java.rmi.RemoteException;
@@ -20,10 +16,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
- * @author Felix
- *
- * TODO: !!!!!!!!!!!!!!!!!!!!!!!!!!!!! some improvements to leave game how to do
  * the start of a game needs to get implemented send Turn and the refresh
  * DataPlayerBase needs to get implemented client.receiveFeedback needs to get
  * added, for negativ Feedback on the client
@@ -71,7 +63,7 @@ public class Administation {
     //shuld be done !!!Player needs: Name, client, color!!!!
     public static void joinGame(Server source, Client client, Player player, String gameName, String code) {
         //Methode wird auf Basis des jeweiligen GameThreads ausgeführt
-        if(games.get(gameName) == null){
+        if (games.get(gameName) == null) {
             executorService.submit(() -> {
                 try {
                     player.getConnectedClient().receiveFeedback("111:Game does not exist.");
@@ -362,5 +354,4 @@ public class Administation {
         System.out.println("Server Method: Updating RaceTracks on Server went !!WRONG!!");
         return null;
     }
-
 }
