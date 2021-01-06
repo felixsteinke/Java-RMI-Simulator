@@ -298,14 +298,12 @@ public class Administation {
         ObjectOutputStream oos = null;
         try {
             //==============================================================================
-            oos = new ObjectOutputStream(new FileOutputStream("racetracks.ser"));
+            oos = new ObjectOutputStream(new FileOutputStream("Server/src/main/resources/PlayThis.csv"));
             for (RaceTrack person : list) {
                 oos.writeObject(person);
             }
             System.out.println("Server Method: Updated RaceTrack-File.");
             //==============================================================================
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(Administation.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
             Logger.getLogger(Administation.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
@@ -322,7 +320,7 @@ public class Administation {
         ObjectInputStream ois = null;
         try {
             //==============================================================================
-            ois = new ObjectInputStream(new FileInputStream("racetracks.ser"));
+            ois = new ObjectInputStream(new FileInputStream("Server/src/main/resources/PlayThis.csv"));
             RaceTrack input;
             while ((input = (RaceTrack) ois.readObject()) != null) {
                 tracks.add(input);
@@ -332,12 +330,7 @@ public class Administation {
             //==============================================================================
             //tracks.stream().forEach(x -> System.out.println(x.dataToString()));
             //==============================================================================
-        } catch (ClassNotFoundException ex) {
-            Logger.getLogger(Administation.class.getName()).log(Level.SEVERE, null, ex);
-
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(Administation.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
+        } catch (ClassNotFoundException | IOException ex) {
             Logger.getLogger(Administation.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             try {

@@ -1,11 +1,14 @@
 package simulator.data;
 
+import lombok.Data;
+
 import java.awt.*;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+@Data
 public class RaceTrack implements Serializable {
 
     transient private File input;
@@ -30,7 +33,6 @@ public class RaceTrack implements Serializable {
         this.validPoints = new ArrayList<Point>();
         this.startPoints = new ArrayList<Point>();
         decode();
-
     }
 
     public RaceTrack() {
@@ -44,7 +46,7 @@ public class RaceTrack implements Serializable {
 
     public void exportFile() {
         try {
-            PrintWriter writer = new PrintWriter(new FileOutputStream(name + ".csv", true));
+            PrintWriter writer = new PrintWriter(new FileOutputStream("Client/src/resources/racetracks/" + name + ".csv", true));
             writer.print(dataToString());
             writer.close();
         } catch (FileNotFoundException ex) {
@@ -54,18 +56,18 @@ public class RaceTrack implements Serializable {
 
     @Override
     public String toString() {
-        return "RaceTrack: " + name + "\n" 
-                + widthField + ", " + heightField + "\n" 
-                + "PointsOut: " + pointsOutter + "\n" 
-                + coordOuter.toString() + "\n" 
-                + "PointsIn: " + pointsInner + "\n" 
-                + coordInner.toString() + "\n" 
-                + "Distance: " + distance + "\n" 
-                + "Start: " + coordStart.toString() + "\n" 
-                + "Control: " + coordControl.toString() + "\n" 
-                + "Grid: " + gridSize + "\n" 
-                + "Gap: " + gapSize + "\n" 
-                + "ValidPoints: " + validPoints + "\n" 
+        return "RaceTrack: " + name + "\n"
+                + widthField + ", " + heightField + "\n"
+                + "PointsOut: " + pointsOutter + "\n"
+                + coordOuter.toString() + "\n"
+                + "PointsIn: " + pointsInner + "\n"
+                + coordInner.toString() + "\n"
+                + "Distance: " + distance + "\n"
+                + "Start: " + coordStart.toString() + "\n"
+                + "Control: " + coordControl.toString() + "\n"
+                + "Grid: " + gridSize + "\n"
+                + "Gap: " + gapSize + "\n"
+                + "ValidPoints: " + validPoints + "\n"
                 + "StartPoints: " + startPoints.toString();
     }
 
@@ -106,13 +108,13 @@ public class RaceTrack implements Serializable {
                 lines.add(line);
             }
             String[] splitLine = lines.get(0).split(",");
-            widthField = Integer.valueOf(splitLine[0]);
-            heightField = Integer.valueOf(splitLine[1]);
-            pointsOutter = Integer.valueOf(lines.get(1));
+            widthField = Integer.parseInt(splitLine[0]);
+            heightField = Integer.parseInt(splitLine[1]);
+            pointsOutter = Integer.parseInt(lines.get(1));
             coordOuter = createPointArray(lines.get(2), pointsOutter);
-            pointsInner = Integer.valueOf(lines.get(3));
+            pointsInner = Integer.parseInt(lines.get(3));
             coordInner = createPointArray(lines.get(4), pointsInner);
-            distance = Integer.valueOf(lines.get(5));
+            distance = Integer.parseInt(lines.get(5));
             calcOnDistance();
             coordStart = createPointArray(lines.get(6), 2);
             if (lines.size() > 7) {
@@ -125,8 +127,6 @@ public class RaceTrack implements Serializable {
             } else {
                 startPoints = new ArrayList<Point>();
             }
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(RaceTrack.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
             Logger.getLogger(RaceTrack.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -152,8 +152,8 @@ public class RaceTrack implements Serializable {
 
     private Point createPoint(String x, String y) {
         Point point = new Point();
-        point.x = Integer.valueOf(x);
-        point.y = Integer.valueOf(y);
+        point.x = Integer.parseInt(x);
+        point.y = Integer.parseInt(y);
         return point;
     }
 
@@ -161,127 +161,4 @@ public class RaceTrack implements Serializable {
         gridSize = (distance / 3) * 2;
         gapSize = (distance / 3);
     }
-
-    //<editor-fold defaultstate="collapsed" desc=" Getter & Setter ">
-    public int getWidthField() {
-        return widthField;
-    }
-
-    public int getHeightField() {
-        return heightField;
-    }
-
-    public int getPointsOutter() {
-        return pointsOutter;
-    }
-
-    public ArrayList<Point> getCoordOuter() {
-        return coordOuter;
-    }
-
-    public int getPointsInner() {
-        return pointsInner;
-    }
-
-    public ArrayList<Point> getCoordInner() {
-        return coordInner;
-    }
-
-    public int getGridSize() {
-        return gridSize;
-    }
-
-    public ArrayList<Point> getCoordStart() {
-        return coordStart;
-    }
-
-    public int getGapSize() {
-        return gapSize;
-    }
-
-    public File getInput() {
-        return input;
-    }
-
-    public void setInput(File input) {
-        this.input = input;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setWidthField(int widthField) {
-        this.widthField = widthField;
-    }
-
-    public void setHeightField(int heightField) {
-        this.heightField = heightField;
-    }
-
-    public void setPointsOutter(int pointsOutter) {
-        this.pointsOutter = pointsOutter;
-    }
-
-    public void setCoordOuter(ArrayList<Point> coordOuter) {
-        this.coordOuter = coordOuter;
-    }
-
-    public void setPointsInner(int pointsInner) {
-        this.pointsInner = pointsInner;
-    }
-
-    public void setCoordInner(ArrayList<Point> coordInner) {
-        this.coordInner = coordInner;
-    }
-
-    public void setGridSize(int gridSize) {
-        this.gridSize = gridSize;
-    }
-
-    public void setCoordStart(ArrayList<Point> coordStart) {
-        this.coordStart = coordStart;
-    }
-
-    public void setGapSize(int gapSize) {
-        this.gapSize = gapSize;
-    }
-
-    public ArrayList<Point> getValidPoints() {
-        return validPoints;
-    }
-
-    public void setValidPoints(ArrayList<Point> validPoints) {
-        this.validPoints = validPoints;
-    }
-
-    public ArrayList<Point> getStartPoints() {
-        return startPoints;
-    }
-
-    public void setStartPoints(ArrayList<Point> startPoints) {
-        this.startPoints = startPoints;
-    }
-
-    public int getDistance() {
-        return distance;
-    }
-
-    public void setDistance(int distance) {
-        this.distance = distance;
-    }
-
-    public ArrayList<Point> getCoordControl() {
-        return coordControl;
-    }
-
-    public void setCoordControl(ArrayList<Point> coordControl) {
-        this.coordControl = coordControl;
-    }
-
-    //</editor-fold>
 }
