@@ -13,22 +13,22 @@ import java.util.logging.Logger;
 
 public class ServerImpl implements Server {
 
-    //Für jedes ServerObject wird hier ein Client geadded, der dieses überwacht, ich weiß nicht ob das noch unbedingt wichtig ist
+    //Für jedes ServerObject wird hier ein Client geaddet, der dieses überwacht, ich weiß nicht ob das noch unbedingt wichtig ist
     Client client;
 
     public ServerImpl(Client client) {
         this.client = client;
     }
 
-    //Alle Interface Methoden wurden nur überschrieben und Daten an die Administation weitergegeben
+    //Alle Interface Methoden wurden nur überschrieben und Daten an die Administration weitergegeben
     @Override
     public void sendString(String data) throws RemoteException {
         try {
             //=====================================================================
             //Request erhalten
-            String mesg = String.format("Method sendString called from %s, data: %s",
+            String msg = String.format("Method sendString called from %s, data: %s",
                     RemoteServer.getClientHost(), data);
-            System.out.println(mesg);
+            System.out.println(msg);
 
             //Request wird weitergegeben
             Administation.sendString(this, data);
@@ -43,9 +43,9 @@ public class ServerImpl implements Server {
         try {
             //=====================================================================
             //Request erhalten
-            String mesg = String.format("Method sendTurn called from %s, data: %s",
+            String msg = String.format("Method sendTurn called from %s, data: %s",
                     RemoteServer.getClientHost(), data);
-            System.out.println(mesg);
+            System.out.println(msg);
 
             //Request wird weitergegeben
             Administation.sendTurn(this, data);
@@ -60,9 +60,9 @@ public class ServerImpl implements Server {
         try {
             //=====================================================================
             //Request erhalten
-            String mesg = String.format("Method sendRaceTrack called from %s, data: %s",
+            String msg = String.format("Method sendRaceTrack called from %s, data: %s",
                     RemoteServer.getClientHost(), data.getName());
-            System.out.println(mesg);
+            System.out.println(msg);
 
             //Request wird weitergegeben
             Administation.addRaceTrack(this, data);
@@ -77,9 +77,9 @@ public class ServerImpl implements Server {
         try {
             //=====================================================================
             //Request erhalten
-            String mesg = String.format("Method sendRaceTrackDecision called from %s, data: %s",
+            String msg = String.format("Method sendRaceTrackDecision called from %s, data: %s",
                     RemoteServer.getClientHost(), data);
-            System.out.println(mesg);
+            System.out.println(msg);
 
             //Request wird weitergegeben
             Administation.setRaceTrackForGame(this, data);
@@ -94,9 +94,9 @@ public class ServerImpl implements Server {
         try {
             //=====================================================================
             //Request erhalten
-            String mesg = String.format("Method sendRaceTrackDelete called from %s, data: %s",
+            String msg = String.format("Method sendRaceTrackDelete called from %s, data: %s",
                     RemoteServer.getClientHost(), data);
-            System.out.println(mesg);
+            System.out.println(msg);
 
             //Request wird weitergegeben
             Administation.deleteRaceTrack(this, data);
@@ -111,9 +111,9 @@ public class ServerImpl implements Server {
         try {
             //=====================================================================
             //Request erhalten
-            String mesg = String.format("Method showRaceTrackList called from %s,",
+            String msg = String.format("Method showRaceTrackList called from %s,",
                     RemoteServer.getClientHost());
-            System.out.println(mesg);
+            System.out.println(msg);
 
             //Request wird weitergegeben
             Administation.showRaceTrackList(this);
