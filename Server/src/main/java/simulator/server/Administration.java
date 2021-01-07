@@ -29,6 +29,7 @@ public class Administration {
     private static Administration instanceAdministration;
 
     public Administration() {
+        //TODO comment out this line if the RaceTracks.ser can not be deserialized and upload the first racetrack
         raceTracks = readFile();
     }
 
