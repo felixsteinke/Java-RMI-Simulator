@@ -1,7 +1,10 @@
 package simulator.data;
 
+import lombok.Data;
+
 import java.io.Serializable;
 
+@Data
 public class Move implements Serializable {
     private int stepWide;
     private int key;
@@ -57,22 +60,4 @@ public class Move implements Serializable {
                 break;
         }
     }
-
-    //<editor-fold defaultstate="collapsed" desc=" Getter & Setter ">
-    public int getKey() {
-        return key;
-    }
-
-    public void setKey(int key) {
-        this.key = key;
-    }
-
-    public int getStepWide() {
-        return stepWide;
-    }
-
-    public void setStepWide(int stepWide) {
-        this.stepWide = stepWide;
-    }
-    //</editor-fold>
 }

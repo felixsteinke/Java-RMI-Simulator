@@ -1,14 +1,11 @@
 package simulator.data;
 
+import lombok.Data;
+
 import java.awt.*;
 import java.io.Serializable;
 
-/**
- * @author Felix
- * <p>
- * TODO: !!!!!!!!!!!!!!!
- * client muss den old turn bekommen und über einen key listener einen move festlegen
- */
+@Data
 public class Turn implements Serializable {
 
     private Turn oldTurn;
@@ -84,32 +81,5 @@ public class Turn implements Serializable {
                 return;
             }
         }
-    }
-    */
-    //<editor-fold defaultstate="collapsed" desc=" Getter & Setter ">
-    public Turn getOldTurn() {
-        return oldTurn;
-    }
-
-    public void setOldTurn(Turn oldTurn) {
-        this.oldTurn = oldTurn;
-    }
-
-    public Move getMove() {
-        return move;
-    }
-
-    public void setMove(Move move) {
-        this.move = move;
-    }
-
-    public double getSpeed() {
-        return speed;
-    }
-
-    public void setSpeed(double speed) {
-        this.speed = speed;
-    }
-    //</editor-fold>
-
+        */
 }

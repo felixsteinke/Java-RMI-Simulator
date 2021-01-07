@@ -30,23 +30,23 @@ public class RaceTrack implements Serializable {
     public RaceTrack(File input) {
         this.input = input;
         this.name = input.getName();
-        this.validPoints = new ArrayList<Point>();
-        this.startPoints = new ArrayList<Point>();
+        this.validPoints = new ArrayList<>();
+        this.startPoints = new ArrayList<>();
         decode();
     }
 
     public RaceTrack() {
-        this.coordInner = new ArrayList<Point>();
-        this.coordOuter = new ArrayList<Point>();
-        this.coordStart = new ArrayList<Point>();
-        this.coordControl = new ArrayList<Point>();
-        this.validPoints = new ArrayList<Point>();
-        this.startPoints = new ArrayList<Point>();
+        this.coordInner = new ArrayList<>();
+        this.coordOuter = new ArrayList<>();
+        this.coordStart = new ArrayList<>();
+        this.coordControl = new ArrayList<>();
+        this.validPoints = new ArrayList<>();
+        this.startPoints = new ArrayList<>();
     }
 
     public void exportFile() {
         try {
-            PrintWriter writer = new PrintWriter(new FileOutputStream("Client/src/resources/racetracks/" + name + ".csv", true));
+            PrintWriter writer = new PrintWriter(new FileOutputStream("./src/resources/racetracks/" + name + ".csv", true));
             writer.print(dataToString());
             writer.close();
         } catch (FileNotFoundException ex) {
@@ -75,23 +75,21 @@ public class RaceTrack implements Serializable {
         this.pointsOutter = coordOuter.size();
         this.pointsInner = coordInner.size();
         //Build Format String
-        StringBuilder csvString = new StringBuilder();
-        csvString.append(widthField + "," + heightField + "\n");
-        csvString.append(pointsOutter + "\n");
-        csvString.append(pointsArraytoString(coordOuter) + "\n");
-        csvString.append(pointsInner + "\n");
-        csvString.append(pointsArraytoString(coordInner) + "\n");
-        csvString.append(distance + "\n");
-        csvString.append(pointsArraytoString(coordStart) + "\n");
-        csvString.append(pointsArraytoString(coordControl) + "\n");
-        csvString.append(pointsArraytoString(startPoints));
-        return csvString.toString();
+        return widthField + "," + heightField + "\n" +
+                pointsOutter + "\n" +
+                pointsArraytoString(coordOuter) + "\n" +
+                pointsInner + "\n" +
+                pointsArraytoString(coordInner) + "\n" +
+                distance + "\n" +
+                pointsArraytoString(coordStart) + "\n" +
+                pointsArraytoString(coordControl) + "\n" +
+                pointsArraytoString(startPoints);
     }
 
     private String pointsArraytoString(ArrayList<Point> list) {
         StringBuilder arrayString = new StringBuilder();
         for (int i = 0; i < list.size(); i++) {
-            arrayString.append(list.get(i).x + "," + list.get(i).y);
+            arrayString.append(list.get(i).x).append(",").append(list.get(i).y);
             if (i < list.size() - 1) {
                 arrayString.append(",");
             }
@@ -102,7 +100,7 @@ public class RaceTrack implements Serializable {
     private void decode() {
         try {
             BufferedReader reader = new BufferedReader(new FileReader(input));
-            ArrayList<String> lines = new ArrayList<String>();
+            ArrayList<String> lines = new ArrayList<>();
             String line;
             while ((line = reader.readLine()) != null) {
                 lines.add(line);
@@ -120,12 +118,12 @@ public class RaceTrack implements Serializable {
             if (lines.size() > 7) {
                 coordControl = createPointArray(lines.get(7), 2);
             } else {
-                coordControl = new ArrayList<Point>();
+                coordControl = new ArrayList<>();
             }
             if (lines.size() > 8) {
                 startPoints = createPointArray(lines.get(8), 5);
             } else {
-                startPoints = new ArrayList<Point>();
+                startPoints = new ArrayList<>();
             }
         } catch (IOException ex) {
             Logger.getLogger(RaceTrack.class.getName()).log(Level.SEVERE, null, ex);
@@ -133,7 +131,7 @@ public class RaceTrack implements Serializable {
     }
 
     private ArrayList<Point> createPointArray(String line) {
-        ArrayList<Point> points = new ArrayList<Point>();
+        ArrayList<Point> points = new ArrayList<>();
         String[] split = line.split(",");
         for (int i = 0; i < split.length; i += 2) {
             points.add(createPoint(split[i], split[i + 1]));
@@ -142,7 +140,7 @@ public class RaceTrack implements Serializable {
     }
 
     private ArrayList<Point> createPointArray(String line, int length) {
-        ArrayList<Point> points = new ArrayList<Point>();
+        ArrayList<Point> points = new ArrayList<>();
         String[] split = line.split(",");
         for (int i = 0; i < (length * 2); i += 2) {
             points.add(createPoint(split[i], split[i + 1]));
