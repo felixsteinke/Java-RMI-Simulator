@@ -31,7 +31,7 @@ public class ServerImpl implements Server {
             System.out.println(msg);
 
             //Request wird weitergegeben
-            Administation.sendString(this, data);
+            Administration.sendString(this, data);
             //=====================================================================
         } catch (ServerNotActiveException ex) {
             Logger.getLogger(ServerImpl.class.getName()).log(Level.SEVERE, null, ex);
@@ -48,7 +48,7 @@ public class ServerImpl implements Server {
             System.out.println(msg);
 
             //Request wird weitergegeben
-            Administation.sendTurn(this, data);
+            Administration.sendTurn(this, data);
             //=====================================================================
         } catch (ServerNotActiveException ex) {
             Logger.getLogger(ServerImpl.class.getName()).log(Level.SEVERE, null, ex);
@@ -65,7 +65,7 @@ public class ServerImpl implements Server {
             System.out.println(msg);
 
             //Request wird weitergegeben
-            Administation.addRaceTrack(this, data);
+            Administration.addRaceTrack(this, data);
             //=====================================================================
         } catch (ServerNotActiveException ex) {
             Logger.getLogger(ServerImpl.class.getName()).log(Level.SEVERE, null, ex);
@@ -82,7 +82,7 @@ public class ServerImpl implements Server {
             System.out.println(msg);
 
             //Request wird weitergegeben
-            Administation.setRaceTrackForGame(this, data);
+            Administration.setRaceTrackForGame(this, data);
             //=====================================================================
         } catch (ServerNotActiveException ex) {
             Logger.getLogger(ServerImpl.class.getName()).log(Level.SEVERE, null, ex);
@@ -99,7 +99,7 @@ public class ServerImpl implements Server {
             System.out.println(msg);
 
             //Request wird weitergegeben
-            Administation.deleteRaceTrack(this, data);
+            Administration.deleteRaceTrack(this, data);
             //=====================================================================
         } catch (ServerNotActiveException ex) {
             Logger.getLogger(ServerImpl.class.getName()).log(Level.SEVERE, null, ex);
@@ -116,7 +116,7 @@ public class ServerImpl implements Server {
             System.out.println(msg);
 
             //Request wird weitergegeben
-            Administation.showRaceTrackList(this);
+            Administration.showRaceTrackList(this);
             //=====================================================================
         } catch (ServerNotActiveException ex) {
             Logger.getLogger(ServerImpl.class.getName()).log(Level.SEVERE, null, ex);

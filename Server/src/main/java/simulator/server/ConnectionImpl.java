@@ -33,8 +33,8 @@ public class ConnectionImpl implements Connection {
             //ServerObject exporten und "online" stellen
             Server serverExport = (Server) UnicastRemoteObject.exportObject(serverFromClient, 0);
 
-            //Request weitergeben an die Administation
-            Administation.joinGame(serverFromClient, client, player, gameName, code);
+            //Request weitergeben an die Administration
+            Administration.joinGame(serverFromClient, client, player, gameName, code);
 
             //Dem Player(Client) das verbundene ServerObject geben um zu connecten
             return serverExport;
@@ -54,8 +54,8 @@ public class ConnectionImpl implements Connection {
                     RemoteServer.getClientHost(), player.name, gameName);
             System.out.println(mesg);
 
-            //Request der Administation weitergeben
-            Administation.leaveGame(server, player, gameName);
+            //Request der Administration weitergeben
+            Administration.leaveGame(server, player, gameName);
 
             //MISSING: Theoretisch muss das ServerObject wieder unexportet werden, hat in der Vergangenheit aber zu fehlern geführt
             //====================================================================================================
@@ -74,9 +74,9 @@ public class ConnectionImpl implements Connection {
             System.out.println(mesg);
 
             //Request der Administaton weitergeben
-            Administation.createGame(gameName, count, code);
+            Administration.createGame(gameName, count, code);
 
-            //Administation sortiert mit diesem Request auch die verbrauchten Spiele aus
+            //Administration sortiert mit diesem Request auch die verbrauchten Spiele aus
             //====================================================================================================
         } catch (ServerNotActiveException ex) {
             Logger.getLogger(ConnectionImpl.class.getName()).log(Level.SEVERE, null, ex);
