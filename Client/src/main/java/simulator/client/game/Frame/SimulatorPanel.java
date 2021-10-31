@@ -33,7 +33,7 @@ public class SimulatorPanel extends JPanel {
                 BufferedImage image = ImageIO.read(new File("Client/src/main/resources/title-screen.png"));
                 gc.drawImage(image, 0, 0, screenRect.width, screenRect.height, this);
             } catch (IOException ex) {
-                ex.printStackTrace();
+                System.out.println(ex.getMessage());
             }
             return;
         }

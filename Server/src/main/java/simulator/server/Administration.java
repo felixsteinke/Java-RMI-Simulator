@@ -30,7 +30,11 @@ public class Administration {
 
     public Administration() {
         //TODO comment out this line if the RaceTracks.ser can not be deserialized and upload the first racetrack
-        raceTracks = readFile();
+        try {
+            raceTracks = readFile();
+        } catch (FileNotFoundException e) {
+            System.out.println(e.getMessage() + " - RaceTracks.ser can not be deserialized and upload the first racetrack");
+        }
     }
 
     public static Administration getInstance() {                           //Object kann einmal erzeugt werden
@@ -316,36 +320,23 @@ public class Administration {
         }
     }
 
-    private static ArrayList<RaceTrack> readFile() {
+    private static ArrayList<RaceTrack> readFile() throws FileNotFoundException {
         ArrayList<RaceTrack> tracks = new ArrayList<RaceTrack>();
-        ObjectInputStream ois = null;
-        try {
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("Server/src/main/resources/RaceTracks.ser"))) {
             //==============================================================================
-            ois = new ObjectInputStream(new FileInputStream("Server/src/main/resources/RaceTracks.ser"));
             RaceTrack input;
             while ((input = (RaceTrack) ois.readObject()) != null) {
                 tracks.add(input);
             }
             //==============================================================================
         } catch (EOFException e) {
-            //==============================================================================
             //tracks.stream().forEach(x -> System.out.println(x.dataToString()));
-            //==============================================================================
         } catch (ClassNotFoundException | IOException ex) {
-            Logger.getLogger(Administration.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println(ex.getMessage());
         } finally {
-            try {
-                //==============================================================================
-                ois.close();
-                //tracks.stream().forEach(x -> System.out.println(x.dataToString()));
-                System.out.println("Server Method: Updated RaceTracks on the Server.");
-                return tracks;
-                //==============================================================================
-            } catch (IOException ex) {
-                Logger.getLogger(Administration.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            //tracks.stream().forEach(x -> System.out.println(x.dataToString()));
+            System.out.println("Server Method: Updated RaceTracks on the Server.");
         }
-        System.out.println("Server Method: Updating RaceTracks on Server went !!WRONG!!");
-        return null;
+        return tracks;
     }
 }
