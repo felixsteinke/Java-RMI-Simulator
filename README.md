@@ -4,8 +4,6 @@ This was the first java project in my study. It was developed with __NetBeans__ 
 __SVN__ as SCM. Later I decided to import it on my GitHub. To upload it I used transformed it to a __Maven__ project.
 The overall code got only a small clean up, so it still contains bugs and a lot of space for improvement.
 
-![Title Screen](Client/src/main/resources/title-screen.png)
-
 ## Components
 
 * The [Client](Client/src/main/java/simulator/client) provides a simple UI via `Java Swing`.
@@ -19,7 +17,7 @@ The overall code got only a small clean up, so it still contains bugs and a lot 
 While cleaning up the project I introduced __Lombok__ to make the classes more lightweight. This reduced the size of the
 classes and saved a lot of LOC.
 
-* Overall Lines: __~ 5900__
+* Overall Lines: __~5900__
 * Java Lines: __~4400__
 * Java Lines of Code: __~3400__
 * Average Java Class Lines: __~100__
